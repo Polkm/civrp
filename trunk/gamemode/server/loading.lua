@@ -196,9 +196,9 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 end
 concommand.Add("CIVRP_EnableProp",function(ply,cmd,args) CIVRP_EnableProp(ply,tonumber(args[1]),tostring(args[2]),tostring(args[3]),tostring(args[4])) end)
 
-
+--[[
 function GM:Think() 
-	--[[for _,ply in pairs(player.GetAll()) do
+	for _,ply in pairs(player.GetAll()) do
 		if ply:GetPos().x >= 0 && ply:GetPos().y >= 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad1) do
 				CIVRP_Determine_Solid(ply,data)
@@ -216,11 +216,11 @@ function GM:Think()
 				CIVRP_Determine_Solid(ply,data)
 			end
 		end	
-	end]]
+	end
 end
+]]
 
-
-
+--[[
 local vecPlyPos
 function GM:Tick()
 	for _, ply in pairs(player.GetAll()) do
@@ -250,3 +250,4 @@ function GM:Tick()
 		end
 	end
 end
+]]
