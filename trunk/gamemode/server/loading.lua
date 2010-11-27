@@ -5,7 +5,7 @@ CIVRP_Enviorment_Data_Quad2 = {}
 CIVRP_Enviorment_Data_Quad3 = {}
 CIVRP_Enviorment_Data_Quad4 = {}
 
-for i = 1,10000 do 
+for i = 1, 8000 do 
 	local vx = math.random(-10000,10000)
 	local vy = math.random(-10000,10000)
 	local ay = math.random(0,360)
@@ -218,9 +218,7 @@ function GM:Think()
 		end	
 	end
 end
-]]
 
---[[
 local vecPlyPos
 function GM:Tick()
 	for _, ply in pairs(player.GetAll()) do
