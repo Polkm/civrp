@@ -1,0 +1,13 @@
+"Gamemode"
+{
+	"name"		"Civilization RP"
+	"version"	"1.0"
+
+	"author_name"	"Noobulater"
+	"author_email"	"killerkat48@yahoo.com"
+	"author_url"	"shellshocked.net46.net"
+	
+	"icon"		""
+	"info"		""
+	"hide"		""
+}
