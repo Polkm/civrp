@@ -44,7 +44,10 @@ function CIVRP_UpdateEnviorment( umsg )
 end
 usermessage.Hook('CIVRP_UpdateEnviorment', CIVRP_UpdateEnviorment)
 
-function GM:Tick()
+local vecPlyPos
+local intHalfChunk
+local intDistance
+function GM:Think()
 	--[[
 	if LocalPlayer():GetPos().x >= 0 && LocalPlayer():GetPos().y >= 0 then
 		for _,data in pairs(CIVRP_Enviorment_Data_Quad1) do
@@ -67,17 +70,21 @@ function GM:Tick()
 	
 	--Make sure not to get this more then you need to
 	
-	local vecPlyPos = LocalPlayer():GetPos()
-	local intCount = 0
-	--print(table.Count(CIVRP_Enviorment_Data))
+	vecPlyPos = LocalPlayer():GetPos()
+	intHalfChunk = (CIVRP_CHUNKSIZE / 2)
+	local int = 0
 	for x, yTable in pairs(CIVRP_Enviorment_Data) do
-		if math.abs(((x * CIVRP_CHUNKSIZE) + (CIVRP_CHUNKSIZE / 2)) - vecPlyPos.x) <= CIVRP_FADEDISTANCE + (CIVRP_CHUNKSIZE / 2) then
-			intCount = intCount + 1
+		int = math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x)
+		if int <= CIVRP_FADEDISTANCE + intHalfChunk  then
 			for y, dataTable in pairs(yTable) do
-				if math.abs(((y * CIVRP_CHUNKSIZE) + (CIVRP_CHUNKSIZE / 2)) - vecPlyPos.y) <= CIVRP_FADEDISTANCE + (CIVRP_CHUNKSIZE / 2) then
+				int = math.abs(((y * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.y)
+				if int <= CIVRP_FADEDISTANCE + intHalfChunk  then
 					for _, data in pairs(dataTable) do
-						local intDistance = vecPlyPos:Distance(data.Vector)
+						intDistance = vecPlyPos:Distance(data.Vector)
+						--intDistance = CheapDistance(vecPlyPos, vec) -- (intPosX - data.Vector.x)
+						
 						if intDistance <= CIVRP_FADEDISTANCE then
+							
 							if data.entity == nil then
 								--This is a little cheeper then using prop_physics
 								local entity = ClientsideModel(CIVRP_Foilage_Models[data.Model], RENDERGROUP_OPAQUE)
@@ -86,6 +93,7 @@ function GM:Tick()
 								entity:Spawn()
 								data.entity = entity
 							end
+							
 							data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
 							
 							if intDistance < CIVRP_SOLIDDISTANCE && data.Model < 11 then
@@ -104,13 +112,17 @@ function GM:Tick()
 							data.entity:Remove()
 							data.entity = nil
 						end
+						
 					end
 				end
 			end
 		end
 	end
-	print(intCount)
-	
+	--print(int)
+end
+
+function CheapDistance(vecA, vecB)
+	return math.sqrt((vecA - vecB):LengthSqr())
 end
 
 
