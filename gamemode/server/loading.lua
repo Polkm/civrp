@@ -5,7 +5,7 @@ CIVRP_Enviorment_Data_Quad2 = {}
 CIVRP_Enviorment_Data_Quad3 = {}
 CIVRP_Enviorment_Data_Quad4 = {}
 
-for i = 1, 8000 do 
+for i = 1, CIVRP_ENVIORMENTSIZE do 
 	local vx = math.random(-10000,10000)
 	local vy = math.random(-10000,10000)
 	local ay = math.random(0,360)
@@ -105,6 +105,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
+					entity:DrawShadow(false)
 					if entity:GetPhysicsObject():IsValid() then
 						entity:GetPhysicsObject():EnableMotion(false)
 					end
@@ -129,6 +130,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
+					entity:DrawShadow(false)
 					if entity:GetPhysicsObject():IsValid() then
 						entity:GetPhysicsObject():EnableMotion(false)
 					end
@@ -153,6 +155,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
+					entity:DrawShadow(false)
 					if entity:GetPhysicsObject():IsValid() then
 						entity:GetPhysicsObject():EnableMotion(false)
 					end
@@ -177,6 +180,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
+					entity:DrawShadow(false)
 					if entity:GetPhysicsObject():IsValid() then
 						entity:GetPhysicsObject():EnableMotion(false)
 					end

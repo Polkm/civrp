@@ -183,6 +183,8 @@ CIVRP_Events["CrashedVan"] = {
 					item:Spawn()
 					item:Activate()
 					table.insert(items,item)
+							
 				end
+				
 	end,	
 }
