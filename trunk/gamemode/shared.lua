@@ -59,5 +59,6 @@ CIVRP_Foilage_Models[12] = 	"models/props_foliage/ferns02.mdl"
 CIVRP_Foilage_Models[13] = 	"models/props_foliage/ferns03.mdl"
 -- Watch the manual check for 11 and up in CL
 
-CIVRP_SOLIDDISTANCE = 300
+CIVRP_SOLIDDISTANCE = 200
+CIVRP_FADEDISTANCE = 4000
 
