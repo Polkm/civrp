@@ -1,6 +1,7 @@
 --Include shared lua files
 include( 'shared.lua' )
 include( 'day_night.lua' )
+include( 'threats.lua' )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 
