@@ -1,9 +1,17 @@
+ENCRYPTION = nil
+
 CIVRP_Enviorment_Data = {}
 
 CIVRP_FADEDISTANCE = 2000
 
+
+function CIVRP_EncryptionCode( umsg )
+	local info = umsg:ReadString()
+	ENCRYPTION = info
+end
+usermessage.Hook('CIVRP_EncryptionCode', CIVRP_EncryptionCode)
+
 function CIVRP_UpdateEnviorment( umsg )
-	
 	local model = umsg:ReadLong()
 	local info = umsg:ReadString()
 	local exploded = string.Explode("|",info)
@@ -29,8 +37,13 @@ function GM:Think()
 			entity.Think = function() 
 								if LocalPlayer():GetPos():Distance(data.Vector) < CIVRP_SOLIDDISTANCE then
 									entity:SetNoDraw(true)
+									if !entity.DONE && data.Model < 11 then
+										RunConsoleCommand("CIVRP_EnableProp",data.Model,tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
+										entity.DONE = true
+									end
 								else
 									entity:SetNoDraw(false)
+									entity.DONE = false
 								end
 								if LocalPlayer():GetPos():Distance(data.Vector) >= CIVRP_FADEDISTANCE then
 									entity:Remove()
