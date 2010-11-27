@@ -60,5 +60,5 @@ CIVRP_Foilage_Models[13] = 	"models/props_foliage/ferns03.mdl"
 -- Watch the manual check for 11 and up in CL
 
 CIVRP_SOLIDDISTANCE = 200
-CIVRP_FADEDISTANCE = 4000
-
+CIVRP_FADEDISTANCE = 1000
+CIVRP_CHUNKSIZE = 5000
