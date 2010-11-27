@@ -1,7 +1,11 @@
 CIVRP_Enviorment_Data = {}
 
-for i = 1,10000 do 
-	table.insert(CIVRP_Enviorment_Data,{Vector = Vector(math.random(-10000,10000),math.random(-10000,10000),128),Model = math.random(1,table.Count(CIVRP_Foilage_Models)),Angle = Angle(0,math.random(0,360),0)})
+for i = 1, 2000 do
+	table.insert(CIVRP_Enviorment_Data, {
+		Vector = Vector(math.random(-10000, 10000), math.random(-10000, 10000), 128),
+		Model = math.random(1,table.Count(CIVRP_Foilage_Models)),
+		Angle = Angle(0, math.random(0, 360), 0)
+	})
 end
 
 local ENCRYPTIONTBL = {"a","b","c","d","e","f","g","h","i","j"}
@@ -103,10 +107,14 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 	end
 end
 concommand.Add("CIVRP_EnableProp",function(ply,cmd,args) CIVRP_EnableProp(ply,tonumber(args[1]),tostring(args[2]),tostring(args[3]),tostring(args[4])) end)
-function GM:Think() 
-	--[[for _,ply in pairs(player.GetAll()) do
-		for _,data in pairs(CIVRP_Enviorment_Data) do
-			if ply:GetPos():Distance(data.Vector) < CIVRP_SOLIDDISTANCE && !data.InUse then
+
+
+local vecPlyPos
+function GM:Tick()
+	for _, ply in pairs(player.GetAll()) do
+		vecPlyPos = ply:GetPos()
+		for _, data in pairs(CIVRP_Enviorment_Data) do
+			if vecPlyPos:Distance(data.Vector) <= CIVRP_SOLIDDISTANCE && !data.InUse then
 				local entity = ents.Create("prop_physics") 
 				entity:SetPos(data.Vector)
 				entity:SetModel(CIVRP_Foilage_Models[data.Model])
@@ -128,5 +136,5 @@ function GM:Think()
 				data.InUse = true
 			end
 		end
-	end]]
+	end
 end
