@@ -9,9 +9,9 @@ function CIVRP_CreateEvent()
 	if table.Count(tbl) >= 1 then
 		CIVRP_Events[table.Random(tbl)].Function(ply)
 	end
-	timer.Simple(60,function() CIVRP_CreateEvent() end)
+	timer.Simple(math.random(55, 65), function() CIVRP_CreateEvent() end)
 end
-timer.Simple(10,function() CIVRP_CreateEvent() end)
+timer.Simple(10, function() CIVRP_CreateEvent() end)
 
 CIVRP_Events = {}
 
@@ -84,9 +84,9 @@ CIVRP_Events["Supply"] = {
 		return true
 	end,
 	Function = function(ply)
-				local SupplyList = {"item_healthvial","item_ammo_smg1","item_ammo_smg1","item_ammo_pistol","item_ammo_pistol","item_ammo_pistol","item_ammo_357","item_ammo_ar2",}
+				local SupplyList = {"item_healthvial", "item_ammo_smg1", "item_ammo_smg1", "item_ammo_pistol", "item_ammo_pistol", "item_ammo_pistol", "item_ammo_357", "item_ammo_ar2",}
 				local item = ents.Create(table.Random(SupplyList))
-				item:SetPos(ply:GetPos() + Vector(math.random(-1000,1000),math.random(-1000,1000),10))
+				item:SetPos(ply:GetPos() + Vector(math.random(-1000, 1000),math.random(-1000, 1000), 10))
 				item:Spawn()
 				item:Activate()
 				item.Think = function() 
@@ -109,7 +109,7 @@ CIVRP_Events["Weapon"] = {
 		return true
 	end,
 	Function = function(ply)
-				local SupplyList = {"weapon_shotgun","weapon_357","weapon_crowbar",}
+				local SupplyList = {"weapon_shotgun", "weapon_357", "weapon_crowbar",}
 				local item = ents.Create(table.Random(SupplyList))
 				item:SetPos(ply:GetPos() + Vector(math.random(-1000,1000),math.random(-1000,1000),10))
 				item:Spawn()
@@ -134,10 +134,13 @@ CIVRP_Events["CrashedVan"] = {
 		return true
 	end,
 	Function = function(ply)
-				local SupplyList = {"weapon_shotgun","weapon_357","weapon_crowbar","item_healthvial","item_ammo_smg1","item_ammo_smg1","item_ammo_pistol","item_ammo_pistol","item_ammo_pistol","item_ammo_357","item_ammo_ar2",}
+				local SupplyList = {"weapon_shotgun", "weapon_357", "weapon_crowbar", "item_healthvial", "item_ammo_smg1", "item_ammo_smg1", "item_ammo_pistol", "item_ammo_pistol", "item_ammo_pistol", "item_ammo_357", "item_ammo_ar2",}
+				local VanModels = {"models/props_vehicles/van001a.mdl", "models/props_vehicles/van001a_nodoor.mdl"}
+				local VanSkins = 1
 				local items = {}
 					local van = ents.Create("prop_physics")
-					van:SetModel("models/props_vehicles/van001a.mdl")	
+					van:SetModel(VanModels[math.random(1, table.Count(VanModels))])
+					van:SetSkin(math.random(0, VanSkins))
 					local tries = 0
 					local function Check()
 						van:SetPos(Vector(ply:GetPos().x + math.random(-3000,3000),ply:GetPos().y + math.random(-3000,3000),158))
