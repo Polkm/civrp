@@ -169,7 +169,7 @@ CIVRP_Events["CrashedVan"] = {
 											end
 										end 
 										for _,ent in pairs(items) do
-											if ent:IsValid() then
+											if ent:IsValid() && !ent:GetOwner():IsPlayer() then
 												ent:Remove()
 											end
 										end
