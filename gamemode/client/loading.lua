@@ -1,44 +1,28 @@
 ENCRYPTION = nil
 
 CIVRP_Enviorment_Data = {}
-CIVRP_Enviorment_Data_Quad1 = {}
-CIVRP_Enviorment_Data_Quad2 = {}
-CIVRP_Enviorment_Data_Quad3 = {}
-CIVRP_Enviorment_Data_Quad4 = {}
 
-
-function CIVRP_EncryptionCode( umsg )
+function CIVRP_EncryptionCode(umsg)
 	local info = umsg:ReadString()
 	ENCRYPTION = info
 end
 usermessage.Hook('CIVRP_EncryptionCode', CIVRP_EncryptionCode)
 
-function CIVRP_UpdateEnviorment( umsg )
+function CIVRP_UpdateEnviorment(umsg)
 	local model = umsg:ReadLong()
 	local info = umsg:ReadString()
 	local exploded = string.Explode("|",info)
 	table.remove(exploded,1)
 	for num,str in pairs(exploded) do
 		if str != nil then
-			local expstring = string.Explode("/",str)
-			local exppstring = string.Explode(",",expstring[1])
+			local expstring = string.Explode("/", str)
+			local exppstring = string.Explode(",", expstring[1])
 			local vecPos = Vector(tonumber(exppstring[1]), tonumber(exppstring[2]), 128)
 			local intX = math.floor(vecPos.x / CIVRP_CHUNKSIZE)
 			local intY = math.floor(vecPos.y / CIVRP_CHUNKSIZE)
 			CIVRP_Enviorment_Data[intX] = CIVRP_Enviorment_Data[intX] or {}
 			CIVRP_Enviorment_Data[intX][intY] = CIVRP_Enviorment_Data[intX][intY] or {}
 			table.insert(CIVRP_Enviorment_Data[intX][intY], {Vector = vecPos, Model = model, Angle = Angle(0, tonumber(expstring[2]), 0)})
-			--[[
-			if tonumber(exppstring[1]) >= 0 && tonumber(exppstring[2])  >= 0 then
-				table.insert(CIVRP_Enviorment_Data_Quad1,{Vector = Vector(tonumber(exppstring[1]),tonumber(exppstring[2]),128),Model = model,Angle = Angle(0,tonumber(expstring[2]),0)})
-			elseif tonumber(exppstring[1]) < 0 && tonumber(exppstring[2])  >= 0 then
-				table.insert(CIVRP_Enviorment_Data_Quad2,{Vector = Vector(tonumber(exppstring[1]),tonumber(exppstring[2]),128),Model = model,Angle = Angle(0,tonumber(expstring[2]),0)})
-			elseif tonumber(exppstring[1]) < 0 && tonumber(exppstring[2])  < 0 then
-				table.insert(CIVRP_Enviorment_Data_Quad3,{Vector = Vector(tonumber(exppstring[1]),tonumber(exppstring[2]),128),Model = model,Angle = Angle(0,tonumber(expstring[2]),0)})
-			elseif tonumber(exppstring[1]) >= 0 && tonumber(exppstring[2])  < 0 then
-				table.insert(CIVRP_Enviorment_Data_Quad4,{Vector = Vector(tonumber(exppstring[1]),tonumber(exppstring[2]),128),Model = model,Angle = Angle(0,tonumber(expstring[2]),0)})
-			end
-			]]
 		end
 	end
 end
@@ -49,47 +33,20 @@ local intHalfChunk
 local intDistance
 local clientProps = 0
 function GM:Think()
-	--[[
-	if LocalPlayer():GetPos().x >= 0 && LocalPlayer():GetPos().y >= 0 then
-		for _,data in pairs(CIVRP_Enviorment_Data_Quad1) do
-			CIVRP_Determine_Solid(data)
-		end
-	elseif LocalPlayer():GetPos().x < 0 && LocalPlayer():GetPos().y >= 0 then
-		for _,data in pairs(CIVRP_Enviorment_Data_Quad2) do
-			CIVRP_Determine_Solid(data)
-		end		
-	elseif LocalPlayer():GetPos().x < 0 && LocalPlayer():GetPos().y < 0 then
-		for _,data in pairs(CIVRP_Enviorment_Data_Quad3) do
-			CIVRP_Determine_Solid(data)
-		end		
-	elseif LocalPlayer():GetPos().x >= 0 && LocalPlayer():GetPos().y < 0 then
-		for _,data in pairs(CIVRP_Enviorment_Data_Quad4) do
-			CIVRP_Determine_Solid(data)
-		end
-	end
-	]]
-	
-	--Make sure not to get this more then you need to
-	
 	vecPlyPos = LocalPlayer():GetPos()
 	intHalfChunk = (CIVRP_CHUNKSIZE / 2)
 	for x, yTable in pairs(CIVRP_Enviorment_Data) do
-		int = math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x)
-		if int <= CIVRP_FADEDISTANCE + intHalfChunk  then
+		if math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x) <= CIVRP_FADEDISTANCE + intHalfChunk then
 			for y, dataTable in pairs(yTable) do
-				int = math.abs(((y * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.y)
-				if int <= CIVRP_FADEDISTANCE + intHalfChunk  then
+				if math.abs(((y * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.y) <= CIVRP_FADEDISTANCE + intHalfChunk then
 					for _, data in pairs(dataTable) do
 						intDistance = vecPlyPos:Distance(data.Vector)
-						--intDistance = CheapDistance(vecPlyPos, vec) -- (intPosX - data.Vector.x)
 						
 						if intDistance <= CIVRP_FADEDISTANCE then
 							
 							if data.entity == nil && clientProps < 2000 then
 								--This is a little cheeper then using prop_physics
 								local entity = ClientsideModel(CIVRP_Foilage_Models[data.Model], RENDERGROUP_OPAQUE)
-								--local entity = ents.Create("prop_physics") 
-								--entity:SetModel(CIVRP_Foilage_Models[data.Model])
 								entity:SetPos(data.Vector)
 								entity:SetAngles(data.Angle)
 								entity:Spawn()
@@ -101,6 +58,7 @@ function GM:Think()
 								data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
 								
 								if intDistance < CIVRP_SOLIDDISTANCE && data.Model < 11 then
+									--data.entity:SetNoDraw(true)
 									if !data.entity.DONE then
 										RunConsoleCommand("CIVRP_EnableProp",data.Model,tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
 										data.entity.DONE = true
@@ -112,6 +70,7 @@ function GM:Think()
 									end
 								end
 							end
+							
 						elseif intDistance > CIVRP_FADEDISTANCE and data.entity != nil then
 							data.entity:Remove()
 							data.entity = nil
@@ -125,40 +84,3 @@ function GM:Think()
 	end
 	--print(clientProps)
 end
-
-function CheapDistance(vecA, vecB)
-	return math.sqrt((vecA - vecB):LengthSqr())
-end
-
-
---[[
-function CIVRP_Determine_Solid(data)
-	if LocalPlayer():GetPos():Distance(data.Vector) < CIVRP_FADEDISTANCE && !data.InUse then
-		local entity = ClientsideModel(CIVRP_Foilage_Models[data.Model], RENDERGROUP_OPAQUE)
-		entity:SetPos(data.Vector)
-		entity:SetModel(CIVRP_Foilage_Models[data.Model])
-		entity:SetAngles(data.Angle)
-		entity:Spawn()
-		entity.Think = function() 
-							if LocalPlayer():GetPos():Distance(data.Vector) < CIVRP_SOLIDDISTANCE && data.Model < 11 then
-								entity:SetNoDraw(true)
-								if !entity.DONE then
-								--	RunConsoleCommand("CIVRP_EnableProp",data.Model,tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
-									entity.DONE = true
-								end
-							else
-								entity:SetNoDraw(false)
-								entity.DONE = false
-							end
-							if LocalPlayer():GetPos():Distance(data.Vector) >= CIVRP_FADEDISTANCE then
-								entity:Remove()
-								data.InUse = false
-								return false
-							end
-							timer.Simple(.5,function() if entity:IsValid() then entity.Think() end end)
-						end
-		timer.Simple(.5,function() if entity:IsValid() then entity.Think() end end)
-		data.InUse = true
-	end
-end
-]]
