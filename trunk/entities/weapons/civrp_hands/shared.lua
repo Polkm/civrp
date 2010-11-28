@@ -73,7 +73,7 @@ function SWEP:SecondaryAttack()
 			local entity = ents.Create("prop_physics")
 			entity:SetModel(self.WeaponData.Model)
 			print(self.WeaponData.Class)
-			entity:SetPos(self.Owner:GetAngles():Forward() * 50)
+			entity:SetPos(self:GetOwner():GetAngles():Forward() * 50)
 			entity:Spawn()
 			entity:Activate()
 			if entity:GetPhysicsObject():IsValid() then
@@ -102,6 +102,7 @@ end
 if (CLIENT) then
 
 SWEP.EntViewModel = ClientsideModel('models/healthvial.mdl', RENDERGROUP_OPAQUE)
+SWEP.EntViewModel:SetModel('models/healthvial.mdl')
 SWEP.EntViewModel:Spawn()
 SWEP.EntViewModel:SetNoDraw(true)
 
