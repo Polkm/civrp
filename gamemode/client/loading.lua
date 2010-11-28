@@ -47,6 +47,7 @@ usermessage.Hook('CIVRP_UpdateEnviorment', CIVRP_UpdateEnviorment)
 local vecPlyPos
 local intHalfChunk
 local intDistance
+local clientProps = 0
 function GM:Think()
 	--[[
 	if LocalPlayer():GetPos().x >= 0 && LocalPlayer():GetPos().y >= 0 then
@@ -72,7 +73,6 @@ function GM:Think()
 	
 	vecPlyPos = LocalPlayer():GetPos()
 	intHalfChunk = (CIVRP_CHUNKSIZE / 2)
-	local int = 0
 	for x, yTable in pairs(CIVRP_Enviorment_Data) do
 		int = math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x)
 		if int <= CIVRP_FADEDISTANCE + intHalfChunk  then
@@ -85,32 +85,37 @@ function GM:Think()
 						
 						if intDistance <= CIVRP_FADEDISTANCE then
 							
-							if data.entity == nil then
+							if data.entity == nil && clientProps < 2000 then
 								--This is a little cheeper then using prop_physics
 								local entity = ClientsideModel(CIVRP_Foilage_Models[data.Model], RENDERGROUP_OPAQUE)
+								--local entity = ents.Create("prop_physics") 
+								--entity:SetModel(CIVRP_Foilage_Models[data.Model])
 								entity:SetPos(data.Vector)
 								entity:SetAngles(data.Angle)
 								entity:Spawn()
 								data.entity = entity
+								clientProps = clientProps + 1
 							end
 							
-							data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
-							
-							if intDistance < CIVRP_SOLIDDISTANCE && data.Model < 11 then
-								if !data.entity.DONE then
-									RunConsoleCommand("CIVRP_EnableProp",data.Model,tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
-									data.entity.DONE = true
-								end
-							else
-								if data.entity.DONE then
-									data.entity:SetNoDraw(false)
-									data.entity.DONE = false
+							if data.entity != nil then
+								data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
+								
+								if intDistance < CIVRP_SOLIDDISTANCE && data.Model < 11 then
+									if !data.entity.DONE then
+										RunConsoleCommand("CIVRP_EnableProp",data.Model,tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
+										data.entity.DONE = true
+									end
+								else
+									if data.entity.DONE then
+										data.entity:SetNoDraw(false)
+										data.entity.DONE = false
+									end
 								end
 							end
-							
 						elseif intDistance > CIVRP_FADEDISTANCE and data.entity != nil then
 							data.entity:Remove()
 							data.entity = nil
+							clientProps = clientProps - 1
 						end
 						
 					end
@@ -118,7 +123,7 @@ function GM:Think()
 			end
 		end
 	end
-	--print(int)
+	--print(clientProps)
 end
 
 function CheapDistance(vecA, vecB)
