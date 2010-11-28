@@ -10,6 +10,29 @@ function CIVRP_EncryptionCode(umsg)
 end
 usermessage.Hook('CIVRP_EncryptionCode', CIVRP_EncryptionCode)
 
+
+function CIVRP_CreateSVCLObject(umsg)
+	local vector = umsg:ReadVector()
+	print(vector)
+	local angle = umsg:ReadAngle()
+	print(angle)
+	local model = umsg:ReadLong()
+	print(model)
+	local intX = math.floor(vector.x / CIVRP_CHUNKSIZE)
+	local intY = math.floor(vector.y / CIVRP_CHUNKSIZE)
+	CIVRP_Enviorment_Data[intX] = CIVRP_Enviorment_Data[intX] or {}
+	CIVRP_Enviorment_Data[intX][intY] = CIVRP_Enviorment_Data[intX][intY] or {}
+	CIVRP_Chunk_Data[intX] = CIVRP_Chunk_Data[intX] or {}
+	CIVRP_Chunk_Data[intX][intY] = CIVRP_Chunk_Data[intX][intY] or {}
+	CIVRP_Chunk_Data[intX][intY].Spawned = false
+	table.insert(CIVRP_Enviorment_Data[intX][intY], {Vector = vector, Model = CIVRP_Enviorment_Models[model], Angle = angle})
+	if !ENVIORMENT_LOADED then
+		ENVIORMENT_LOADED = true
+		print("-------ENVIORMENT LOADED-------")
+	end
+end
+usermessage.Hook('CIVRP_CreateSVCLObject',CIVRP_CreateSVCLObject)
+
 local entCount = 0
 function CIVRP_UpdateEnviorment(umsg)
 	local model = umsg:ReadLong()
@@ -46,30 +69,40 @@ local intDistance
 local clientProps = 0
 function GM:Think()
 	if !ENVIORMENT_LOADED then return end
-	
 	vecPlyPos = LocalPlayer():GetPos()
 	intHalfChunk = (CIVRP_CHUNKSIZE / 2)
-	
 	for x, yTable in pairs(CIVRP_Enviorment_Data) do
 		if math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x) <= CIVRP_SOLIDDISTANCE + intHalfChunk then
 			for y, dataTable in pairs(yTable) do
 				if math.abs(((y * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.y) <= CIVRP_SOLIDDISTANCE + intHalfChunk then
 					for _, data in pairs(dataTable) do
-						intDistance = vecPlyPos:Distance(data.Vector)
-						if intDistance <= CIVRP_FADEDISTANCE then
-							if data.entity != nil then
-								--data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
-								if intDistance < CIVRP_SOLIDDISTANCE && data.Model.Solid then
-									if !data.entity.DONE then
-										--data.entity:SetNoDraw(true)
-										RunConsoleCommand("CIVRP_EnableProp", data.Model.ID, tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
-										data.entity.DONE = true
+						if data.NextThink == nil || data.NextThink <= CurTime() then
+							if data.Model.Solid then
+								if data.NextThink != nil && data.NextThink <= CurTime()  then
+									print("Waited")
+								end
+								intDistance = vecPlyPos:Distance(data.Vector)
+								if intDistance <= CIVRP_FADEDISTANCE then
+									if data.entity != nil then
+										--data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
+										if intDistance < CIVRP_SOLIDDISTANCE then
+											if !data.entity.DONE then
+												--data.entity:SetNoDraw(true)
+												RunConsoleCommand("CIVRP_EnableProp", data.Model.ID, tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
+												data.entity.DONE = true
+											end
+										else
+											if data.entity.DONE then
+												data.entity:SetNoDraw(false)
+												data.entity.DONE = false
+											end
+										end
 									end
-								else
-									if data.entity.DONE then
-										data.entity:SetNoDraw(false)
-										data.entity.DONE = false
-									end
+								end
+								data.NextThink = nil
+								if intDistance <= CIVRP_FADEDISTANCE * (2/3) && intDistance > CIVRP_FADEDISTANCE * (1/3)  then
+									data.NextThink = CurTime() + 3
+									print("Waiting")
 								end
 							end
 						end

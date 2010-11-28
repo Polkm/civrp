@@ -8,7 +8,13 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 	local vx = math.random(-9000, 9000)
 	local vy = math.random(-9000, 9000)
 	local ay = math.random(0, 360)
-	local mdl = math.random(1, table.Count(CIVRP_Enviorment_Models))
+	local tbl = {}
+	for num,data in pairs(CIVRP_Enviorment_Models) do
+		if data.Generated then
+			table.insert(tbl,num)
+		end
+	end
+	local mdl = math.random(1,table.Count(tbl))
 	
 	--This is the code it would take to convert this sytem to a grided system
 	--[[
@@ -83,6 +89,26 @@ function CIVRP_SendData(ply)
 		end
 	end
 	
+end
+
+function CIVRP_CreateSVCLObject(vector,angle,model)	
+	table.insert(CIVRP_Enviorment_Data, {Vector = vector, Model = model, Angle = angle})
+	if vector.x >= 0 && vector.y  >= 0 then
+		table.insert(CIVRP_Enviorment_Data_Quad1,{Vector = vector,Model = model,Angle = angle})
+	elseif vector.x < 0 && vector.y  >= 0 then
+		table.insert(CIVRP_Enviorment_Data_Quad2,{Vector = vector,Model = model,Angle = angle})
+	elseif vector.x < 0 && vector.y  < 0 then
+		table.insert(CIVRP_Enviorment_Data_Quad3,{Vector = vector,Model = model,Angle = angle})
+	elseif vector.x >= 0 && vector.y  < 0 then
+		table.insert(CIVRP_Enviorment_Data_Quad4,{Vector = vector,Model = model,Angle = angle})
+	end
+	for _,ply in pairs(player.GetAll()) do
+		umsg.Start("CIVRP_CreateSVCLObject", ply)
+			umsg.Vector(vector)
+			umsg.Angle(angle)
+			umsg.Long(model)
+		umsg.End()	
+	end
 end
 
 function CIVRP_SendEncryption(ply) 
@@ -214,24 +240,60 @@ function GM:Think()
 	for _,ply in pairs(player.GetAll()) do
 		if ply:GetPos().x >= 0 && ply:GetPos().y >= 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad1) do
-				CIVRP_Determine_Solid(ply,data)
+				if ply:GetPos():Distance(data.Vector) >= CIVRP_SOLIDDISTANCE then
+					CIVRP_Determine_Solid(ply,data)
+					break
+				end
 			end
 		elseif ply:GetPos().x < 0 && ply:GetPos().y >= 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad2) do
-				CIVRP_Determine_Solid(ply,data)
+				if ply:GetPos():Distance(data.Vector) >= CIVRP_SOLIDDISTANCE then
+					CIVRP_Determine_Solid(ply,data)
+					break
+				end
 			end		
 		elseif ply:GetPos().x < 0 && ply:GetPos().y < 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad3) do
-				CIVRP_Determine_Solid(ply,data)
+				if ply:GetPos():Distance(data.Vector) >= CIVRP_SOLIDDISTANCE then
+					CIVRP_Determine_Solid(ply,data)
+					break
+				end
 			end		
 		elseif ply:GetPos().x >= 0 && ply:GetPos().y < 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad4) do
-				CIVRP_Determine_Solid(ply,data)
+				if ply:GetPos():Distance(data.Vector) >= CIVRP_SOLIDDISTANCE then 
+					CIVRP_Determine_Solid(ply,data)
+					break
+				end
 			end
 		end	
 	end
 end
 
+function CIVRP_Determine_Solid(ply,data)
+					local entity = ents.Create("prop_physics") 
+					entity:SetPos(data.Vector)
+					entity:SetModel(CIVRP_Enviorment_Models[data.Model].Model)
+					entity:SetAngles(data.Angle)
+					entity:Spawn()
+					entity:Activate()
+					entity:DrawShadow(false)
+					if entity:GetPhysicsObject():IsValid() then
+						entity:GetPhysicsObject():EnableMotion(false)
+					end
+					entity.Think = function() 
+										if ply:GetPos():Distance(data.Vector) >= CIVRP_SOLIDDISTANCE then
+											entity:Remove()
+											data.InUse = false
+											return false
+										end
+										timer.Simple(5,function() if entity:IsValid() then entity.Think() end end)
+									end
+					timer.Simple(5,function() if entity:IsValid() then entity.Think() end end)
+					data.InUse = true	
+
+end]]
+--[[
 local vecPlyPos
 function GM:Tick()
 	for _, ply in pairs(player.GetAll()) do
