@@ -57,7 +57,6 @@ function CIVRP_UpdateEnviorment(umsg)
 	end
 	if entCount >= CIVRP_ENVIORMENTSIZE and !ENVIORMENT_LOADED then
 		ENVIORMENT_LOADED = true
-		print("-------ENVIORMENT LOADED-------")
 	end
 end
 usermessage.Hook('CIVRP_UpdateEnviorment', CIVRP_UpdateEnviorment)
