@@ -107,7 +107,7 @@ function CIVRP_DayNightThink( )
 			--CIVRP_WorldData.Fog:Fire( 'Alpha',col.a,0)
 			if IsMorning() then
 				local Per_DayCompleted = (CIVRP_WorldData.Time)/(CIVRP_WorldData.DayLength/2)
-				print(Per_DayCompleted)
+				--print(Per_DayCompleted)
 				col.r = math.Round(95 * Per_DayCompleted)
 				col.b = math.Round(95 * Per_DayCompleted)
 				col.g = math.Round(95 * Per_DayCompleted)

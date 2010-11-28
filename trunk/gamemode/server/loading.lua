@@ -8,7 +8,7 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 	local vx = math.random(-10000, 10000)
 	local vy = math.random(-10000, 10000)
 	local ay = math.random(0, 360)
-	local mdl = math.random(1, table.Count(CIVRP_Foilage_Models))
+	local mdl = math.random(1, table.Count(CIVRP_Enviorment_Models))
 	
 	--This is the code it would take to convert this sytem to a grided system
 	--[[
@@ -48,39 +48,39 @@ function CIVRP_SendData(ply)
 	local number = 0
 	local exploded = nil
 	for mdl,dt in pairs(tbl) do
-			for _,data in pairs(dt) do
-				str = string.Implode("|",{str,(data.Vector.x)..","..(data.Vector.y).."/"..(data.Angle.y)})
-			end
-			exploded = string.Explode("|",str)
-			table.remove(exploded,1)
-			if table.Count(exploded) <= 12 then
+		for _,data in pairs(dt) do
+			str = string.Implode("|",{str,(data.Vector.x)..","..(data.Vector.y).."/"..(data.Angle.y)})
+		end
+		exploded = string.Explode("|",str)
+		table.remove(exploded,1)
+		if table.Count(exploded) <= 12 then
+			umsg.Start("CIVRP_UpdateEnviorment", self)
+				umsg.Long( tonumber(mdl) )
+				umsg.String(str)
+			umsg.End()	
+			str = ""
+		else
+			for i = 1,math.Round(table.Count(exploded)/12) do 
+				str = string.Implode("|",{exploded[1],exploded[2],exploded[3],exploded[4],exploded[5],exploded[6],exploded[7],exploded[8],exploded[9],exploded[10],exploded[11],exploded[12],})
+				str = "|"..str
+				table.remove(exploded,12) table.remove(exploded,11) table.remove(exploded,10) table.remove(exploded,9) table.remove(exploded,8) table.remove(exploded,7) 
+				table.remove(exploded,6) table.remove(exploded,5) table.remove(exploded,4) table.remove(exploded,3) table.remove(exploded,2) table.remove(exploded,1)
 				umsg.Start("CIVRP_UpdateEnviorment", self)
 					umsg.Long( tonumber(mdl) )
 					umsg.String(str)
 				umsg.End()	
-				str = ""
-			else
-				for i = 1,math.Round(table.Count(exploded)/12) do 
-					str = string.Implode("|",{exploded[1],exploded[2],exploded[3],exploded[4],exploded[5],exploded[6],exploded[7],exploded[8],exploded[9],exploded[10],exploded[11],exploded[12],})
-					str = "|"..str
-					table.remove(exploded,12) table.remove(exploded,11) table.remove(exploded,10) table.remove(exploded,9) table.remove(exploded,8) table.remove(exploded,7) 
-					table.remove(exploded,6) table.remove(exploded,5) table.remove(exploded,4) table.remove(exploded,3) table.remove(exploded,2) table.remove(exploded,1)
-					umsg.Start("CIVRP_UpdateEnviorment", self)
-						umsg.Long( tonumber(mdl) )
-						umsg.String(str)
-					umsg.End()	
-				end
-				str = ""
-				PrintTable(exploded)
-				for k,v in pairs(exploded) do 
-					str = string.Implode("|",{str,v})
-				end
-				umsg.Start("CIVRP_UpdateEnviorment", self)
-					umsg.Long( tonumber(mdl) )
-					umsg.String(str)
-				umsg.End()	
-				str = ""
 			end
+			str = ""
+			PrintTable(exploded)
+			for k,v in pairs(exploded) do 
+				str = string.Implode("|",{str,v})
+			end
+			umsg.Start("CIVRP_UpdateEnviorment", self)
+				umsg.Long( tonumber(mdl) )
+				umsg.String(str)
+			umsg.End()	
+			str = ""
+		end
 	end
 	
 end
@@ -94,7 +94,6 @@ end
 function GM:PlayerInitialSpawn(ply)
 	timer.Simple(1,function() CIVRP_SendEncryption(ENCRYPTION) end )
 	timer.Simple(1,function() CIVRP_SendData(ply) end )
-	--timer.Simple(1, function() datastream.StreamToClients({ply}, "CIVRP_Enviorment", {CIVRP_Enviorment_Data}) end)
 end
 
 function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
@@ -111,7 +110,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 
 					entity:SetPos(data.Vector)
-					entity:SetModel(CIVRP_Foilage_Models[data.Model])
+					entity:SetModel(CIVRP_Enviorment_Models[data.Model].Model)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
@@ -136,7 +135,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 
 					entity:SetPos(data.Vector)
-					entity:SetModel(CIVRP_Foilage_Models[data.Model])
+					entity:SetModel(CIVRP_Enviorment_Models[data.Model].Model)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
@@ -161,7 +160,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 
 					entity:SetPos(data.Vector)
-					entity:SetModel(CIVRP_Foilage_Models[data.Model])
+					entity:SetModel(CIVRP_Enviorment_Models[data.Model].Model)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
@@ -186,7 +185,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 
 					entity:SetPos(data.Vector)
-					entity:SetModel(CIVRP_Foilage_Models[data.Model])
+					entity:SetModel(CIVRP_Enviorment_Models[data.Model].Model)
 					entity:SetAngles(data.Angle)
 					entity:Spawn()
 					entity:Activate()
