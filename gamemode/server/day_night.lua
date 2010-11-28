@@ -5,7 +5,7 @@ end]]
 CIVRP_WorldData = {}
 CIVRP_WorldData.Time = 0
 CIVRP_WorldData.CurStage = 0
-CIVRP_WorldData.DayLength = 300
+CIVRP_WorldData.DayLength = 36
 CIVRP_WorldData.Dawn = {Start = CIVRP_WorldData.DayLength/8,End = CIVRP_WorldData.DayLength/3,}
 CIVRP_WorldData.Dusk = {Start = CIVRP_WorldData.DayLength*(2/3),End = CIVRP_WorldData.DayLength*(7/8),}
 CIVRP_WorldData.NextTime = 0

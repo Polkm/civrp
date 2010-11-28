@@ -5,8 +5,8 @@ CIVRP_Enviorment_Data_Quad3 = {}
 CIVRP_Enviorment_Data_Quad4 = {}
 
 for i = 1, CIVRP_ENVIORMENTSIZE do 
-	local vx = math.random(-9000, 9000)
-	local vy = math.random(-9000, 9000)
+	local vx = math.random(-13200, 13200)
+	local vy = math.random(-13200, 13200)
 	local ay = math.random(0, 360)
 	local tbl = {}
 	for num,data in pairs(CIVRP_Enviorment_Models) do
