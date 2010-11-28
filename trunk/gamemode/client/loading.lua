@@ -78,13 +78,11 @@ function GM:Think()
 			end
 		end
 	end
-	
-	
 end
 
 local boolSpawned = false
 function AddRemoveModelsECKTY()
-	timer.Simple(1, function()  AddRemoveModelsECKTY() end)
+	timer.Simple(0.5, function()  AddRemoveModelsECKTY() end)
 	if !ENVIORMENT_LOADED then return end
 	
 	vecPlyPos = LocalPlayer():GetPos()
