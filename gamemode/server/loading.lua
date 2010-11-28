@@ -4,6 +4,17 @@ CIVRP_Enviorment_Data_Quad2 = {}
 CIVRP_Enviorment_Data_Quad3 = {}
 CIVRP_Enviorment_Data_Quad4 = {}
 
+function CREATEENT(ply,model)
+			local entity = ents.Create("prop_physics")
+			entity:SetModel(model)
+			entity:SetPos(ply:GetAngles():Forward() * 50)
+			entity:Spawn()
+			entity:Activate()
+			if entity:GetPhysicsObject():IsValid() then
+				entity:GetPhysicsObject():Wake()
+			end	
+end
+
 for i = 1, CIVRP_ENVIORMENTSIZE do 
 	local vx = math.random(-13200, 13200)
 	local vy = math.random(-13200, 13200)
