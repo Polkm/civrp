@@ -5,14 +5,14 @@ end]]
 CIVRP_WorldData = {}
 CIVRP_WorldData.Time = 0
 CIVRP_WorldData.CurStage = 0
-CIVRP_WorldData.DayLength = 36
+CIVRP_WorldData.DayLength = 60
 CIVRP_WorldData.Dawn = {Start = CIVRP_WorldData.DayLength/8,End = CIVRP_WorldData.DayLength/3,}
 CIVRP_WorldData.Dusk = {Start = CIVRP_WorldData.DayLength*(2/3),End = CIVRP_WorldData.DayLength*(7/8),}
 CIVRP_WorldData.NextTime = 0
 CIVRP_WorldData.TimeNextSecond = 0 
 CIVRP_WorldData.DarknessHigh = 255
 CIVRP_WorldData.Interval = 0.1
-CIVRP_WorldData.Fog = {Enabled = false,Ent = nil,Duration = 0,On = false}
+CIVRP_WorldData.Fog = {Enabled = true,Ent = nil,Duration = 0,On = false}
 CIVRP_WorldData.DayNight = false
 
 local Patterns = {}
@@ -53,8 +53,8 @@ function GM:InitPostEntity()
 		CIVRP_WorldData.Sun:SetKeyValue( 'overlaymaterial' , 'sprites/light_glow02_add_noz.vmt' );
 		if CIVRP_WorldData.Fog then
 			CIVRP_WorldData.Fog.Ent = table.Random(ents.FindByClass( 'env_fog_controller' ))
-			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogend",3000)
-			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogstart",100)
+			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogend", CIVRP_FADEDISTANCE)
+			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogstart", 100)
 			CIVRP_WorldData.Fog.Ent:Fire("TurnOn",'',0)
 			CIVRP_WorldData.Fog.On = true
 			CIVRP_WorldData.Fog.Ent:Activate()

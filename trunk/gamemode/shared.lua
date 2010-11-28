@@ -62,10 +62,10 @@ CIVRP_Enviorment_Models[14] = 	{ID = 14, Model = "models/props_canal/rock_riverb
 -- Watch the manual check for 11 and up in CL
 
 CIVRP_SOLIDDISTANCE = 200
-CIVRP_FADEDISTANCE = 3000
+CIVRP_FADEDISTANCE = 2000
+CIVRP_SUPERCHUNKSIZE = 2500
 CIVRP_CHUNKSIZE = 500
-CIVRP_ENVIORMENTSIZE = 5--20000
-
+CIVRP_ENVIORMENTSIZE = 20000
 
 CIVRP_Weapon_Data = {}
 CIVRP_Weapon_Data["item_healthvial"] = {
