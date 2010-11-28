@@ -1,16 +1,25 @@
 CIVRP_Enviorment_Data = {}
-
 CIVRP_Enviorment_Data_Quad1 = {}
 CIVRP_Enviorment_Data_Quad2 = {}
 CIVRP_Enviorment_Data_Quad3 = {}
 CIVRP_Enviorment_Data_Quad4 = {}
 
 for i = 1, CIVRP_ENVIORMENTSIZE do 
-	local vx = math.random(-10000,10000)
-	local vy = math.random(-10000,10000)
-	local ay = math.random(0,360)
-	local mdl = math.random(1,table.Count(CIVRP_Foilage_Models))
-	table.insert(CIVRP_Enviorment_Data,{Vector = Vector(vx,vy,128),Model = mdl,Angle = Angle(0,ay,0)})
+	local vx = math.random(-10000, 10000)
+	local vy = math.random(-10000, 10000)
+	local ay = math.random(0, 360)
+	local mdl = math.random(1, table.Count(CIVRP_Foilage_Models))
+	
+	--This is the code it would take to convert this sytem to a grided system
+	--[[
+	local vecPos = Vector(vx, vy, 128)
+	local intX = math.floor(vecPos.x / CIVRP_CHUNKSIZE)
+	local intY = math.floor(vecPos.y / CIVRP_CHUNKSIZE)
+	CIVRP_Enviorment_Data[intX] = CIVRP_Enviorment_Data[intX] or {}
+	CIVRP_Enviorment_Data[intX][intY] = CIVRP_Enviorment_Data[intX][intY] or {}
+	table.insert(CIVRP_Enviorment_Data[intX][intY], {Vector = vecPos, Model = mdl, Angle = Angle(0, ay, 0)})
+	]]
+	table.insert(CIVRP_Enviorment_Data, {Vector = Vector(vx, vy, 128), Model = mdl, Angle = Angle(0, ay, 0)})
 	if vx >= 0 && vy  >= 0 then
 		table.insert(CIVRP_Enviorment_Data_Quad1,{Vector = Vector(vx,vy,128),Model = mdl,Angle = Angle(0,ay,0)})
 	elseif vx < 0 && vy  >= 0 then
@@ -28,7 +37,7 @@ ENCRYPTION = string.Implode("",{table.Random(ENCRYPTIONTBL),table.Random(ENCRYPT
 
 function CIVRP_SendData(ply) 
 	local tbl = {}
-	for _,data in pairs(CIVRP_Enviorment_Data) do 
+	for _, data in pairs(CIVRP_Enviorment_Data) do 
 		if tbl[tostring(data.Model)] == nil then
 			tbl[tostring(data.Model)] = {}
 		end
@@ -85,6 +94,7 @@ end
 function GM:PlayerInitialSpawn(ply)
 	timer.Simple(1,function() CIVRP_SendEncryption(ENCRYPTION) end )
 	timer.Simple(1,function() CIVRP_SendData(ply) end )
+	--timer.Simple(1, function() datastream.StreamToClients({ply}, "CIVRP_Enviorment", {CIVRP_Enviorment_Data}) end)
 end
 
 function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
