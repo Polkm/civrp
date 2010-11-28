@@ -30,7 +30,10 @@ CIVRP_Events["Ambush"] = {
 		return false
 	end,
 	Function = function(ply)
-				local Bosses = {{Class = "npc_antlionguard",Number = math.random(1,2),MinionsNumber = math.random(1,3), Minions =  {{Class = "npc_antlion"},{Class ="npc_antlion_worker"}}},{Class = "npc_hunter",Number = math.random(1,2),MinionsNumber = math.random(1,2),Minions =  {{Class = "npc_hunter"},{Class = "npc_combine_s",Weapon = "weapon_ar2"},{Class = "npc_combine_s",Weapon = "weapon_smg1"}}},}
+				local Bosses = {
+				{Class = "npc_antlionguard",Number = math.random(1,2),MinionsNumber = math.random(1,3), Minions = {{Class = "npc_antlion"},{Class ="npc_antlion_worker"}}},
+				{Class = "npc_hunter",Number = math.random(1,2),MinionsNumber = math.random(1,2),Minions = {{Class = "npc_hunter"},{Class = "npc_combine_s",Weapon = "weapon_ar2"},{Class = "npc_combine_s",Weapon = "weapon_smg1"}}},
+				}
 					local Selection = table.Random(Bosses) 
 					for i = 1, Selection.Number do
 						local npc = ents.Create(Selection.Class)
@@ -72,7 +75,9 @@ CIVRP_Events["Healthkit"] = {
 											return false 
 										end
 									end
-									item:Remove() 
+									if !item:GetOwner():IsPlayer() then
+										item:Remove() 
+									end
 								end 					
 							end 
 				timer.Simple(60,function() if item:IsValid() then item.Think() end end)
@@ -97,7 +102,9 @@ CIVRP_Events["Supply"] = {
 											return false 
 										end
 									end
-									item:Remove() 
+									if !item:GetOwner():IsPlayer() then
+										item:Remove() 
+									end
 								end 					
 							end 
 				timer.Simple(30,function() if item:IsValid() then item.Think() end end)
@@ -122,7 +129,9 @@ CIVRP_Events["Weapon"] = {
 											return false 
 										end
 									end
-									item:Remove() 
+									if !item:GetOwner():IsPlayer() then
+										item:Remove() 
+									end
 								end 					
 							end 
 				timer.Simple(30,function() if item:IsValid() then item.Think() end end)
