@@ -49,6 +49,78 @@ function GM:Think()
 	
 	vecPlyPos = LocalPlayer():GetPos()
 	intHalfChunk = (CIVRP_CHUNKSIZE / 2)
+	
+	for x, yTable in pairs(CIVRP_Enviorment_Data) do
+		if math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x) <= CIVRP_SOLIDDISTANCE + intHalfChunk then
+			for y, dataTable in pairs(yTable) do
+				if math.abs(((y * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.y) <= CIVRP_SOLIDDISTANCE + intHalfChunk then
+					for _, data in pairs(dataTable) do
+						intDistance = vecPlyPos:Distance(data.Vector)
+						if intDistance <= CIVRP_FADEDISTANCE then
+							if data.entity != nil then
+								--data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
+								if intDistance < CIVRP_SOLIDDISTANCE && data.Model.Solid then
+									if !data.entity.DONE then
+										--data.entity:SetNoDraw(true)
+										RunConsoleCommand("CIVRP_EnableProp", data.Model.ID, tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
+										data.entity.DONE = true
+									end
+								else
+									if data.entity.DONE then
+										data.entity:SetNoDraw(false)
+										data.entity.DONE = false
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	
+end
+
+local boolSpawned = false
+function AddRemoveModelsECKTY()
+	timer.Simple(1, function()  AddRemoveModelsECKTY() end)
+	if !ENVIORMENT_LOADED then return end
+	
+	vecPlyPos = LocalPlayer():GetPos()
+	intHalfChunk = (CIVRP_CHUNKSIZE / 2)
+	for x, yTable in pairs(CIVRP_Enviorment_Data) do
+		for y, dataTable in pairs(yTable) do
+			vecChunkPos = Vector(((x * CIVRP_CHUNKSIZE) + intHalfChunk), ((y * CIVRP_CHUNKSIZE) + intHalfChunk), 0)
+			intDistance = vecPlyPos:Distance(vecChunkPos)
+			boolSpawned = CIVRP_Chunk_Data[x][y].Spawned
+			if intDistance <= CIVRP_FADEDISTANCE + intHalfChunk && !boolSpawned then
+				for _, data in pairs(dataTable) do
+					if data.entity == nil && clientProps < 2000 then
+						--This is a little cheeper then using prop_physics
+						local entity = ClientsideModel(data.Model.Model, RENDERGROUP_OPAQUE)
+						entity:SetPos(data.Vector)
+						entity:SetAngles(data.Angle)
+						entity:Spawn()
+						data.entity = entity
+						clientProps = clientProps + 1
+					end
+					CIVRP_Chunk_Data[x][y].Spawned = true
+				end
+			elseif intDistance > CIVRP_FADEDISTANCE + intHalfChunk && boolSpawned then
+				for _, data in pairs(dataTable) do
+					if data.entity != nil then
+						data.entity:Remove()
+						data.entity = nil
+						clientProps = clientProps - 1
+					end
+				end
+				CIVRP_Chunk_Data[x][y].Spawned = false
+			end
+		end
+	end
+	
+	--[[
 	for x, yTable in pairs(CIVRP_Enviorment_Data) do
 		if math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x) <= CIVRP_FADEDISTANCE + intHalfChunk then
 			for y, dataTable in pairs(yTable) do
@@ -65,22 +137,6 @@ function GM:Think()
 								data.entity = entity
 								clientProps = clientProps + 1
 							end
-							if data.entity != nil then
-								data.entity:SetColor(255, 255, 255, math.Clamp((CIVRP_FADEDISTANCE - intDistance) / 2, 0, 255))
-								
-								if intDistance < CIVRP_SOLIDDISTANCE && data.Model.Solid then
-									--data.entity:SetNoDraw(true)
-									if !data.entity.DONE then
-										RunConsoleCommand("CIVRP_EnableProp", data.Model.ID, tostring("/"..data.Vector.x.."/"..data.Vector.y.."/"..data.Vector.z),tostring("/"..data.Angle.p.."/"..data.Angle.y.."/"..data.Angle.r),tostring(ENCRYPTION))
-										data.entity.DONE = true
-									end
-								else
-									if data.entity.DONE then
-										data.entity:SetNoDraw(false)
-										data.entity.DONE = false
-									end
-								end
-							end
 						elseif intDistance > CIVRP_FADEDISTANCE and data.entity != nil then
 							data.entity:Remove()
 							data.entity = nil
@@ -91,10 +147,9 @@ function GM:Think()
 			end
 		end
 	end
-	
-	
+	]]
 end
-
+AddRemoveModelsECKTY()
 
 	--[[
 	for x, yTable in pairs(CIVRP_Enviorment_Data) do

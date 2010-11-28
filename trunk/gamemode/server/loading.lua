@@ -93,7 +93,7 @@ end
 
 function GM:PlayerInitialSpawn(ply)
 	timer.Simple(1,function() CIVRP_SendEncryption(ENCRYPTION) end )
-	timer.Simple(1,function() CIVRP_SendData(ply) end )
+	timer.Simple(1, function() CIVRP_SendData(ply) end )
 end
 
 function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
