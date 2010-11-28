@@ -5,13 +5,14 @@ end]]
 CIVRP_WorldData = {}
 CIVRP_WorldData.Time = 449
 CIVRP_WorldData.CurStage = 0
-CIVRP_WorldData.DayLength = 3600
+CIVRP_WorldData.DayLength = 300
 CIVRP_WorldData.Dawn = {Start = CIVRP_WorldData.DayLength/8,End = CIVRP_WorldData.DayLength/3,}
 CIVRP_WorldData.Dusk = {Start = CIVRP_WorldData.DayLength*(2/3),End = CIVRP_WorldData.DayLength*(7/8),}
 CIVRP_WorldData.NextTime = 0
 CIVRP_WorldData.TimeNextSecond = 0 
-CIVRP_WorldData.DarknessHigh = 245
-CIVRP_WorldData.Interval = 1
+CIVRP_WorldData.DarknessHigh = 255
+CIVRP_WorldData.Interval = 0.1
+CIVRP_WorldData.Fog = {Enabled = true,Ent = nil,Duration = 0,On = false}
 CIVRP_WorldData.DayNight = false
 
 local Patterns = {}
@@ -50,7 +51,14 @@ function GM:InitPostEntity()
 		CIVRP_WorldData.Sun = table.Random(ents.FindByClass( 'env_sun' ))
 		CIVRP_WorldData.Sun:SetKeyValue( 'material' , 'sprites/light_glow02_add_noz.vmt' );
 		CIVRP_WorldData.Sun:SetKeyValue( 'overlaymaterial' , 'sprites/light_glow02_add_noz.vmt' );
-	
+		if CIVRP_WorldData.Fog then
+			CIVRP_WorldData.Fog.Ent = table.Random(ents.FindByClass( 'env_fog_controller' ))
+			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogend",3000)
+			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogstart",100)
+			CIVRP_WorldData.Fog.Ent:Fire("TurnOn",'',0)
+			CIVRP_WorldData.Fog.On = true
+			CIVRP_WorldData.Fog.Ent:Activate()
+		end
 		CIVRP_WorldData.GlobalLight:Fire("SetPattern",'a',0) 
 		CIVRP_WorldData.GlobalLight:Activate()
 		CIVRP_WorldData.DayNight = true
@@ -61,30 +69,27 @@ function CIVRP_DayNightThink( )
 	if !CIVRP_WorldData.DayNight then return false end
 	if CIVRP_WorldData.TimeNextSecond <= CurTime() then
 		CIVRP_WorldData.Time = CIVRP_WorldData.Time + CIVRP_WorldData.Interval
-		local col = {r = 0,b = 0,g = 0,a = 0}
+		local col = {r = 10,b = 25,g = 15,a = 255}
 		if IsDay() then
-			CIVRP_WorldData.GlobalLight:Fire("TurnOn",'',0)		
-			col.a = 0 
+			CIVRP_WorldData.GlobalLight:Fire("TurnOn",'',0)	
+			col = {r = 45,b = 200,g = 150,a = 255}
+			col.a = 255 
 			if IsDawn() then	
-				col.a = math.Clamp((CIVRP_WorldData.DarknessHigh-(CIVRP_WorldData.DarknessHigh/((CIVRP_WorldData.Dawn.End - CIVRP_WorldData.Dawn.Start)/(CIVRP_WorldData.Time-CIVRP_WorldData.Dawn.Start)))),0,255)	
-				if CIVRP_WorldData.Time <= CIVRP_WorldData.Dawn.Start + (CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)/4 then
-					col.r = math.Clamp(((35/(((CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)/4)/(CIVRP_WorldData.Time-CIVRP_WorldData.Dawn.Start)))),0,255)
-				else
-					col.r = math.Clamp((35-(35/(((CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)/2)/(CIVRP_WorldData.Time-(CIVRP_WorldData.Dawn.Start + (CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)/4))))),0,255)
-				end
+				local Per_DawnCompleted = (CIVRP_WorldData.Time-CIVRP_WorldData.Dawn.Start)/(CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)
+				col.b = math.Round(math.Clamp(200*Per_DawnCompleted,25,255))
+				col.g = math.Round(math.Clamp(150*Per_DawnCompleted,15,255))
+				col.r = math.Round(math.Clamp(45*Per_DawnCompleted,10,255))
 			elseif IsDusk() then
-				col.a = math.Clamp(((CIVRP_WorldData.DarknessHigh/((CIVRP_WorldData.Dusk.End - CIVRP_WorldData.Dusk.Start)/(CIVRP_WorldData.Time-CIVRP_WorldData.Dusk.Start)))),0,255)
-				if CIVRP_WorldData.Time <= CIVRP_WorldData.Dusk.Start + (CIVRP_WorldData.Dusk.End-CIVRP_WorldData.Dusk.Start)/4 then
-					col.r = math.Clamp(((70/(((CIVRP_WorldData.Dusk.End-CIVRP_WorldData.Dusk.Start)/4)/(CIVRP_WorldData.Time-CIVRP_WorldData.Dusk.Start)))),0,255)
-				else
-					col.r = math.Clamp((70-(70/(((CIVRP_WorldData.Dusk.End-CIVRP_WorldData.Dusk.Start)/2)/(CIVRP_WorldData.Time-(CIVRP_WorldData.Dusk.Start + (CIVRP_WorldData.Dusk.End-CIVRP_WorldData.Dusk.Start)/2))))),0,255)
-				end
+				local Per_DuskCompleted = ((CIVRP_WorldData.Time-CIVRP_WorldData.Dusk.Start))/(CIVRP_WorldData.Dusk.End - CIVRP_WorldData.Dusk.Start)
+				col.b = math.Round(math.Clamp((200*(1-Per_DuskCompleted)),25,255))
+				col.g = math.Round(math.Clamp((150*(1-Per_DuskCompleted)),15,255))
+				col.r = math.Round(math.Clamp((45*(1-Per_DuskCompleted)),10,255))
 			end
 		else
 			CIVRP_WorldData.GlobalLight:Fire("TurnOff",'',0) 
 			col.a = CIVRP_WorldData.DarknessHigh
 		end	
-		
+		col.a = 255
 		if CIVRP_WorldData.Time > CIVRP_WorldData.DayLength || CIVRP_WorldData.Time < 0 then
 			CIVRP_WorldData.Time = 0
 		end
@@ -93,7 +98,32 @@ function CIVRP_DayNightThink( )
 		CIVRP_WorldData.Sun:Fire( 'addoutput' , 'pitch '..tostring(360*(CIVRP_WorldData.Time/CIVRP_WorldData.DayLength)-235) , 0 );
 		CIVRP_WorldData.Sun:Activate( );
 		
-		CIVRP_WorldData.SkyBox:Fire('Color',""..col.r.." "..col.g.." "..col.b,0)
+		if CIVRP_WorldData.Fog.Enabled then
+			if !CIVRP_WorldData.Fog.On then
+				CIVRP_WorldData.Fog.On = true
+				CIVRP_WorldData.Fog.Ent:Fire("TurnOn",'',0)
+				CIVRP_WorldData.Fog.Ent:Activate()
+			end
+			--CIVRP_WorldData.Fog:Fire( 'Alpha',col.a,0)
+			if IsMorning() then
+				local Per_DayCompleted = (CIVRP_WorldData.Time)/(CIVRP_WorldData.DayLength/2)
+				print(Per_DayCompleted)
+				col.r = math.Round(95 * Per_DayCompleted)
+				col.b = math.Round(95 * Per_DayCompleted)
+				col.g = math.Round(95 * Per_DayCompleted)
+			elseif IsAfternoon() then
+				local Per_DayCompleted = (CIVRP_WorldData.Time-CIVRP_WorldData.DayLength/2)/(CIVRP_WorldData.DayLength/2)
+				col.r = math.Round(95 * (1-Per_DayCompleted))
+				col.b = math.Round(95 * (1-Per_DayCompleted))
+				col.g = math.Round( 95 * (1-Per_DayCompleted))
+			end
+			CIVRP_WorldData.Fog.Ent:Fire('SetColor',col.r.." "..col.g.." "..col.b,0)
+		elseif !CIVRP_WorldData.Fog.Enabled && CIVRP_WorldData.Fog.On then 	
+			CIVRP_WorldData.Fog.On = false
+			CIVRP_WorldData.Fog.Ent:Fire("TurnOff",'',0)
+			CIVRP_WorldData.Fog.Ent:Activate()
+		end
+		CIVRP_WorldData.SkyBox:Fire('Color',col.r.." "..col.g.." "..col.b,0)
 		CIVRP_WorldData.SkyBox:Fire( 'Alpha',col.a,0)
 		if CIVRP_WorldData.NextTime <= CurTime() then 
 			if CIVRP_WorldData.Time >= (CIVRP_WorldData.Dawn.Start+(CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)/4) && CIVRP_WorldData.Time < CIVRP_WorldData.DayLength/2 then	
@@ -138,6 +168,19 @@ function IsDusk()
 	return false
 end
 
+function IsMorning()
+	if CIVRP_WorldData.Time < CIVRP_WorldData.DayLength/2 then
+		return true
+	end
+	return false
+end
+
+function IsAfternoon()
+	if CIVRP_WorldData.Time >= CIVRP_WorldData.DayLength/2 then
+		return true
+	end
+	return false
+end
 --[[
 
 // table.
