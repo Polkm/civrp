@@ -11,7 +11,7 @@ function CIVRP_CreateEvent()
 	end
 	timer.Simple(math.random(55, 65), function() CIVRP_CreateEvent() end)
 end
-timer.Simple(10, function() CIVRP_CreateEvent() end)
+--timer.Simple(10, function() CIVRP_CreateEvent() end)
 
 CIVRP_Events = {}
 
