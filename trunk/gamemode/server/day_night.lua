@@ -55,6 +55,8 @@ function GM:InitPostEntity()
 			CIVRP_WorldData.Fog.Ent = table.Random(ents.FindByClass( 'env_fog_controller' ))
 			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogend", CIVRP_FADEDISTANCE)
 			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogstart", 100)
+			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogmaxdensity", 1)
+			CIVRP_WorldData.Fog.Ent:SetKeyValue("farz", CIVRP_FADEDISTANCE + 500) --Temporrary fix
 			CIVRP_WorldData.Fog.Ent:Fire("TurnOn",'',0)
 			CIVRP_WorldData.Fog.On = true
 			CIVRP_WorldData.Fog.Ent:Activate()
@@ -117,14 +119,15 @@ function CIVRP_DayNightThink( )
 				col.b = math.Round(95 * (1-Per_DayCompleted))
 				col.g = math.Round( 95 * (1-Per_DayCompleted))
 			end
-			CIVRP_WorldData.Fog.Ent:Fire('SetColor',col.r.." "..col.g.." "..col.b,0)
+			CIVRP_WorldData.Fog.Ent:Fire('SetColor', col.r .." ".. col.g .." ".. col.b, 0)
+			--CIVRP_WorldData.Fog.Ent:Fire('SetColorSecondary', col.r .." ".. col.g .." ".. col.b, 0)
 		elseif !CIVRP_WorldData.Fog.Enabled && CIVRP_WorldData.Fog.On then 	
 			CIVRP_WorldData.Fog.On = false
 			CIVRP_WorldData.Fog.Ent:Fire("TurnOff",'',0)
 			CIVRP_WorldData.Fog.Ent:Activate()
 		end
-		CIVRP_WorldData.SkyBox:Fire('Color',col.r.." "..col.g.." "..col.b,0)
-		CIVRP_WorldData.SkyBox:Fire( 'Alpha',col.a,0)
+		CIVRP_WorldData.SkyBox:Fire('Color', col.r .." ".. col.g .." ".. col.b, 0)
+		CIVRP_WorldData.SkyBox:Fire('Alpha', 255, 0)
 		if CIVRP_WorldData.NextTime <= CurTime() then 
 			if CIVRP_WorldData.Time >= (CIVRP_WorldData.Dawn.Start+(CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)/4) && CIVRP_WorldData.Time < CIVRP_WorldData.DayLength/2 then	
 				if CIVRP_WorldData.CurStage < #Patterns then
