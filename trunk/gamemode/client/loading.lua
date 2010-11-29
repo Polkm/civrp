@@ -150,9 +150,9 @@ function AddRemoveModelsECKTY()
 	intHalfSuperChunk = intHalfSuperChunk or math.sqrt(math.pow(CIVRP_SUPERCHUNKSIZE, 2) * 2)
 	intHalfChunk = intHalfChunk or math.sqrt(math.pow(CIVRP_CHUNKSIZE, 2) * 2)
 	for sx, ysTable in pairs(CIVRP_Enviorment_Data) do
-		if math.abs(((sx * CIVRP_SUPERCHUNKSIZE) + intHalfSuperChunk) - vecPlyPos.x) <= CIVRP_FADEDISTANCE + intHalfSuperChunk then
+		--if math.abs(((sx * CIVRP_SUPERCHUNKSIZE) + intHalfSuperChunk) - vecPlyPos.x) <= CIVRP_FADEDISTANCE + intHalfSuperChunk then
 			for sy, xsTable in pairs(ysTable) do
-				if math.abs(((sy * CIVRP_SUPERCHUNKSIZE) + intHalfSuperChunk) - vecPlyPos.y) <= CIVRP_FADEDISTANCE + intHalfSuperChunk then
+				--if math.abs(((sy * CIVRP_SUPERCHUNKSIZE) + intHalfSuperChunk) - vecPlyPos.y) <= CIVRP_FADEDISTANCE + intHalfSuperChunk then
 					for x, yTable in pairs(xsTable) do
 						for y, dataTable in pairs(yTable) do
 							vecChunkPos = Vector(((x * CIVRP_CHUNKSIZE) + intHalfChunk), ((y * CIVRP_CHUNKSIZE) + intHalfChunk), 0)
@@ -188,9 +188,9 @@ function AddRemoveModelsECKTY()
 							end
 						end
 					end
-				end
+				--end
 			end
-		end
+		--end
 	end
 	
 	--print(clientProps)
