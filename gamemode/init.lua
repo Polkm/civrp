@@ -20,4 +20,9 @@ for _, file in pairs(file.Find('../gamemodes/' .. GM.Path .. '/gamemode/server/*
 	end
 end
 
-
+function GM:PlayerLoadout(ply)
+	ply:Give("civrp_hands")
+	ply:Give("weapon_smg1")
+	ply:Give("weapon_pistol")
+	ply:Give("weapon_crowbar")
+end

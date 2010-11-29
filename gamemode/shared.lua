@@ -35,15 +35,45 @@ function AutoAdd_LuaFiles()
 	end
 end
 
+function GetPlayerFactor()
+	return 1 / ((math.Clamp(table.Count(player.GetAll()), 1, 4) / 2) + 0.5)
+end
+function GetDifficultyFactor()
+	if CIVRP_DIFFICULTY == "Peacefull" then
+		return 0.2
+	elseif CIVRP_DIFFICULTY == "Normal" then
+		return 1.0
+	elseif CIVRP_DIFFICULTY == "Hard" then
+		return 2.0
+	elseif CIVRP_DIFFICULTY == "Hell" then
+		return 4.0
+	end
+	return 1
+end
+
+function CheckDistanceFunction(item, distance, interval)
+	if item:IsValid() then 
+		for _,ply in pairs(player.GetAll()) do 
+			if ply:GetPos():Distance(item:GetPos()) <= distance then 
+				timer.Simple(interval, function() if item:IsValid() then CheckDistanceFunction(item, distance) end end)
+				return false 
+			end
+		end
+		if !item:GetOwner():IsPlayer() then
+			item:Remove() 
+		end
+	end
+end
+
 GM.Name 		= "Civilization Role Play"
 GM.Author 		= "Noobulater"
 GM.Email 		= "killerkat48@yahoo.com"
 GM.Website 		= ""
 GM.TeamBased 	= false
 
-GM.Path = "CivRP";
+GM.Path = "CivRP"
 
-CIVRP_Enviorment_Models = { }
+CIVRP_Enviorment_Models = {}
 CIVRP_Enviorment_Models[1] = 	{ID = 1, Model = "models/props_foliage/tree_pine04.mdl", Solid = true,Generated = true}
 CIVRP_Enviorment_Models[2] = 	{ID = 2, Model = "models/props_foliage/tree_pine05.mdl", Solid = true,Generated = true}
 CIVRP_Enviorment_Models[3] = 	{ID = 3, Model = "models/props_foliage/tree_pine06.mdl", Solid = true,Generated = true}
@@ -67,7 +97,14 @@ CIVRP_SUPERCHUNKSIZE = 2500
 CIVRP_CHUNKSIZE = 500
 CIVRP_ENVIORMENTSIZE = 10000
 
+CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
+CIVRP_DIFFICULTY = "Peacefull" --Good for debuggin
+
 CIVRP_Weapon_Data = {}
 CIVRP_Weapon_Data["item_healthvial"] = {Model = "", } 
+
+CIVRP_Item_Data = {}
+CIVRP_Item_Data["item_healthvial"] = {Class = "item_healthvial", Model = "models/healthvial.mdl"}
+
 
 
