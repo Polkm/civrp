@@ -87,7 +87,7 @@ function SWEP:SecondaryAttack()
 		local trace = self.Owner:GetEyeTrace()
 		if trace.Hit && trace.HitNonWorld then
 			if trace.Entity:GetClass() == "item_healthvial" then
-				self.WeaponData = {Class = trace.Entity:GetClass(),Model = trace.Entity:GetModel() }
+				self.WeaponData = {Class = trace.Entity:GetClass(), Model = trace.Entity:GetModel()}
 				if (SERVER) then
 					trace.Entity:Remove()
 				elseif (CLIENT) then

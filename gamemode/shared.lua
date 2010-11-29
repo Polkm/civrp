@@ -68,6 +68,6 @@ CIVRP_CHUNKSIZE = 500
 CIVRP_ENVIORMENTSIZE = 10000
 
 CIVRP_Weapon_Data = {}
-CIVRP_Weapon_Data["item_healthvial"] = {
-Model = "",
-} 
+CIVRP_Weapon_Data["item_healthvial"] = {Model = "", } 
+
+
