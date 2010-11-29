@@ -4,6 +4,14 @@ ENVIORMENT_LOADED = false
 CIVRP_Enviorment_Data = {}
 CIVRP_Chunk_Data = {}
 
+function GM:Initialize( )
+	--[[if file.Exists("CIVRP/CURRENT_FOREST.txt") then
+		local contents = file.Read("CIVRP/CURRENT_FOREST.txt")
+		CIVRP_Enviorment_Data_Temp = util.TableToKeyValues(contents)
+	end]]
+end
+
+
 function CIVRP_EncryptionCode(umsg)
 	local info = umsg:ReadString()
 	ENCRYPTION = info
