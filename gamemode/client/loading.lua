@@ -139,48 +139,53 @@ function AddRemoveModelsECKTY()
 	timer.Simple(1, function()  AddRemoveModelsECKTY() end)
 	if !ENVIORMENT_LOADED then return end
 	vecPlyPos = LocalPlayer():GetPos()
+	intHalfSuperChunk = intHalfSuperChunk or math.sqrt(math.pow(CIVRP_SUPERCHUNKSIZE, 2) * 2)
 	intHalfChunk = intHalfChunk or math.sqrt(math.pow(CIVRP_CHUNKSIZE, 2) * 2)
 	for sx, ysTable in pairs(CIVRP_Enviorment_Data) do
-		for sy, xsTable in pairs(ysTable) do
-			for x, yTable in pairs(xsTable) do
-				for y, dataTable in pairs(yTable) do
-					vecChunkPos = Vector(((x * CIVRP_CHUNKSIZE) + intHalfChunk), ((y * CIVRP_CHUNKSIZE) + intHalfChunk), 0)
-					intDistance = vecPlyPos:Distance(vecChunkPos)
-					boolSpawned = CIVRP_Chunk_Data[sx][sy][x][y].Spawned
-					if intDistance <= CIVRP_FADEDISTANCE + intHalfChunk && !boolSpawned then
-						intTimerInc = 0
-						for _, data in pairs(dataTable) do
-							if data.entity == nil && clientProps < 2000 then
-								timer.Simple(0.01 * intTimerInc, function()
-									--This is a little cheeper then using prop_physics
-									local entity = ClientsideModel(data.Model.Model, RENDERGROUP_OPAQUE)
-									entity:SetPos(data.Vector)
-									entity:SetAngles(data.Angle)
-									entity:Spawn()
-									--entity:SetNoDraw(true)
-									data.entity = entity
-								end)
-								clientProps = clientProps + 1
-								intTimerInc = intTimerInc + 1
+		if math.abs(((sx * CIVRP_SUPERCHUNKSIZE) + intHalfSuperChunk) - vecPlyPos.x) <= CIVRP_FADEDISTANCE + intHalfSuperChunk then
+			for sy, xsTable in pairs(ysTable) do
+				if math.abs(((sy * CIVRP_SUPERCHUNKSIZE) + intHalfSuperChunk) - vecPlyPos.y) <= CIVRP_FADEDISTANCE + intHalfSuperChunk then
+					for x, yTable in pairs(xsTable) do
+						for y, dataTable in pairs(yTable) do
+							vecChunkPos = Vector(((x * CIVRP_CHUNKSIZE) + intHalfChunk), ((y * CIVRP_CHUNKSIZE) + intHalfChunk), 0)
+							intDistance = vecPlyPos:Distance(vecChunkPos)
+							boolSpawned = CIVRP_Chunk_Data[sx][sy][x][y].Spawned
+							if intDistance <= CIVRP_FADEDISTANCE + intHalfChunk && !boolSpawned then
+								intTimerInc = 0
+								for _, data in pairs(dataTable) do
+									if data.entity == nil && clientProps < 2000 then
+										timer.Simple(0.1 * intTimerInc, function()
+											--This is a little cheeper then using prop_physics
+											local entity = ClientsideModel(data.Model.Model, RENDERGROUP_OPAQUE)
+											entity:SetPos(data.Vector)
+											entity:SetAngles(data.Angle)
+											entity:Spawn()
+											--entity:SetNoDraw(true)
+											data.entity = entity
+										end)
+										clientProps = clientProps + 1
+										intTimerInc = intTimerInc + 1
+									end
+									CIVRP_Chunk_Data[sx][sy][x][y].Spawned = true
+								end
+							elseif intDistance > CIVRP_FADEDISTANCE + intHalfChunk && boolSpawned then
+								for _, data in pairs(dataTable) do
+									if data.entity != nil then
+										data.entity:Remove()
+										data.entity = nil
+										clientProps = clientProps - 1
+									end
+								end
+								CIVRP_Chunk_Data[sx][sy][x][y].Spawned = false
 							end
-							CIVRP_Chunk_Data[sx][sy][x][y].Spawned = true
 						end
-					elseif intDistance > CIVRP_FADEDISTANCE + intHalfChunk && boolSpawned then
-						for _, data in pairs(dataTable) do
-							if data.entity != nil then
-								data.entity:Remove()
-								data.entity = nil
-								clientProps = clientProps - 1
-							end
-						end
-						CIVRP_Chunk_Data[sx][sy][x][y].Spawned = false
 					end
 				end
 			end
 		end
 	end
 	
-	print(clientProps)
+	--print(clientProps)
 	--[[
 	for x, yTable in pairs(CIVRP_Enviorment_Data) do
 		if math.abs(((x * CIVRP_CHUNKSIZE) + intHalfChunk) - vecPlyPos.x) <= CIVRP_FADEDISTANCE + intHalfChunk then
