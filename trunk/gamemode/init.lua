@@ -1,9 +1,7 @@
 --Include shared lua files
-include( 'shared.lua' )
-include( 'day_night.lua' )
-include( 'threats.lua' )
-AddCSLuaFile( "cl_init.lua" )
-AddCSLuaFile( "shared.lua" )
+include("shared.lua")
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
 
 for _, file in pairs(file.Find('../gamemodes/' .. GM.Path .. '/gamemode/client/*') || {} ) do
 	if string.find(file,".lua") then
