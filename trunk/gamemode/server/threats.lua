@@ -9,51 +9,65 @@ function CIVRP_CreateEvent()
 	if table.Count(tbl) >= 1 then
 		CIVRP_Events[table.Random(tbl)].Function(ply)
 	end
-	timer.Simple(math.random(55, 65), function() CIVRP_CreateEvent() end)
+	
+	timer.Simple(math.random(55, 65) / (math.Clamp(table.Count(player.GetAll()), 1, 4) / 2) + 0.5, function() CIVRP_CreateEvent() end)
 end
 --timer.Simple(10, function() CIVRP_CreateEvent() end)
 
 CIVRP_Events = {}
 
-CIVRP_Events["Ambush"] = {
-	Condition = function(ply) 
-		if table.Count(ents.FindByClass("npc_*")) >= 5 then
-			return false
-		end
-		if IsDay() then
-			if ply:Health() >=  50 then
-				return true
+CIVRP_Events["Ambush"] = {}
+CIVRP_Events["Ambush"].Condition = function(ply) 
+	if table.Count(ents.FindByClass("npc_*")) >= 5 then return false end
+	if IsDay() and ply:Health() >= 50 then return true
+	else return true end
+	return false
+end
+CIVRP_Events["Ambush"].Function = function(ply)
+	local Bosses = {}
+	Bosses[1] = {}
+	Bosses[1].Class = "npc_antlionguard"
+	Bosses[1].Number = math.random(1, 2)
+	Bosses[1].MinionsNumber = math.random(1, 3)
+	Bosses[1].Minions = {}
+	Bosses[1].Minions[1] = {Class = "npc_antlion"}
+	Bosses[1].Minions[2] = {Class = "npc_antlion_worker"}
+	
+	Bosses[2] = {}
+	Bosses[2].Class = "npc_hunter"
+	Bosses[2].Number = math.random(1, 2)
+	Bosses[2].MinionsNumber = math.random(1, 2)
+	Bosses[2].Minions = {}
+	Bosses[2].Minions[1] = {Class = "npc_hunter"}
+	Bosses[2].Minions[2] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"}}
+	Bosses[2].Minions[3] = {Class = "npc_manhack"}
+	
+	Bosses[3] = {}
+	Bosses[3].Class = "npc_fastzombie"
+	Bosses[3].Number = math.random(1, 3)
+	Bosses[3].MinionsNumber = math.random(1, 3)
+	Bosses[3].Minions = {}
+	Bosses[3].Minions[1] = {Class = "npc_poisonzombie"}
+	Bosses[3].Minions[2] = {Class = "npc_zombie"}
+	
+	local Selection = table.Random(Bosses) 
+	for i = 1, Selection.Number do
+		local npc = ents.Create(Selection.Class)
+		npc:SetPos(ply:GetPos() + Vector(math.random(-1500,1500),math.random(-1500,1500),0))
+		npc:Spawn()
+		npc:Activate()
+		for i = 1, Selection.MinionsNumber do
+			local MinionSelection = table.Random(Selection.Minions)
+			local npc = ents.Create(MinionSelection.Class)
+			npc:SetPos(ply:GetPos() + Vector(math.random(-1500,1500),math.random(-1500,1500),0) )
+			if MinionSelection.Weapons != nil then
+				npc:SetKeyValue("additionalequipment", table.Random(MinionSelection.Weapons))
 			end
-		else
-			return true
+			npc:Spawn()		
+			npc:Activate()
 		end
-		return false
-	end,
-	Function = function(ply)
-				local Bosses = {
-				{Class = "npc_antlionguard",Number = math.random(1,2),MinionsNumber = math.random(1,3), Minions = {{Class = "npc_antlion"},{Class ="npc_antlion_worker"}}},
-				{Class = "npc_hunter",Number = math.random(1,2),MinionsNumber = math.random(1,2),Minions = {{Class = "npc_hunter"},{Class = "npc_combine_s",Weapon = "weapon_ar2"},{Class = "npc_combine_s",Weapon = "weapon_smg1"}}},
-				}
-					local Selection = table.Random(Bosses) 
-					for i = 1, Selection.Number do
-						local npc = ents.Create(Selection.Class)
-						npc:SetPos(ply:GetPos() + Vector(math.random(-1500,1500),math.random(-1500,1500),0))
-						npc:Spawn()
-						npc:Activate()
-						for i = 1, Selection.MinionsNumber do
-							local MinionSelection = table.Random(Selection.Minions)
-							local npc = ents.Create(MinionSelection.Class)
-							npc:SetPos(ply:GetPos() + Vector(math.random(-1500,1500),math.random(-1500,1500),0) )
-							if MinionSelection.Weapon != nil then
-								npc:SetKeyValue( "additionalequipment", MinionSelection.Weapon )
-							end
-							npc:Spawn()		
-							npc:Activate()
-						end
-					end
-				
-	end,	
-}
+	end
+end
 
 CIVRP_Events["Healthkit"] = {
 	Condition = function(ply) 
