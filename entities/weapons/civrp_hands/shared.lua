@@ -109,7 +109,8 @@ if CLIENT then
 	SWEP.EntViewModel:SetModel('models/healthvial.mdl')
 	SWEP.EntViewModel:Spawn()
 	SWEP.EntViewModel:SetNoDraw(true)
-
+	
+	
 	function SWEP:CalcView(ply,  origin,  angles,  fov) 
 		local view = {}
 		view.origin = origin
@@ -117,10 +118,11 @@ if CLIENT then
 		view.fov = fov
 		if self.WeaponData != nil then
 			self.EntViewModel:SetNoDraw(false)
-			print(self.WeaponData.Model)
 			self.EntViewModel:SetModel(self.WeaponData.Model)
 			self.EntViewModel:SetPos(origin + angles:Forward() * 20 + angles:Up() * -17 + angles:Right() * 8)
 			self.EntViewModel:SetAngles(Angle(angles.p,angles.y,angles.r))
+		else
+			self.EntViewModel:SetNoDraw(true)
 		end
 		return view
 	end
