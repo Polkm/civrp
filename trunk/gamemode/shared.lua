@@ -121,6 +121,16 @@ local function PlaySound(plyUser, strSound)
 	end
 end
 
+local randseed = 1337
+function math.pSeedRand(fSeed)
+	randseed = fSeed
+end
+function math.pRand()
+	randseed = ((8253729 * randseed) + 2396403)
+	randseed = randseed - math.floor(randseed / 32767) * 32767
+	return randseed / 32767
+end
+
 local function FireBullets(plyUser, intNumber, intSpread, intDamage)
 	local tblBullet = {}
 	tblBullet.Num = intNumber or 1
