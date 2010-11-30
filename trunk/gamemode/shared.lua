@@ -100,11 +100,32 @@ CIVRP_ENVIORMENTSIZE = 10000
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
 CIVRP_DIFFICULTY = "Peacefull" --Good for debuggin
 
-CIVRP_Weapon_Data = {}
-CIVRP_Weapon_Data["item_healthvial"] = {Model = "", } 
+local function RestorHealth(plyUser, amount)
+	if plyUser:Health() < plyUser:GetMaxHealth() then
+		plyUser:SetHealth(math.Clamp(plyUser:Health() + amount, 0, plyUser:GetMaxHealth()))
+		return true
+	end
+	return false
+end
+
+local function PlaySound(plyUser, strSound)
+	if CLIENT then
+		print(strSound)
+		surface.PlaySound(strSound)
+	end
+end
 
 CIVRP_Item_Data = {}
 CIVRP_Item_Data["item_healthvial"] = {Class = "item_healthvial", Model = "models/healthvial.mdl"}
+CIVRP_Item_Data["item_healthvial"].Function = function(plyUser)
+	local worked = RestorHealth(plyUser, 20)
+	if worked then
+		PlaySound(plyUser, "items/smallmedkit1")
+	end
+	return worked
+end
+
+
 
 
 

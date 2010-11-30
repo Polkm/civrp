@@ -64,7 +64,11 @@ function SWEP:Think()
 end
 	
 function SWEP:PrimaryAttack()
-
+	if self.WeaponData != nil then
+		if self.WeaponData.Function(self:GetOwner()) then
+			self.WeaponData = nil
+		end
+	end
 end
 
 function SWEP:SecondaryAttack()
@@ -113,6 +117,7 @@ if CLIENT then
 		view.fov = fov
 		if self.WeaponData != nil then
 			self.EntViewModel:SetNoDraw(false)
+			print(self.WeaponData.Model)
 			self.EntViewModel:SetModel(self.WeaponData.Model)
 			self.EntViewModel:SetPos(origin + angles:Forward() * 20 + angles:Up() * -17 + angles:Right() * 8)
 			self.EntViewModel:SetAngles(Angle(angles.p,angles.y,angles.r))
