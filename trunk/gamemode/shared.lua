@@ -121,16 +121,34 @@ local function PlaySound(plyUser, strSound)
 	end
 end
 
+local function FireBullets(plyUser, intNumber, intSpread, intDamage)
+	local tblBullet = {}
+	tblBullet.Num = intNumber or 1
+	tblBullet.Src = plyUser:GetShootPos()
+	tblBullet.Dir = plyUser:GetAngles():Forward()
+	tblBullet.Spread = Vector(intSpread or 0.01, intSpread or 0.01, 0)
+	tblBullet.Tracer = 0.5
+	tblBullet.Force = intDamage or 1
+	tblBullet.Damage = intDamage or 1
+	plyUser:FireBullets(tblBullet)
+end
+
 CIVRP_Item_Data = {}
 CIVRP_Item_Data["item_healthvial"] = {Class = "item_healthvial", Model = "models/healthvial.mdl"}
 CIVRP_Item_Data["item_healthvial"].Function = function(plyUser)
 	local worked = RestorHealth(plyUser, 20)
 	if worked then
-		PlaySound(plyUser, "items/smallmedkit1")
+		PlaySound(plyUser, "items/smallmedkit1.wav")
 	end
 	return worked
 end
-
+CIVRP_Item_Data["weapon_pistol"] = {Class = "weapon_pistol", Model = "models/weapons/W_pistol.mdl"}
+CIVRP_Item_Data["weapon_pistol"].Function = function(plyUser)
+	FireBullets(plyUser, 1, 0.05, 20)
+	PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
+	plyUser:RemoveAmmo(1, "pistol")
+	return false
+end
 
 
 
