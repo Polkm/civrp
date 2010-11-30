@@ -119,6 +119,11 @@ function CIVRP_DayNightThink()
 			end
 			
 			local fcol = {r = col.r,b = col.b,g = col.g,a = 255}
+							
+			local additionr = 0
+			local additionb = 0
+			local additiong = 0
+			
 			if IsMorning() then
 				local Per_DayCompleted = (CIVRP_WorldData.Time) / (CIVRP_WorldData.DayLength / 2)
 				--print(Per_DayCompleted)
@@ -126,12 +131,19 @@ function CIVRP_DayNightThink()
 					col.r = math.Round(100 * (Per_DayCompleted))
 					col.b = math.Round(100 * (Per_DayCompleted))
 					col.g = math.Round(100 * (Per_DayCompleted))
-					
-					--fcol.r = math.Clamp(math.Round(50*math.tan((col.r - 50))+50),0,100)--Love the graphing calculators... (col.r*((1-Per_DayCompleted)+((1-Per_DayCompleted)*Per_DayCompleted))))
-					--fcol.b = math.Clamp(math.Round(50*math.tan((col.r - 50))+50),0,100)--math.Round((col.b*((1-Per_DayCompleted)+((1-Per_DayCompleted)*Per_DayCompleted))))
-					--fcol.g = math.Clamp(math.Round(50*math.tan((col.r - 50))+50),0,100)--math.Round((col.g*((1-Per_DayCompleted)+((1-Per_DayCompleted)*Per_DayCompleted))))
-					--if col.r == 6 && fcol.r == 2 then
-					--end
+					if Per_DayCompleted <= 0.5 then
+						additionr = (12-(12*Per_DayCompleted/.5))*-1
+						additionb = (12-(12*Per_DayCompleted/.5))*-1
+						additiong = (12-(12*Per_DayCompleted/.5))*-1
+					else
+						additionr = (12*(Per_DayCompleted-0.5)/.5)
+						additionb = (12*(Per_DayCompleted-0.5)/.5)
+						additiong = (12*(Per_DayCompleted-0.5)/.5)
+					end					
+					fcol.r = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionr),0,100)--Love the graphing calculators...
+					fcol.b = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionb),0,100)
+					fcol.g = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additiong),0,100)
+					print(additionr)
 				else
 					col.r = col.r * (Per_DayCompleted)
 					col.b = col.b * (Per_DayCompleted)
@@ -143,12 +155,23 @@ function CIVRP_DayNightThink()
 			elseif IsAfternoon() then
 				local Per_DayCompleted = (CIVRP_WorldData.Time-CIVRP_WorldData.DayLength/2)/(CIVRP_WorldData.DayLength/2)
 				if CIVRP_WorldData.Fog.Enabled then
-					col.r = 75--math.Round(100 * (1 - Per_DayCompleted))
-					col.b = 75--math.Round(100 * (1 - Per_DayCompleted))
-					col.g = 75--math.Round( 100 * (1 - Per_DayCompleted))
-					fcol.r = 71--math.Round(100 * (1 - Per_DayCompleted)) - math.Round(20 * Per_DayCompleted)
-					fcol.b = 71--math.Round(100 * (1 - Per_DayCompleted)) - math.Round(20 * Per_DayCompleted)
-					fcol.g = 71--math.Round(100 * (1 - Per_DayCompleted)) - math.Round(20 * Per_DayCompleted)
+					col.r = math.Round( 100 * (1-Per_DayCompleted))
+					col.b = math.Round( 100 * (1-Per_DayCompleted))
+					col.g = math.Round( 100 * (1-Per_DayCompleted))
+				
+					if Per_DayCompleted <= 0.5 then
+						additionr = (12*(Per_DayCompleted-0.5)/.5)
+						additionb = (12*(Per_DayCompleted-0.5)/.5)
+						additiong = (12*(Per_DayCompleted-0.5)/.5)
+					else
+						additionr = (12-(12*Per_DayCompleted/.5))*-1
+						additionb = (12-(12*Per_DayCompleted/.5))*-1
+						additiong = (12-(12*Per_DayCompleted/.5))*-1
+					end					
+					fcol.r = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionr),0,100)--Love the graphing calculators...
+					fcol.b = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionb),0,100)
+					fcol.g = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additiong),0,100)					
+				else
 				end
 			end
 			CIVRP_WorldData.Fog.Ent:Fire('SetColor', col.r .." ".. col.g .." ".. col.b, 0)
