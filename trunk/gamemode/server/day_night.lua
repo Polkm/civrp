@@ -12,8 +12,113 @@ CIVRP_WorldData.NextTime = 0
 CIVRP_WorldData.TimeNextSecond = 0 
 CIVRP_WorldData.DarknessHigh = 255
 CIVRP_WorldData.Interval = 0.1
-CIVRP_WorldData.Fog = {Enabled = true, Ent = nil, Duration = 0}
+CIVRP_WorldData.Fog = {Enabled = false,Ent = nil,Duration = 0}
 CIVRP_WorldData.DayNight = false
+
+
+local COLFOG =  {}
+COLFOG[1] = 0
+COLFOG[2] = 0.05
+COLFOG[3] = 0.10
+COLFOG[4] = 0.125
+COLFOG[5] = 0.14
+COLFOG[6] = 0.165
+COLFOG[7] = 0.23
+COLFOG[8] = 0.25
+COLFOG[9] = 0.33
+COLFOG[10] = 0.40
+COLFOG[11] = 0.43
+COLFOG[12] = 0.47
+COLFOG[13] = 0.5
+COLFOG[14] = 0.54
+COLFOG[15] = 0.56
+COLFOG[16] = 0.58
+COLFOG[17] = 0.60
+COLFOG[18] = 0.62
+COLFOG[19] = 0.63
+COLFOG[20] = 0.64
+COLFOG[21] = 0.65
+COLFOG[22] = 0.66
+COLFOG[23] = 0.67
+COLFOG[24] = 0.68
+COLFOG[25] = 0.69
+COLFOG[26] = 0.73
+COLFOG[27] = 0.75
+COLFOG[28] = 0.75
+COLFOG[29] = 0.75
+COLFOG[30] = 0.73
+COLFOG[31] = 0.70
+COLFOG[32] = 0.70
+COLFOG[33] = 0.71
+COLFOG[34] = 0.73
+COLFOG[35] = 0.74
+COLFOG[36] = 0.75
+COLFOG[37] = 0.76
+COLFOG[38] = 0.77
+COLFOG[38] = 0.78
+COLFOG[39] = 0.79
+COLFOG[40] = 0.80
+COLFOG[41] = 0.81
+COLFOG[42] = 0.82
+COLFOG[43] = 0.83
+COLFOG[44] = 0.84
+COLFOG[45] = 0.85
+COLFOG[46] = 0.86
+COLFOG[47] = 0.87
+COLFOG[48] = 0.88
+COLFOG[49] = 0.89
+COLFOG[50] = 0.91
+COLFOG[51] = 0.91
+COLFOG[52] = 0.91
+COLFOG[53] = 0.92
+COLFOG[54] = 0.93
+COLFOG[55] = 0.93
+COLFOG[56] = 0.94
+COLFOG[57] = 0.94
+COLFOG[58] = 0.95
+COLFOG[59] = 0.95
+COLFOG[60] = 0.96
+COLFOG[61] = 0.96
+COLFOG[62] = 0.96
+COLFOG[63] = 0.97
+COLFOG[64] = 0.97
+COLFOG[65] = 0.97
+COLFOG[66] = 0.97
+COLFOG[67] = 0.97
+COLFOG[68] = 0.98
+COLFOG[69] = 0.99
+COLFOG[70] = 0.98
+COLFOG[71] = 0.98
+COLFOG[72] = 0.98
+COLFOG[73] = 0.98
+COLFOG[74] = 0.98
+COLFOG[75] = 0.98
+COLFOG[76] = 0.99
+COLFOG[77] = 0.99
+COLFOG[78] = .99
+COLFOG[78] = .99
+COLFOG[79] = .99
+COLFOG[80] = .99
+COLFOG[81] = .99
+COLFOG[82] = .99
+COLFOG[83] = .99
+COLFOG[84] = .99
+COLFOG[85] = .99
+COLFOG[86] = .99
+COLFOG[87] = 1
+COLFOG[88] = 1
+COLFOG[89] = 1
+COLFOG[90] = 1
+COLFOG[91] = 1
+COLFOG[92] = 1
+COLFOG[93] = 1
+COLFOG[94] = 1
+COLFOG[95] = 1
+COLFOG[96] = 1
+COLFOG[97] = 1
+COLFOG[98] = 1
+COLFOG[99] = 1
+COLFOG[100] = 1
 
 local Patterns = {}
 Patterns[1] = {Letter = "a",SkyColor = "0 0 0 " , SkyAlpha = "35"}
@@ -54,17 +159,16 @@ function GM:InitPostEntity()
 		CIVRP_WorldData.Sun:SetKeyValue('material', 'sprites/light_glow02_add_noz.vmt')
 		CIVRP_WorldData.Sun:SetKeyValue('overlaymaterial', 'sprites/light_glow02_add_noz.vmt')
 		--Fog controller
-		if CIVRP_WorldData.Fog and CIVRP_WorldData.Fog.Enabled then
+		
 			CIVRP_WorldData.Fog.Ent = table.Random(ents.FindByClass('env_fog_controller'))
 			CIVRP_WorldData.Fog.Ent:SetKeyValue("spawnflags", 1)
 			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogend", CIVRP_FADEDISTANCE - 100)
-			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogstart", 0)
+			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogstart", 100)
 			CIVRP_WorldData.Fog.Ent:SetKeyValue("fogmaxdensity", 1)
 			CIVRP_WorldData.Fog.Ent:SetKeyValue("farz", CIVRP_FADEDISTANCE + 500) --Temporrary fix
 			CIVRP_WorldData.Fog.Ent:Fire("TurnOn", '', 0)
 			CIVRP_WorldData.Fog.Ent:Activate()
-			
-		end
+
 		--Set enviorment light
 		CIVRP_WorldData.GlobalLight:Fire("SetPattern", 'a', 0) 
 		CIVRP_WorldData.GlobalLight:Activate()
@@ -80,19 +184,19 @@ function CIVRP_DayNightThink()
 	if CIVRP_WorldData.TimeNextSecond <= CurTime() then
 		--Set the next time to think
 		CIVRP_WorldData.Time = CIVRP_WorldData.Time + CIVRP_WorldData.Interval
-		
+		local Per_DayCompleted = (CIVRP_WorldData.Time) / (CIVRP_WorldData.DayLength / 2)
+		local Per_DawnCompleted = (CIVRP_WorldData.Time-CIVRP_WorldData.Dawn.Start)/(CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)
+		local Per_DuskCompleted = ((CIVRP_WorldData.Time-CIVRP_WorldData.Dusk.Start))/(CIVRP_WorldData.Dusk.End - CIVRP_WorldData.Dusk.Start)
 		local col = {r = 10, b = 25, g = 15, a = 255}
 		if IsDay() then
 			CIVRP_WorldData.GlobalLight:Fire("TurnOn",'',0)	
 			col = {r = 45,b = 200,g = 150,a = 255}
 			col.a = 255 
 			if IsDawn() then	
-				local Per_DawnCompleted = (CIVRP_WorldData.Time-CIVRP_WorldData.Dawn.Start)/(CIVRP_WorldData.Dawn.End-CIVRP_WorldData.Dawn.Start)
 				col.b = math.Round(math.Clamp(200*Per_DawnCompleted,25,255))
 				col.g = math.Round(math.Clamp(150*Per_DawnCompleted,15,255))
 				col.r = math.Round(math.Clamp(45*Per_DawnCompleted,10,255))
 			elseif IsDusk() then
-				local Per_DuskCompleted = ((CIVRP_WorldData.Time-CIVRP_WorldData.Dusk.Start))/(CIVRP_WorldData.Dusk.End - CIVRP_WorldData.Dusk.Start)
 				col.b = math.Round(math.Clamp((200*(1-Per_DuskCompleted)),25,255))
 				col.g = math.Round(math.Clamp((150*(1-Per_DuskCompleted)),15,255))
 				col.r = math.Round(math.Clamp((45*(1-Per_DuskCompleted)),10,255))
@@ -111,77 +215,63 @@ function CIVRP_DayNightThink()
 		CIVRP_WorldData.Sun:Activate()
 		
 		--Fog Updating
-		if CIVRP_WorldData.Fog.Enabled then
-			if !CIVRP_WorldData.Fog.On then
-				CIVRP_WorldData.Fog.On = true
-				CIVRP_WorldData.Fog.Ent:Fire("TurnOn", '', 0)
-				CIVRP_WorldData.Fog.Ent:Activate()
-			end
-			
 			local fcol = {r = col.r,b = col.b,g = col.g,a = 255}
 							
 			local additionr = 0
 			local additionb = 0
 			local additiong = 0
 			
-			if IsMorning() then
-				local Per_DayCompleted = (CIVRP_WorldData.Time) / (CIVRP_WorldData.DayLength / 2)
-				--print(Per_DayCompleted)
+			if IsDay() then
 				if CIVRP_WorldData.Fog.Enabled then
-					col.r = math.Round(100 * (Per_DayCompleted))
-					col.b = math.Round(100 * (Per_DayCompleted))
-					col.g = math.Round(100 * (Per_DayCompleted))
-					if Per_DayCompleted <= 0.5 then
-						additionr = (12-(12*Per_DayCompleted/.5))*-1
-						additionb = (12-(12*Per_DayCompleted/.5))*-1
-						additiong = (12-(12*Per_DayCompleted/.5))*-1
-					else
-						additionr = (12*(Per_DayCompleted-0.5)/.5)
-						additionb = (12*(Per_DayCompleted-0.5)/.5)
-						additiong = (12*(Per_DayCompleted-0.5)/.5)
-					end					
-					fcol.r = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionr),0,100)--Love the graphing calculators...
-					fcol.b = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionb),0,100)
-					fcol.g = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additiong),0,100)
-					print(additionr)
+					col = {r = 100,b = 100,g = 100,a = 255}
+					fcol = {r = 100,b = 100,g = 100,a = 255}
+					if IsDawn() then
+						col.r = math.Round(100 * (Per_DawnCompleted))
+						col.b = math.Round(100 * (Per_DawnCompleted))
+						col.g = math.Round(100 * (Per_DawnCompleted))
+					--[[	if Per_DawnCompleted <= 0.5 then
+							additionr = (12-(12*Per_DawnCompleted/.5))*-1
+							additionb = (12-(12*Per_DawnCompleted/.5))*-1
+							additiong = (12-(12*Per_DawnCompleted/.5))*-1
+						else
+							additionr = (12*(Per_DawnCompleted-0.5)/.5)
+							additionb = (12*(Per_DawnCompleted-0.5)/.5)
+							additiong = (12*(Per_DawnCompleted-0.5)/.5)
+						end	]]				
+						fcol.r = math.Round(col.r*COLFOG[col.r])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionr),0,100)--Love the graphing calculators...
+						fcol.b = math.Round(col.b*COLFOG[col.b])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionb),0,100)
+						fcol.g = math.Round(col.g*COLFOG[col.g])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additiong),0,100)
+						print("COLFOG["..col.r.."] = "..math.Round((fcol.r/col.r)*100)/100)
+					elseif IsDusk() then
+						col.r = math.Round( 100 * (1-Per_DuskCompleted))
+						col.b = math.Round( 100 * (1-Per_DuskCompleted))
+						col.g = math.Round( 100 * (1-Per_DuskCompleted))
+					--[[if Per_DuskCompleted <= 0.5 then
+							additionr = (12*(Per_DuskCompleted-0.5)/.5)
+							additionb = (12*(Per_DuskCompleted-0.5)/.5)
+							additiong = (12*(Per_DuskCompleted-0.5)/.5)
+						elseif Per_DuskCompleted > 0.5 &&  Per_DuskCompleted <= 0.75 then
+							additionr = (12-(12*Per_DuskCompleted/.5))*-1
+							additionb = (12-(12*Per_DuskCompleted/.5))*-1
+							additiong = (12-(12*Per_DuskCompleted/.5))*-1
+						end					]]
+						fcol.r = math.Round(col.r*COLFOG[col.r])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionr),0,100)--Love the graphing calculators...
+						fcol.b = math.Round(col.b*COLFOG[col.b])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionb),0,100)
+						fcol.g = math.Round(col.g*COLFOG[col.g])										
+					end
 				else
-					col.r = col.r * (Per_DayCompleted)
-					col.b = col.b * (Per_DayCompleted)
-					col.g = col.g * (Per_DayCompleted)
-					fcol.r =  col.r
-					fcol.g =  col.g
-					fcol.g =  col.g
+					fcol = {r = col.r,b = col.b,g = col.g,a = 255}
 				end
-			elseif IsAfternoon() then
-				local Per_DayCompleted = (CIVRP_WorldData.Time-CIVRP_WorldData.DayLength/2)/(CIVRP_WorldData.DayLength/2)
+			else
 				if CIVRP_WorldData.Fog.Enabled then
-					col.r = math.Round( 100 * (1-Per_DayCompleted))
-					col.b = math.Round( 100 * (1-Per_DayCompleted))
-					col.g = math.Round( 100 * (1-Per_DayCompleted))
-				
-					if Per_DayCompleted <= 0.5 then
-						additionr = (12*(Per_DayCompleted-0.5)/.5)
-						additionb = (12*(Per_DayCompleted-0.5)/.5)
-						additiong = (12*(Per_DayCompleted-0.5)/.5)
-					else
-						additionr = (12-(12*Per_DayCompleted/.5))*-1
-						additionb = (12-(12*Per_DayCompleted/.5))*-1
-						additiong = (12-(12*Per_DayCompleted/.5))*-1
-					end					
-					fcol.r = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionr),0,100)--Love the graphing calculators...
-					fcol.b = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionb),0,100)
-					fcol.g = math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additiong),0,100)					
+					col = {r = 0,b = 0,g = 0,a = 255}
+					fcol = {r = 0,b = 0,g = 0,a = 255}
 				else
+					fcol = {r = col.r,b = col.b,g = col.g,a = 255}
 				end
 			end
-			CIVRP_WorldData.Fog.Ent:Fire('SetColor', col.r .." ".. col.g .." ".. col.b, 0)
-			CIVRP_WorldData.Fog.Ent:Fire('SetColorSecondary', col.r .." ".. col.g .." ".. col.b, 0)
-			--PrintTable(CIVRP_WorldData.Fog.Ent:GetKeyValues())
-		elseif !CIVRP_WorldData.Fog.Enabled and CIVRP_WorldData.Fog.On then 	
-			CIVRP_WorldData.Fog.On = false
-			CIVRP_WorldData.Fog.Ent:Fire("TurnOff", '', 0)
-			CIVRP_WorldData.Fog.Ent:Activate()
-		end
+		
+		CIVRP_WorldData.Fog.Ent:Fire('SetColor', fcol.r .." ".. fcol.g .." ".. fcol.b, 0)
 		
 		--Skybox Updating
 		CIVRP_WorldData.SkyBox:Fire('Color', col.r .." ".. col.g .." ".. col.b, 0)
