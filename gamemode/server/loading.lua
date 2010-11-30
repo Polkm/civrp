@@ -25,7 +25,7 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 			table.insert(tbl,num)
 		end
 	end
-	local mdl = math.random(1,table.Count(tbl))
+	local mdl = math.random(1, table.Count(tbl))
 	
 	--This is the code it would take to convert this sytem to a grided system
 	--[[
