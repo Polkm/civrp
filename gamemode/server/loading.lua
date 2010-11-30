@@ -88,7 +88,7 @@ function CIVRP_SendData(ply)
 				umsg.End()	
 			end
 			str = ""
-			PrintTable(exploded)
+			--PrintTable(exploded)
 			for k,v in pairs(exploded) do 
 				str = string.Implode("|",{str,v})
 			end

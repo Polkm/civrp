@@ -241,7 +241,7 @@ function CIVRP_DayNightThink()
 						fcol.r = math.Round(col.r*COLFOG[col.r])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionr),0,100)--Love the graphing calculators...
 						fcol.b = math.Round(col.b*COLFOG[col.b])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additionb),0,100)
 						fcol.g = math.Round(col.g*COLFOG[col.g])--math.Clamp(math.Round(50*math.tan((math.rad(col.r) - math.rad(50)))+45+additiong),0,100)
-						print("COLFOG["..col.r.."] = "..math.Round((fcol.r/col.r)*100)/100)
+						--print("COLFOG["..col.r.."] = "..math.Round((fcol.r/col.r)*100)/100)
 					elseif IsDusk() then
 						col.r = math.Round( 100 * (1-Per_DuskCompleted))
 						col.b = math.Round( 100 * (1-Per_DuskCompleted))
