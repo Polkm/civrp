@@ -50,10 +50,10 @@ function DecompressInteger(strCompresseed)
 	for i = 1, intBytes do
 		intValue = intValue + (string.byte(tblValues[i]) - intMin) * math.pow(intMax - intMin, intBytes - i)
 	end
-	print(strCompresseed .. " ----> " .. intValue)
+	print(strCompresseed .. " ----> " .. intValue .. "  %" .. ())
 end
 
-DecompressInteger(CompressInteger(30000))
+DecompressInteger(CompressInteger(8953418905785))
 
 local randseed = 1337
 function math.pSeedRand(fSeed)
