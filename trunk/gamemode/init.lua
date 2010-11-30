@@ -11,6 +11,7 @@ end
 for _, file in pairs(file.Find('../gamemodes/' .. GM.Path .. '/gamemode/shared/*') || {}) do
 	if string.find(file,".lua") then
 		AddCSLuaFile('shared/'..file)
+		include('shared/'..file)
 		print("include('shared/'..file)")
 	end
 end
