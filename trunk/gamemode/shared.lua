@@ -134,7 +134,7 @@ local function FireBullets(plyUser, intNumber, intSpread, intDamage)
 	tblBullet.Src = plyUser:GetShootPos()
 	tblBullet.Dir = plyUser:GetAngles():Forward()
 	tblBullet.Spread = Vector(intSpread or 0.01, intSpread or 0.01, 0)
-	tblBullet.Tracer = 0.5
+	tblBullet.Tracer = 2
 	tblBullet.Force = intDamage or 1
 	tblBullet.Damage = intDamage or 1
 	plyUser:FireBullets(tblBullet)
@@ -142,6 +142,8 @@ end
 
 CIVRP_Item_Data = {}
 CIVRP_Item_Data["item_healthvial"] = {Class = "item_healthvial", Model = "models/healthvial.mdl"}
+CIVRP_Item_Data["item_healthvial"].HoldPos = Vector(15, -15, 8)
+CIVRP_Item_Data["item_healthvial"].HoldAngle = Angle(0, 0, 0)
 CIVRP_Item_Data["item_healthvial"].Function = function(plyUser)
 	local worked = RestorHealth(plyUser, 20)
 	if worked then
@@ -149,14 +151,10 @@ CIVRP_Item_Data["item_healthvial"].Function = function(plyUser)
 	end
 	return worked
 end
-CIVRP_Item_Data["item_healthvial"].CalcView = function(plyUser,data,origin,angles,Ent)
-	Ent:SetModel('models/healthvial.mdl')	
-	Ent:SetNoDraw(false)
-	Ent:SetPos(origin + angles:Forward() * 20 + angles:Up() * -17 + angles:Right() * 8)
-	Ent:SetAngles(Angle(angles.p,angles.y,angles.r))
-	return {Entity = Ent}
-end
+
 CIVRP_Item_Data["weapon_pistol"] = {Class = "weapon_pistol", Model = "models/weapons/W_pistol.mdl"}
+CIVRP_Item_Data["weapon_pistol"].HoldPos = Vector(15, -8, 8)
+CIVRP_Item_Data["weapon_pistol"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["weapon_pistol"].Function = function(plyUser)
 	FireBullets(plyUser, 1, 0.05, 20)
 	PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")

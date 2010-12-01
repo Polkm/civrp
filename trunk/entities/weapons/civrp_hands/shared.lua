@@ -114,11 +114,12 @@ if CLIENT then
 		view.origin = origin
 		view.angles = angles
 		view.fov = fov
-		if LocalPlayer().WeaponData != nil then
+		local tblWeaponData = LocalPlayer().WeaponData
+		if tblWeaponData != nil then
 			self.EntViewModel:SetNoDraw(false)
-			self.EntViewModel:SetModel(LocalPlayer().WeaponData.Model)
-			self.EntViewModel:SetPos(origin + angles:Forward() * 15 + angles:Up() * -15 + angles:Right() * 8)
-			self.EntViewModel:SetAngles(LerpAngle(0.2, self.EntViewModel:GetAngles(), Angle(angles.p, angles.y, angles.r)))
+			self.EntViewModel:SetModel(tblWeaponData.Model)
+			self.EntViewModel:SetPos(origin + angles:Forward() * tblWeaponData.HoldPos.x + angles:Up() * tblWeaponData.HoldPos.y + angles:Right() * tblWeaponData.HoldPos.z)
+			self.EntViewModel:SetAngles(LerpAngle(0.2, self.EntViewModel:GetAngles(), Angle(angles.p + tblWeaponData.HoldAngle.p, angles.y - tblWeaponData.HoldAngle.y, angles.r + tblWeaponData.HoldAngle.r)))
 		else
 			self.EntViewModel:SetNoDraw(true)
 		end
