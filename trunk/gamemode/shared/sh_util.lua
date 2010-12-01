@@ -30,26 +30,29 @@ end
 
 function CompressInteger(intInteger)
 	local intMin = 48
-	local intMax = 126
+	local intMax = 125
 	local intBytes = math.floor(intInteger / (intMax - intMin))
-	local intRemander = intInteger - (intBytes * (intMax - intMin))
+	local intRemander = intInteger - (intBytes * (intMax - intMin)) + intMin
 	if intBytes > 0 then
-		return CompressInteger(intBytes) .. string.char(intMin + intRemander)
+		if intRemander == 92 then intRemander = 126 end
+		return CompressInteger(intBytes) .. string.char(intRemander)
 	else
-		return string.char(intMin + intRemander)
+		return string.char(intRemander)
 	end
 end
 
 function DecompressInteger(strCompresseed)
 	local intMin = 48
-	local intMax = 126
+	local intMax = 125
 	local tblValues = string.Explode("", strCompresseed)
 	local intValue = 0
 	local intBytes = table.Count(tblValues)
 	for i = 1, intBytes do
-		intValue = intValue + (string.byte(tblValues[i]) - intMin) * math.pow(intMax - intMin, intBytes - i)
+		local intByte = 0
+		if tblValues[i] == "~" then intByte = 92 else intByte = string.byte(tblValues[i]) end
+		intValue = intValue + (intByte - intMin) * math.pow(intMax - intMin, intBytes - i)
 	end
-	print(strCompresseed .. " ----> " .. intValue .. "  %" .. math.Round((string.len(intValue) - string.len(strCompresseed)) / string.len(intValue) * 100))
+	return intValue
 end
 
 if SERVER then

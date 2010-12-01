@@ -109,7 +109,7 @@ if CLIENT then
 	SWEP.EntViewModel:Spawn()
 	SWEP.EntViewModel:SetNoDraw(true)
 	
-	function SWEP:CalcView(ply, origin, angles, fov) 
+	function SWEP:CalcView(ply, origin, angles, fov)
 		local view = {}
 		view.origin = origin
 		view.angles = angles
