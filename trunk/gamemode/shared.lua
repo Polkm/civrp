@@ -84,11 +84,8 @@ local function RestorHealth(plyUser, amount)
 	return false
 end
 
-local function PlaySound(plyUser, strSound)
-	if CLIENT then
-		print(strSound)
-		surface.PlaySound(strSound)
-	end
+local function PlaySound(plyUser, strSound, volume, pitch)
+	plyUser:EmitSound(strSound, volume or 100, pitch or 100)
 end
 
 local function FireBullets(plyUser, intNumber, intSpread, intDamage)
@@ -108,7 +105,7 @@ CIVRP_Item_Data["item_healthvial"] = {Class = "item_healthvial", Model = "models
 CIVRP_Item_Data["item_healthvial"].Function = function(plyUser)
 	local worked = RestorHealth(plyUser, 20)
 	if worked then
-		PlaySound(plyUser, "items/smallmedkit1.wav")
+		PlaySound(plyUser, "items/smallmedkit1.wav", 70)
 	end
 	return worked
 end

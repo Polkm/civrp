@@ -30,7 +30,7 @@ end
 
 function CompressInteger(intInteger)
 	local intMin = 48
-	local intMax = 122
+	local intMax = 126
 	local intBytes = math.floor(intInteger / (intMax - intMin))
 	local intRemander = intInteger - (intBytes * (intMax - intMin))
 	if intBytes > 0 then
@@ -40,17 +40,32 @@ function CompressInteger(intInteger)
 	end
 end
 
-
 function DecompressInteger(strCompresseed)
 	local intMin = 48
-	local intMax = 122
+	local intMax = 126
 	local tblValues = string.Explode("", strCompresseed)
 	local intValue = 0
 	local intBytes = table.Count(tblValues)
 	for i = 1, intBytes do
 		intValue = intValue + (string.byte(tblValues[i]) - intMin) * math.pow(intMax - intMin, intBytes - i)
 	end
-	--print(strCompresseed .. " ----> " .. intValue .. "  %" .. math.Round(string.len(strCompresseed) / string.len(intValue) * 100))
+	print(strCompresseed .. " ----> " .. intValue .. "  %" .. math.Round((string.len(intValue) - string.len(strCompresseed)) / string.len(intValue) * 100))
+end
+
+if SERVER then
+	function SendUsrMsg(strName, plyTarget, tblArgs)
+		umsg.Start(strName, plyTarget)
+		for _, value in pairs(tblArgs or {}) do
+			if type(value) == "string" then umsg.String(value)
+			elseif type(value) == "number" then umsg.Long(value)
+			elseif type(value) == "boolean" then umsg.Bool(value)
+			elseif type(value) == "Entity" or type(value) == "Player" then umsg.Entity(value)
+			elseif type(value) == "Vector" then umsg.Vector(value)
+			elseif type(value) == "Angle" then umsg.Angle(value)
+			elseif type(value) == "table" then umsg.String(glon.encode(value)) end
+		end
+		umsg.End()
+	end
 end
 
 local randseed = 1337

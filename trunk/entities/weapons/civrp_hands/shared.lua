@@ -22,18 +22,16 @@ SWEP.AdminSpawnable		= true
 SWEP.EntViewModel		= "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel			= "models/weapons/w_crowbar.mdl"
 
-SWEP.WeaponData = nil
-
 SWEP.Primary.Recoil			= 0
 SWEP.Primary.Damage			= -1
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0
-SWEP.Primary.Delay			= 1.0
+SWEP.Primary.Delay			= 0.2
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
 
-SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 1
+SWEP.Primary.ClipSize		= -1
+SWEP.Primary.DefaultClip	= -1
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "none"
 
@@ -64,19 +62,20 @@ function SWEP:Think()
 end
 	
 function SWEP:PrimaryAttack()
-	if self.WeaponData != nil then
-		if self.WeaponData.Function(self:GetOwner()) then
-			self.WeaponData = nil
+	if self:GetOwner().WeaponData != nil then
+		if self:GetOwner().WeaponData.Function(self:GetOwner()) then
+			self:GetOwner().WeaponData = nil
+			SendUsrMsg("CIVRP_Weapon_Data_Update", self:GetOwner(), {"empty"})
 		end
 	end
 end
 
 function SWEP:SecondaryAttack()
-	if self.WeaponData != nil then
+	if self:GetOwner().WeaponData != nil then
 		if SERVER then
 			local entity = ents.Create("prop_physics")
-			entity:SetModel(self.WeaponData.Model)
-			entity.ItemClass = self.WeaponData.Class
+			entity:SetModel(self:GetOwner().WeaponData.Model)
+			entity.ItemClass = self:GetOwner().WeaponData.Class
 			entity:SetPos(self:GetOwner():GetShootPos() + self:GetOwner():GetAngles():Forward() * 50 + Vector(0, 0, 10))
 			entity:Spawn()
 			--entity:Activate()
@@ -84,23 +83,23 @@ function SWEP:SecondaryAttack()
 			--if entity:GetPhysicsObject():IsValid() then
 				--entity:GetPhysicsObject():Wake()
 			--end
+			self:GetOwner().WeaponData = nil
+			SendUsrMsg("CIVRP_Weapon_Data_Update", self:GetOwner(), {"empty"})
 		end
 		self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
-		self.WeaponData = nil
 	else
-		local trace = self.Owner:GetEyeTrace()
-		if trace.Hit && trace.HitNonWorld then
-			local tblItem = CIVRP_Item_Data[trace.Entity:GetClass()] or CIVRP_Item_Data[trace.Entity.ItemClass]
-			if tblItem != nil then
-				self.WeaponData = tblItem
-				if SERVER then
+		if SERVER then
+			local trace = self.Owner:GetEyeTrace()
+			if trace.Hit && trace.HitNonWorld then
+				local tblItem = CIVRP_Item_Data[trace.Entity:GetClass()] or CIVRP_Item_Data[trace.Entity.ItemClass]
+				if tblItem != nil then
+					self:GetOwner().WeaponData = tblItem
 					trace.Entity:Remove()
-				elseif CLIENT then
-					CIVRP_Load_Weapon(tblItem.Class)
+					SendUsrMsg("CIVRP_Weapon_Data_Update", self:GetOwner(), {tblItem.Class})
 				end
-				self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 			end
 		end
+		self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 	end
 end
 
@@ -110,20 +109,23 @@ if CLIENT then
 	SWEP.EntViewModel:Spawn()
 	SWEP.EntViewModel:SetNoDraw(true)
 	
-	
-	function SWEP:CalcView(ply,  origin,  angles,  fov) 
+	function SWEP:CalcView(ply, origin, angles, fov) 
 		local view = {}
 		view.origin = origin
 		view.angles = angles
 		view.fov = fov
-		if self.WeaponData != nil then
+		if LocalPlayer().WeaponData != nil then
 			self.EntViewModel:SetNoDraw(false)
-			self.EntViewModel:SetModel(self.WeaponData.Model)
-			self.EntViewModel:SetPos(origin + angles:Forward() * 20 + angles:Up() * -17 + angles:Right() * 8)
-			self.EntViewModel:SetAngles(Angle(angles.p,angles.y,angles.r))
+			self.EntViewModel:SetModel(LocalPlayer().WeaponData.Model)
+			self.EntViewModel:SetPos(origin + angles:Forward() * 15 + angles:Up() * -15 + angles:Right() * 8)
+			self.EntViewModel:SetAngles(LerpAngle(0.2, self.EntViewModel:GetAngles(), Angle(angles.p, angles.y, angles.r)))
 		else
 			self.EntViewModel:SetNoDraw(true)
 		end
 		return view
 	end
+	
+	usermessage.Hook("CIVRP_Weapon_Data_Update", function(usrMsg)
+		LocalPlayer().WeaponData = CIVRP_Item_Data[usrMsg:ReadString()]
+	end)
 end
