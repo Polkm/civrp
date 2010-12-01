@@ -64,11 +64,29 @@ function CIVRP_SendData(ply)
 	local str = ""
 	local number = 0
 	local exploded = nil
+	local vect1 = ""
+	local vect2 = ""
 	for mdl,dt in pairs(tbl) do
 		for _,data in pairs(dt) do
-			str = string.Implode("|",{str,(data.Vector.x)..","..(data.Vector.y).."/"..(data.Angle.y)})
+			if data.Vector.x < 0 then
+				vect1 = "-"..CompressInteger(math.abs(data.Vector.x))
+			else
+				vect1 = CompressInteger(math.abs(data.Vector.x))
+			end
+			if data.Vector.y < 0 then
+				vect2 = "-"..CompressInteger(math.abs(data.Vector.y))
+			else
+				vect2 = CompressInteger(math.abs(data.Vector.y))
+			end
+			str = string.Implode("'",{str,vect1..","..vect2.."/"..CompressInteger(math.abs(data.Angle.y))})
+			print(vect1)
+			print(vect2)
+			print(data.Vector)
+			print("---")
+			vect1 = nil
+			vect2 = nil
 		end
-		exploded = string.Explode("|",str)
+		exploded = string.Explode("'",str)
 		table.remove(exploded,1)
 		if table.Count(exploded) <= 12 then
 			umsg.Start("CIVRP_UpdateEnviorment", self)
@@ -78,8 +96,8 @@ function CIVRP_SendData(ply)
 			str = ""
 		else
 			for i = 1,math.Round(table.Count(exploded)/12) do 
-				str = string.Implode("|",{exploded[1],exploded[2],exploded[3],exploded[4],exploded[5],exploded[6],exploded[7],exploded[8],exploded[9],exploded[10],exploded[11],exploded[12],})
-				str = "|"..str
+				str = string.Implode("'",{exploded[1],exploded[2],exploded[3],exploded[4],exploded[5],exploded[6],exploded[7],exploded[8],exploded[9],exploded[10],exploded[11],exploded[12],})
+				str = "'"..str
 				table.remove(exploded,12) table.remove(exploded,11) table.remove(exploded,10) table.remove(exploded,9) table.remove(exploded,8) table.remove(exploded,7) 
 				table.remove(exploded,6) table.remove(exploded,5) table.remove(exploded,4) table.remove(exploded,3) table.remove(exploded,2) table.remove(exploded,1)
 				umsg.Start("CIVRP_UpdateEnviorment", self)
@@ -88,7 +106,6 @@ function CIVRP_SendData(ply)
 				umsg.End()	
 			end
 			str = ""
-			--PrintTable(exploded)
 			for k,v in pairs(exploded) do 
 				str = string.Implode("|",{str,v})
 			end
