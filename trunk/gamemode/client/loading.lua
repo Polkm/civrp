@@ -45,13 +45,41 @@ local entCount = 0
 function CIVRP_UpdateEnviorment(umsg)
 	local model = umsg:ReadLong()
 	local info = umsg:ReadString()
-	local exploded = string.Explode("|",info)
+	local exploded = string.Explode("'",info)
 	table.remove(exploded, 1)
 	for num,str in pairs(exploded) do
 		if str != nil then
 			local expstring = string.Explode("/", str)
 			local exppstring = string.Explode(",", expstring[1])
-			local vecPos = Vector(tonumber(exppstring[1]), tonumber(exppstring[2]), 128)
+			local vect1str = string.ToTable(exppstring[1])
+			local vect2str = string.ToTable(exppstring[2])
+			local vect1sign = vect1str[1]
+
+			if vect1str[1] == "-" then
+				table.remove(vect1str,1)
+			else
+				vect1sign = ""
+			end
+			local vect1abs = ""
+			for i = 1, table.Count(vect1str) do
+				vect1abs = vect1abs..tostring(vect1str[i])
+			end
+			local vect2sign = vect2str[1]
+			if vect2str[1] == "-" then
+				table.remove(vect2str,1)
+			else
+				vect2sign = ""
+			end
+			local vect2abs = ""
+			for i = 1, table.Count(vect1str) do
+				if vect2str[i] != nil then
+					vect2abs = vect2abs..tostring(vect2str[i])
+				end
+			end
+			local vecPos = Vector(tonumber(vect1sign..DecompressInteger(vect1abs)), tonumber(vect2sign..DecompressInteger(vect2abs)), 128)
+			Msg(vecPos)
+			print("")
+			
 			local intSX = math.floor(vecPos.x / CIVRP_SUPERCHUNKSIZE)
 			local intSY = math.floor(vecPos.y / CIVRP_SUPERCHUNKSIZE)
 			local intX = math.floor(vecPos.x / CIVRP_CHUNKSIZE)
@@ -68,7 +96,7 @@ function CIVRP_UpdateEnviorment(umsg)
 			CIVRP_Chunk_Data[intSX][intSY][intX][intY] = CIVRP_Chunk_Data[intSX][intSY][intX][intY] or {}
 			CIVRP_Chunk_Data[intSX][intSY][intX][intY].Spawned = false
 			
-			table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = CIVRP_Enviorment_Models[model], Angle = Angle(0, tonumber(expstring[2]), 0)})
+			table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = CIVRP_Enviorment_Models[model], Angle = Angle(0, tonumber(DecompressInteger(expstring[2])), 0)})
 			entCount = entCount + 1
 		end
 	end

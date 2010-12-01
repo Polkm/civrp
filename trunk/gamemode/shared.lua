@@ -35,6 +35,36 @@ function AutoAdd_LuaFiles()
 	end
 end
 
+function GetPlayerFactor()
+	return 1 / ((math.Clamp(table.Count(player.GetAll()), 1, 4) / 2) + 0.5)
+end
+function GetDifficultyFactor()
+	if CIVRP_DIFFICULTY == "Peacefull" then
+		return 0.2
+	elseif CIVRP_DIFFICULTY == "Normal" then
+		return 1.0
+	elseif CIVRP_DIFFICULTY == "Hard" then
+		return 2.0
+	elseif CIVRP_DIFFICULTY == "Hell" then
+		return 4.0
+	end
+	return 1
+end
+
+function CheckDistanceFunction(item, distance, interval)
+	if item:IsValid() then 
+		for _,ply in pairs(player.GetAll()) do 
+			if ply:GetPos():Distance(item:GetPos()) <= distance then 
+				timer.Simple(interval, function() if item:IsValid() then CheckDistanceFunction(item, distance) end end)
+				return false 
+			end
+		end
+		if !item:GetOwner():IsPlayer() then
+			item:Remove() 
+		end
+	end
+end
+
 GM.Name 		= "Civilization Role Play"
 GM.Author 		= "Noobulater"
 GM.Email 		= "killerkat48@yahoo.com"
@@ -71,7 +101,7 @@ CIVRP_SOLIDDISTANCE = 200
 CIVRP_FADEDISTANCE = 2500
 CIVRP_SUPERCHUNKSIZE = 2500
 CIVRP_CHUNKSIZE = 500
-CIVRP_ENVIORMENTSIZE = 10000
+CIVRP_ENVIORMENTSIZE = 5
 
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
 CIVRP_DIFFICULTY = "Peacefull" --Good for debuggin
@@ -86,6 +116,16 @@ end
 
 local function PlaySound(plyUser, strSound, volume, pitch)
 	plyUser:EmitSound(strSound, volume or 100, pitch or 100)
+end
+
+local randseed = 1337
+function math.pSeedRand(fSeed)
+	randseed = fSeed
+end
+function math.pRand()
+	randseed = ((8253729 * randseed) + 2396403)
+	randseed = randseed - math.floor(randseed / 32767) * 32767
+	return randseed / 32767
 end
 
 local function FireBullets(plyUser, intNumber, intSpread, intDamage)
@@ -108,6 +148,13 @@ CIVRP_Item_Data["item_healthvial"].Function = function(plyUser)
 		PlaySound(plyUser, "items/smallmedkit1.wav", 70)
 	end
 	return worked
+end
+CIVRP_Item_Data["item_healthvial"].CalcView = function(plyUser,data,origin,angles,Ent)
+	Ent:SetModel('models/healthvial.mdl')	
+	Ent:SetNoDraw(false)
+	Ent:SetPos(origin + angles:Forward() * 20 + angles:Up() * -17 + angles:Right() * 8)
+	Ent:SetAngles(Angle(angles.p,angles.y,angles.r))
+	return {Entity = Ent}
 end
 CIVRP_Item_Data["weapon_pistol"] = {Class = "weapon_pistol", Model = "models/weapons/W_pistol.mdl"}
 CIVRP_Item_Data["weapon_pistol"].Function = function(plyUser)
