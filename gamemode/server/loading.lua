@@ -79,10 +79,6 @@ function CIVRP_SendData(ply)
 				vect2 = CompressInteger(math.abs(data.Vector.y))
 			end
 			str = string.Implode("'",{str,vect1..","..vect2.."/"..CompressInteger(math.abs(data.Angle.y))})
-			print(vect1)
-			print(vect2)
-			print(data.Vector)
-			print("---")
 			vect1 = nil
 			vect2 = nil
 		end

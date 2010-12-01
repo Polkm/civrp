@@ -21,11 +21,8 @@ usermessage.Hook('CIVRP_EncryptionCode', CIVRP_EncryptionCode)
 
 function CIVRP_CreateSVCLObject(umsg)
 	local vector = umsg:ReadVector()
-	print(vector)
 	local angle = umsg:ReadAngle()
-	print(angle)
 	local model = umsg:ReadLong()
-	print(model)
 	local intX = math.floor(vector.x / CIVRP_CHUNKSIZE)
 	local intY = math.floor(vector.y / CIVRP_CHUNKSIZE)
 	CIVRP_Enviorment_Data[intX] = CIVRP_Enviorment_Data[intX] or {}
@@ -46,9 +43,10 @@ function CIVRP_UpdateEnviorment(umsg)
 	local model = umsg:ReadLong()
 	local info = umsg:ReadString()
 	local exploded = string.Explode("'",info)
-	table.remove(exploded, 1)
+	table.remove(exploded,1)
 	for num,str in pairs(exploded) do
 		if str != nil then
+			
 			local expstring = string.Explode("/", str)
 			local exppstring = string.Explode(",", expstring[1])
 			local vect1str = string.ToTable(exppstring[1])
@@ -71,14 +69,12 @@ function CIVRP_UpdateEnviorment(umsg)
 				vect2sign = ""
 			end
 			local vect2abs = ""
-			for i = 1, table.Count(vect1str) do
+			for i = 1, table.Count(vect2str) do
 				if vect2str[i] != nil then
 					vect2abs = vect2abs..tostring(vect2str[i])
 				end
 			end
 			local vecPos = Vector(tonumber(vect1sign..DecompressInteger(vect1abs)), tonumber(vect2sign..DecompressInteger(vect2abs)), 128)
-			Msg(vecPos)
-			print("")
 			
 			local intSX = math.floor(vecPos.x / CIVRP_SUPERCHUNKSIZE)
 			local intSY = math.floor(vecPos.y / CIVRP_SUPERCHUNKSIZE)
@@ -95,13 +91,14 @@ function CIVRP_UpdateEnviorment(umsg)
 			CIVRP_Chunk_Data[intSX][intSY][intX] = CIVRP_Chunk_Data[intSX][intSY][intX] or {}
 			CIVRP_Chunk_Data[intSX][intSY][intX][intY] = CIVRP_Chunk_Data[intSX][intSY][intX][intY] or {}
 			CIVRP_Chunk_Data[intSX][intSY][intX][intY].Spawned = false
-			
+
 			table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = CIVRP_Enviorment_Models[model], Angle = Angle(0, tonumber(DecompressInteger(expstring[2])), 0)})
 			entCount = entCount + 1
 		end
 	end
 	if entCount >= CIVRP_ENVIORMENTSIZE and !ENVIORMENT_LOADED then
 		ENVIORMENT_LOADED = true
+		print("EVNLOAFA")
 	end
 end
 usermessage.Hook('CIVRP_UpdateEnviorment', CIVRP_UpdateEnviorment)
