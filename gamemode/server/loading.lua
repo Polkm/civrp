@@ -140,6 +140,11 @@ end
 function GM:PlayerInitialSpawn(ply)
 	timer.Simple(1, function() CIVRP_SendEncryption(ENCRYPTION) end)
 	timer.Simple(1, function() CIVRP_SendData(ply) end)
+	ply.ItemData = {}
+	ply.ItemData["SELECTED"] = 1
+	for i = 1, 10 do
+		ply.ItemData[i] = {}
+	end
 end
 
 function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
