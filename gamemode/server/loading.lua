@@ -76,11 +76,12 @@ function CIVRP_SendData(ply)
 		exploded = string.Explode("'",str)
 		table.remove(exploded,1)
 		if table.Count(exploded) <= 18 then
-			timer.Simple(
+			--timer.Simple(
 			umsg.Start("CIVRP_UpdateEnviorment", self)
 				umsg.Long( tonumber(mdl) )
 				umsg.String(str)
 			umsg.End()	
+			--table.insert(LOADING_QUENED_DATA)
 			str = ""
 		else
 			for i = 1,math.Round(table.Count(exploded)/18) do 
