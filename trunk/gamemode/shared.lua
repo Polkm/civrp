@@ -104,7 +104,7 @@ CIVRP_CHUNKSIZE = 500
 CIVRP_ENVIORMENTSIZE = 10000
 
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
-CIVRP_DIFFICULTY = "Normal" --Good for debuggin
+CIVRP_DIFFICULTY = "Peacefull" --Good for debuggin
 
 local function RestorHealth(plyUser, amount)
 	if plyUser:Health() < plyUser:GetMaxHealth() then
