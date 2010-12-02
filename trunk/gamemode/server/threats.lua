@@ -143,6 +143,7 @@ CIVRP_Events["Supply"].Function = function(ply)
 	item:Spawn()
 	item:Activate()
 	CheckDistanceFunction(item, 500, 30)
+	
 end
 
 
