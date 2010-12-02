@@ -7,7 +7,7 @@ function CIVRP_CreateEvent()
 		end
 	end
 	if table.Count(tbl) >= 1 then
-		CIVRP_Events["Ambush"].Function(ply)
+		CIVRP_Events[table.Random(tbl)].Function(ply)
 	end
 	timer.Simple(math.random(55, 65) * GetPlayerFactor() / GetDifficultyFactor(), function() CIVRP_CreateEvent() end)
 end
@@ -73,7 +73,40 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	end
 end
 
-
+CIVRP_Events["Patrol"] = {}
+CIVRP_Events["Patrol"].Condition = function(ply) 
+	return true
+end
+CIVRP_Events["Patrol"].Function = function(ply)
+	local Bosses = {}
+	
+	Bosses[1] = {}
+	Bosses[1].Class = "npc_hunter"
+	Bosses[1].Number = math.random(1, 1)
+	Bosses[1].MinionsNumber = math.random(1, 3)
+	Bosses[1].Minions = {}
+	--Bosses[2].Minions[1] = {Class = "npc_hunter"}
+	Bosses[1].Minions[1] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"}}
+	Bosses[1].Minions[2] = {Class = "npc_manhack"}
+	
+	local Selection = table.Random(Bosses) 
+	for i = 1, Selection.Number do
+		local npc = ents.Create(Selection.Class)
+		npc:SetPos(ply:GetPos() + Vector(math.random(-5000, 5000), math.random(-5000, 5000), 0))
+		npc:Spawn()
+		npc:Activate()
+		for i = 1, Selection.MinionsNumber do
+			local MinionSelection = table.Random(Selection.Minions)
+			local npc = ents.Create(MinionSelection.Class)
+			npc:SetPos(ply:GetPos() + Vector(math.random(-5000, 5000), math.random(-5000, 5000), 0))
+			if MinionSelection.Weapons != nil then
+				npc:SetKeyValue("additionalequipment", table.Random(MinionSelection.Weapons))
+			end
+			npc:Spawn()		
+			npc:Activate()
+		end
+	end
+end
 
 CIVRP_Events["Healthkit"] = {}
 CIVRP_Events["Healthkit"].Condition = function(ply) 
@@ -148,7 +181,7 @@ CIVRP_Events["CrashedVan"].Function = function(ply)
 	local function Check()
 		van:SetPos(Vector(ply:GetPos().x + math.random(-3000,3000),ply:GetPos().y + math.random(-3000,3000),158))
 		for _,v in pairs(player.GetAll()) do
-			if v:GetPos():Distance(van:GetPos()) < 600 then
+			if v:GetPos():Distance(van:GetPos()) < 800 then
 				Check()
 				tries = tries + 1
 				if tries >= 20 then

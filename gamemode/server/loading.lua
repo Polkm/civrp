@@ -4,20 +4,9 @@ CIVRP_Enviorment_Data_Quad2 = {}
 CIVRP_Enviorment_Data_Quad3 = {}
 CIVRP_Enviorment_Data_Quad4 = {}
 
-function CREATEENT(ply,model)
-	local entity = ents.Create("prop_physics")
-	entity:SetModel(model)
-	entity:SetPos(ply:GetAngles():Forward() * 50)
-	entity:Spawn()
-	entity:Activate()
-	if entity:GetPhysicsObject():IsValid() then
-		entity:GetPhysicsObject():Wake()
-	end	
-end
-
 for i = 1, CIVRP_ENVIORMENTSIZE do 
-	local vx = math.random(-13200, 13200)
-	local vy = math.random(-13200, 13200)
+	local vx = math.random(-15600, 15600)
+	local vy = math.random(-15600, 15600)
 	local ay = math.random(0, 360)
 	local tbl = {}
 	for num,data in pairs(CIVRP_Enviorment_Models) do
@@ -52,6 +41,8 @@ local ENCRYPTIONTBL = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","
 
 ENCRYPTION = string.Implode("",{table.Random(ENCRYPTIONTBL),table.Random(ENCRYPTIONTBL),table.Random(ENCRYPTIONTBL),table.Random(ENCRYPTIONTBL)})
 
+local LOADING_QUENED_DATA = {}
+
 function CIVRP_SendData(ply) 
 	local tbl = {}
 	for _, data in pairs(CIVRP_Enviorment_Data) do 
@@ -84,16 +75,18 @@ function CIVRP_SendData(ply)
 		end
 		exploded = string.Explode("'",str)
 		table.remove(exploded,1)
-		if table.Count(exploded) <= 12 then
+		if table.Count(exploded) <= 18 then
+			timer.Simple(
 			umsg.Start("CIVRP_UpdateEnviorment", self)
 				umsg.Long( tonumber(mdl) )
 				umsg.String(str)
 			umsg.End()	
 			str = ""
 		else
-			for i = 1,math.Round(table.Count(exploded)/12) do 
-				str = string.Implode("'",{exploded[1],exploded[2],exploded[3],exploded[4],exploded[5],exploded[6],exploded[7],exploded[8],exploded[9],exploded[10],exploded[11],exploded[12],})
+			for i = 1,math.Round(table.Count(exploded)/18) do 
+				str = string.Implode("'",{exploded[1],exploded[2],exploded[3],exploded[4],exploded[5],exploded[6],exploded[7],exploded[8],exploded[9],exploded[10],exploded[11],exploded[12],exploded[13],exploded[14],exploded[15],exploded[16],exploded[17],exploded[18],})
 				str = "'"..str
+				table.remove(exploded,18) table.remove(exploded,17) table.remove(exploded,16) table.remove(exploded,15) table.remove(exploded,14) table.remove(exploded,13)
 				table.remove(exploded,12) table.remove(exploded,11) table.remove(exploded,10) table.remove(exploded,9) table.remove(exploded,8) table.remove(exploded,7) 
 				table.remove(exploded,6) table.remove(exploded,5) table.remove(exploded,4) table.remove(exploded,3) table.remove(exploded,2) table.remove(exploded,1)
 				umsg.Start("CIVRP_UpdateEnviorment", self)
@@ -103,13 +96,15 @@ function CIVRP_SendData(ply)
 			end
 			str = ""
 			for k,v in pairs(exploded) do 
-				str = string.Implode("|",{str,v})
+				str = string.Implode("'",{str,v})
 			end
-			umsg.Start("CIVRP_UpdateEnviorment", self)
-				umsg.Long( tonumber(mdl) )
-				umsg.String(str)
-			umsg.End()	
-			str = ""
+			if str != "" then
+				umsg.Start("CIVRP_UpdateEnviorment", self)
+					umsg.Long( tonumber(mdl) )
+					umsg.String(str)
+				umsg.End()	
+				str = ""
+			end
 		end
 	end
 	
@@ -155,7 +150,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 	local vector = Vector(tonumber(str[1]),tonumber(str[2]),tonumber(str[3]))
 	if Encryption != ENCRYPTION then return false end
 	if ply:GetPos():Distance(vector) >= CIVRP_SOLIDDISTANCE then return false end
-		if ply:GetPos().x >= 0 && ply:GetPos().y >= 0 then
+		if vector.x >= 0 && vector.y >= 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad1) do
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 
@@ -180,7 +175,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					data.InUse = true	
 				end
 			end
-		elseif ply:GetPos().x < 0 && ply:GetPos().y >= 0 then
+		elseif vector.x < 0 && vector.y >= 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad2) do
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 
@@ -205,7 +200,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					data.InUse = true	
 				end
 			end		
-		elseif ply:GetPos().x < 0 && ply:GetPos().y < 0 then
+		elseif vector.x < 0 && vector.y < 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad3) do
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 
@@ -230,7 +225,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					data.InUse = true	
 				end
 			end		
-		elseif ply:GetPos().x >= 0 && ply:GetPos().y < 0 then
+		elseif vector.x >= 0 && vector.y < 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad4) do
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
 					local entity = ents.Create("prop_physics") 

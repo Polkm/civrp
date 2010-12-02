@@ -101,10 +101,10 @@ CIVRP_SOLIDDISTANCE = 200
 CIVRP_FADEDISTANCE = 2500
 CIVRP_SUPERCHUNKSIZE = 2500
 CIVRP_CHUNKSIZE = 500
-CIVRP_ENVIORMENTSIZE = 5000
+CIVRP_ENVIORMENTSIZE = 10000
 
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
-CIVRP_DIFFICULTY = "Peacefull" --Good for debuggin
+CIVRP_DIFFICULTY = "Normal" --Good for debuggin
 
 local function RestorHealth(plyUser, amount)
 	if plyUser:Health() < plyUser:GetMaxHealth() then
