@@ -90,7 +90,7 @@ function SWEP:SecondaryAttack()
 	else
 		if SERVER then
 			local trace = self.Owner:GetEyeTrace()
-			if trace.Hit && trace.HitNonWorld then
+			if trace.Hit && trace.HitNonWorld && trace.HitPos:Distance(self.Owner:GetPos()) < 200 then
 				local tblItem = CIVRP_Item_Data[trace.Entity:GetClass()] or CIVRP_Item_Data[trace.Entity.ItemClass]
 				if tblItem != nil then
 					self:GetOwner().WeaponData = tblItem

@@ -12,11 +12,12 @@ CIVRP_WorldData.NextTime = 0
 CIVRP_WorldData.TimeNextSecond = 0 
 CIVRP_WorldData.DarknessHigh = 255
 CIVRP_WorldData.Interval = 0.1
-CIVRP_WorldData.Fog = {Enabled = false,Ent = nil,Duration = 0}
+CIVRP_WorldData.Fog = {Enabled = true,Ent = nil,Duration = 0}
 CIVRP_WorldData.DayNight = false
 
 
 local COLFOG =  {}
+COLFOG[0] = 0
 COLFOG[1] = 0
 COLFOG[2] = 0.05
 COLFOG[3] = 0.10
