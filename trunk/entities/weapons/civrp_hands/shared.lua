@@ -41,7 +41,7 @@ SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
 SWEP.Secondary.Delay		= 0.2
 
-
+SWEP.Throwing = nil
 SWEP.LoadedAmmo = 0
 
 function SWEP:Initialize()
@@ -60,8 +60,21 @@ function SWEP:Reload()
 
 end
 
-function SWEP:Think()
+function SWEP:Holster()
+	if CLIENT then
+		self.EntViewModel:SetNoDraw(true)
+	end
+	return true
+end
 
+function SWEP:Think()
+	if self.Throwing != nil then
+		if input.IsMouseDown(MOUSE_RIGHT) then
+			self.Throwing = self.Throwing + 1
+		elseif !input.IsMouseDown(MOUSE_RIGHT) then
+			return
+		end
+	end
 end
 
 function SWEP:CanPrimaryAttack()
@@ -82,20 +95,29 @@ end
 function SWEP:SecondaryAttack()
 	if self:GetOwner().WeaponData != nil then
 		if SERVER then
-			local entity = ents.Create("prop_physics")
-			entity:SetModel(self:GetOwner().WeaponData.Model)
-			entity.ItemClass = self:GetOwner().WeaponData.Class
-			entity:SetPos(self:GetOwner():GetShootPos() + self:GetOwner():GetAngles():Forward() * 50 + Vector(0, 0, 10))
-			entity:Spawn()
-			--entity:Activate()
-			--entity:SetOwner(nil)
-			--if entity:GetPhysicsObject():IsValid() then
-				--entity:GetPhysicsObject():Wake()
-			--end
+			if self:GetOwner().SpawnFunction != nil then
+				local data = self:GetOwner().SpawnFunction(self)
+			else
+				local entity = ents.Create("prop_physics")
+				entity:SetModel(self:GetOwner().WeaponData.Model)
+				entity.ItemClass = self:GetOwner().WeaponData.Class
+				entity:SetAngles(self:GetOwner():GetAngles() + self:GetOwner().WeaponData.HoldAngle)
+				entity:SetPos(self:GetOwner():GetShootPos() + self:GetOwner():GetAngles():Forward() * (self:GetOwner().WeaponData.HoldPos.x) + self:GetOwner():GetAngles():Up() * self:GetOwner().WeaponData.HoldPos.y + self:GetOwner():GetAngles():Right() * self:GetOwner().WeaponData.HoldPos.z )
+				entity:Spawn()
+				entity:Activate()
+				entity:SetOwner(nil)
+				entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+				if entity:GetPhysicsObject():IsValid() then
+					entity:GetPhysicsObject():Wake()
+					entity:GetPhysicsObject():SetVelocity(self:GetOwner():GetVelocity())
+					entity:GetPhysicsObject():ApplyForceCenter(self:GetOwner():GetAngles():Forward() *(entity:GetPhysicsObject():GetMass() * 100))
+				end
+			end
 			self:GetOwner().WeaponData = nil
 			SendUsrMsg("CIVRP_Weapon_Data_Update", self:GetOwner(), {"empty"})
 		end
 		self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+		self.Throwing = nil
 	else
 		if SERVER then
 			local trace = self.Owner:GetEyeTrace()
@@ -118,6 +140,7 @@ if CLIENT then
 	SWEP.EntViewModel:Spawn()
 	SWEP.EntViewModel:SetNoDraw(true)
 	local beforeAngles = Angle(0, 0, 0)
+	local beforeVectors = Vector(0,0,0)
 	function SWEP:CalcView(ply, origin, angles, fov)
 		local view = {}
 		view.origin = origin
@@ -125,13 +148,21 @@ if CLIENT then
 		view.fov = fov
 		local tblWeaponData = LocalPlayer().WeaponData
 		if tblWeaponData != nil then
-			self.EntViewModel:SetNoDraw(false)
-			self.EntViewModel:SetModel(tblWeaponData.Model)
-			self.EntViewModel:SetPos(origin + angles:Forward() * tblWeaponData.HoldPos.x + angles:Up() * tblWeaponData.HoldPos.y + angles:Right() * tblWeaponData.HoldPos.z)
-			beforeAngles = self.EntViewModel:GetAngles()
-			self.EntViewModel:SetAngles(Angle(angles.p, angles.y, angles.r))
-			self.EntViewModel:SetAngles(self.EntViewModel:LocalToWorldAngles(tblWeaponData.HoldAngle))
-			self.EntViewModel:SetAngles(LerpAngle(0.2, beforeAngles, self.EntViewModel:GetAngles()))
+			if tblWeaponData.CalcView != nil then
+				local data = tblWeaponData.CalcView(ply, origin, angles, fov)
+			else
+				self.EntViewModel:SetNoDraw(false)
+				self.EntViewModel:SetModel(tblWeaponData.Model)
+			--	beforeVectors = self.EntViewModel:GetPos()
+				self.EntViewModel:SetPos(origin + angles:Forward() * tblWeaponData.HoldPos.x + angles:Up() * tblWeaponData.HoldPos.y + angles:Right() * tblWeaponData.HoldPos.z)
+			--	if LocalPlayer():GetVelocity():Length() != 0 && LocalPlayer():OnGround() then
+				--	self.EntViewModel:SetPos(LerpVector( 0.5,beforeVectors,self.EntViewModel:GetPos()))
+				--end
+				beforeAngles = self.EntViewModel:GetAngles()
+				self.EntViewModel:SetAngles(Angle(angles.p, angles.y, angles.r))
+				self.EntViewModel:SetAngles(self.EntViewModel:LocalToWorldAngles(tblWeaponData.HoldAngle))
+				self.EntViewModel:SetAngles(LerpAngle(tblWeaponData.LerpDegree, beforeAngles, self.EntViewModel:GetAngles()))
+			end
 		else
 			self.EntViewModel:SetNoDraw(true)
 		end
