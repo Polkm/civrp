@@ -26,7 +26,7 @@ SWEP.Primary.Recoil			= 0
 SWEP.Primary.Damage			= -1
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0
-SWEP.Primary.Delay			= 0.2
+SWEP.Primary.Delay			= 0.0
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
 
@@ -40,6 +40,9 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
 SWEP.Secondary.Delay		= 0.2
+
+
+SWEP.LoadedAmmo = 0
 
 function SWEP:Initialize()
 	if SERVER then
@@ -60,10 +63,16 @@ end
 function SWEP:Think()
 
 end
-	
+
+function SWEP:CanPrimaryAttack()
+	return true
+end
+function SWEP:CanSecondaryAttack()
+	return true
+end
 function SWEP:PrimaryAttack()
 	if self:GetOwner().WeaponData != nil then
-		if self:GetOwner().WeaponData.Function(self:GetOwner()) then
+		if self:GetOwner().WeaponData.FireFunction(self:GetOwner(), self, self:GetOwner().WeaponData) then
 			self:GetOwner().WeaponData = nil
 			SendUsrMsg("CIVRP_Weapon_Data_Update", self:GetOwner(), {"empty"})
 		end
@@ -108,7 +117,7 @@ if CLIENT then
 	SWEP.EntViewModel:SetModel('models/healthvial.mdl')
 	SWEP.EntViewModel:Spawn()
 	SWEP.EntViewModel:SetNoDraw(true)
-	
+	local beforeAngles = Angle(0, 0, 0)
 	function SWEP:CalcView(ply, origin, angles, fov)
 		local view = {}
 		view.origin = origin
@@ -119,7 +128,10 @@ if CLIENT then
 			self.EntViewModel:SetNoDraw(false)
 			self.EntViewModel:SetModel(tblWeaponData.Model)
 			self.EntViewModel:SetPos(origin + angles:Forward() * tblWeaponData.HoldPos.x + angles:Up() * tblWeaponData.HoldPos.y + angles:Right() * tblWeaponData.HoldPos.z)
-			self.EntViewModel:SetAngles(LerpAngle(0.2, self.EntViewModel:GetAngles(), Angle(angles.p + tblWeaponData.HoldAngle.p, angles.y - tblWeaponData.HoldAngle.y, angles.r + tblWeaponData.HoldAngle.r)))
+			beforeAngles = self.EntViewModel:GetAngles()
+			self.EntViewModel:SetAngles(Angle(angles.p, angles.y, angles.r))
+			self.EntViewModel:SetAngles(self.EntViewModel:LocalToWorldAngles(tblWeaponData.HoldAngle))
+			self.EntViewModel:SetAngles(LerpAngle(0.2, beforeAngles, self.EntViewModel:GetAngles()))
 		else
 			self.EntViewModel:SetNoDraw(true)
 		end

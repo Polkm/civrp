@@ -144,21 +144,42 @@ CIVRP_Item_Data = {}
 CIVRP_Item_Data["item_healthvial"] = {Class = "item_healthvial", Model = "models/healthvial.mdl"}
 CIVRP_Item_Data["item_healthvial"].HoldPos = Vector(15, -15, 8)
 CIVRP_Item_Data["item_healthvial"].HoldAngle = Angle(0, 0, 0)
-CIVRP_Item_Data["item_healthvial"].Function = function(plyUser)
+CIVRP_Item_Data["item_healthvial"].FireFunction = function(plyUser)
 	local worked = RestorHealth(plyUser, 20)
-	if worked then
-		PlaySound(plyUser, "items/smallmedkit1.wav", 70)
-	end
+	if worked then PlaySound(plyUser, "items/smallmedkit1.wav", 70) end
 	return worked
 end
+
+CIVRP_Item_Data = {}
+CIVRP_Item_Data["item_healthkit"] = {Class = "item_healthkit", Model = "models/Items/HealthKit.mdl"}
+CIVRP_Item_Data["item_healthkit"].HoldPos = Vector(20, -4, 10)
+CIVRP_Item_Data["item_healthkit"].HoldAngle = Angle(90, 180, 0)
+CIVRP_Item_Data["item_healthkit"].FireFunction = function(plyUser)
+	local worked = RestorHealth(plyUser, 50)
+	if worked then PlaySound(plyUser, "items/smallmedkit1.wav", 70) end
+	return worked
+end
+
+
+
 
 CIVRP_Item_Data["weapon_pistol"] = {Class = "weapon_pistol", Model = "models/weapons/W_pistol.mdl"}
 CIVRP_Item_Data["weapon_pistol"].HoldPos = Vector(15, -8, 8)
 CIVRP_Item_Data["weapon_pistol"].HoldAngle = Angle(0, 180, 0)
-CIVRP_Item_Data["weapon_pistol"].Function = function(plyUser)
-	FireBullets(plyUser, 1, 0.05, 20)
-	PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
-	plyUser:RemoveAmmo(1, "pistol")
+CIVRP_Item_Data["weapon_pistol"].AmmoType = "pistol"
+CIVRP_Item_Data["weapon_pistol"].ClipSize = 10
+CIVRP_Item_Data["weapon_pistol"].LoadedAmmo = 0
+CIVRP_Item_Data["weapon_pistol"].NextFire = 0
+CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tblItem)
+	if tblItem.LoadedAmmp <= 0 then
+		if plyUser:GetAmmoCount(tblItem.AmmoType) >= tblItem.ClipSize then
+			plyUser:RemoveAmmo(tblItem.ClipSize, tblItem.AmmoType)
+		end
+	else
+		FireBullets(plyUser, 1, 0.05, 20)
+		PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
+		
+	end
 	return false
 end
 
