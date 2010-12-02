@@ -224,6 +224,36 @@ CIVRP_Item_Data["item_ammo_ar2"].FireFunction = function(plyUser)
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
 end
+
+CIVRP_Item_Data["item_flare"] = {Class = "item_flare", Model = "models/props_junk/flare.mdl"}
+CIVRP_Item_Data["item_flare"].HoldPos = Vector(20, -15, 15) -- Forward,Up,Right
+CIVRP_Item_Data["item_flare"].HoldAngle = Angle(90, 180, 0)
+CIVRP_Item_Data["item_flare"].LerpDegree = .2 -- Percent
+CIVRP_Item_Data["item_flare"].BobScale = .3 -- Percent
+CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser)
+	local entity = ents.Create("prop_physics")
+	entity:SetModel(plyUser.WeaponData.Model)
+	entity.ItemClass = plyUser.WeaponData.Class
+	entity:SetAngles(plyUser:GetAngles() + plyUser.WeaponData.HoldAngle)
+	entity:SetPos(plyUser:GetShootPos() + plyUser:GetAngles():Forward() * (plyUser.WeaponData.HoldPos.x) + plyUser:GetAngles():Up() * plyUser.WeaponData.HoldPos.y + plyUser:GetAngles():Right() * plyUser.WeaponData.HoldPos.z )
+	entity:Spawn()
+	entity:Activate()
+	entity:SetOwner(nil)
+	entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+	if entity:GetPhysicsObject():IsValid() then
+		entity:GetPhysicsObject():Wake()
+		entity:GetPhysicsObject():SetVelocity(plyUser:GetVelocity())
+		entity:GetPhysicsObject():ApplyForceCenter(plyUser:GetAngles():Forward() *(entity:GetPhysicsObject():GetMass() * 100))
+	end
+	entity.Flare = ents.Create("env_flare")
+	entity.Flare:SetParent(entity)
+	entity.Flare:SetAngles(entity:GetAngles())
+	entity.Flare:SetPos(entity:GetPos() + entity:GetAngles():Forward() * 20)
+	entity:Spawn()
+	entity.Flare:Fire('Start','',0)
+	return true
+end
+
 CIVRP_Item_Data["weapon_pistol"] = {Class = "weapon_pistol", Model = "models/weapons/W_pistol.mdl"}
 CIVRP_Item_Data["weapon_pistol"].HoldPos = Vector(15, -8, 8)
 CIVRP_Item_Data["weapon_pistol"].HoldAngle = Angle(0, 180, 0)
