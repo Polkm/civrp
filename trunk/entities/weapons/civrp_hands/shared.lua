@@ -138,6 +138,20 @@ if CLIENT then
 		return view
 	end
 	
+	function SWEP:CustomAmmoDisplay()
+		self.AmmoDisplay = self.AmmoDisplay or {}
+		local tblWeaponData = LocalPlayer().WeaponData
+		if tblWeaponData != nil and tblWeaponData.AmmoType != nil then
+			PrintTable(tblWeaponData)
+			self.AmmoDisplay.Draw = true
+			self.AmmoDisplay.PrimaryClip = tblWeaponData.LoadedAmmo
+			self.AmmoDisplay.PrimaryAmmo = LocalPlayer():GetAmmoCount(tblWeaponData.AmmoType)
+		else
+			self.AmmoDisplay.Draw = false
+		end
+		return self.AmmoDisplay
+	end
+	
 	usermessage.Hook("CIVRP_Weapon_Data_Update", function(usrMsg)
 		LocalPlayer().WeaponData = CIVRP_Item_Data[usrMsg:ReadString()]
 	end)

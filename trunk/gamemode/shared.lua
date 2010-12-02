@@ -168,17 +168,18 @@ CIVRP_Item_Data["weapon_pistol"].HoldPos = Vector(15, -8, 8)
 CIVRP_Item_Data["weapon_pistol"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["weapon_pistol"].AmmoType = "pistol"
 CIVRP_Item_Data["weapon_pistol"].ClipSize = 10
-CIVRP_Item_Data["weapon_pistol"].LoadedAmmo = 0
+CIVRP_Item_Data["weapon_pistol"].LoadedAmmo = 10
 CIVRP_Item_Data["weapon_pistol"].NextFire = 0
 CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tblItem)
-	if tblItem.LoadedAmmp <= 0 then
+	if tblItem.LoadedAmmo <= 0 then
 		if plyUser:GetAmmoCount(tblItem.AmmoType) >= tblItem.ClipSize then
 			plyUser:RemoveAmmo(tblItem.ClipSize, tblItem.AmmoType)
+			tblItem.LoadedAmmo = tblItem.ClipSize
 		end
 	else
 		FireBullets(plyUser, 1, 0.05, 20)
 		PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
-		
+		tblItem.LoadedAmmo = tblItem.LoadedAmmo - 1
 	end
 	return false
 end
