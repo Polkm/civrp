@@ -17,23 +17,20 @@ function CIVRP_Item_Data_Update(ply,slot,itemstr)
 	umsg.End()	
 end
  
-function META:AddItem(strItem,amount)
+function META:AddItem(strItem, amount)
 	if CIVRP_Item_Data[strItem] == nil then
 		return false
 	end
-	if amount == nil then
-		local amount = 1
-	end
-	if self.ItemData == nil then
-		self.ItemData = {}
-	end
+	amount = amount || 1
+	self.ItemData = self.ItemData || {}
+	
 	local itemtbl = CIVRP_Item_Data[strItem]
 	itemtbl.Class = strItem
-	for slot,itemdata in pairs(self.ItemData) do
+	for slot, itemdata in pairs(self.ItemData) do
 		if slot != "SELECTED" && itemdata.Class == nil then
 			self.ItemData[slot] = itemtbl
 			if self:IsPlayer() then
-				CIVRP_Item_Data_Update(self,slot,itemtbl.Class)
+				CIVRP_Item_Data_Update(self, slot,itemtbl.Class)
 			end
 			break
 		end

@@ -88,7 +88,7 @@ CIVRP_Enviorment_Models[11] = 	{ID = 11, Model = "models/props_foliage/ferns01.m
 CIVRP_Enviorment_Models[12] = 	{ID = 12, Model = "models/props_foliage/ferns02.mdl", Solid = false, Generated = true}
 CIVRP_Enviorment_Models[13] = 	{ID = 13, Model = "models/props_foliage/ferns03.mdl", Solid = false, Generated = true}
 CIVRP_Enviorment_Models[14] = 	{ID = 14, Model = "models/props_foliage/tree_pine_large.mdl", Solid = true, Generated = true}
-CIVRP_Enviorment_Models[15] = 	{ID = 15, Model = "models/props_canal/rock_riverbed02a.mdl", Solid = true}
+CIVRP_Enviorment_Models[15] =	{ID = 15, Model = "models/props_canal/rock_riverbed02a.mdl", Solid = true}
 
 
 --CIVRP_Enviorment_Models[15] = 	{ID = 15, Model = "models/props_canal/rock_riverbed02b.mdl", Solid = true}
@@ -208,7 +208,7 @@ CIVRP_Item_Data["item_ammo_pistol"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["item_ammo_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["item_ammo_pistol"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_ammo_pistol"].FireFunction = function(plyUser, swepWeapon, tblItem)
-	plyUser:GiveAmmo(20,"pistol")
+	plyUser:GiveAmmo(20, "pistol")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
 end
@@ -219,7 +219,7 @@ CIVRP_Item_Data["item_ammo_smg1"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["item_ammo_smg1"].LerpDegree = .5 -- Percent
 CIVRP_Item_Data["item_ammo_smg1"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_ammo_smg1"].FireFunction = function(plyUser, swepWeapon, tblItem)
-	plyUser:GiveAmmo(45,"smg1")
+	plyUser:GiveAmmo(45, "smg1")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
 end
@@ -230,7 +230,7 @@ CIVRP_Item_Data["item_box_buckshot"].HoldAngle = Angle(0, 135, 0)
 CIVRP_Item_Data["item_box_buckshot"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["item_box_buckshot"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_box_buckshot"].FireFunction = function(plyUser, swepWeapon, tblItem)
-	plyUser:GiveAmmo(10,"buckshot")
+	plyUser:GiveAmmo(10, "buckshot")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
 end
@@ -241,7 +241,7 @@ CIVRP_Item_Data["item_ammo_ar2"].HoldAngle = Angle(90, 180, 0)
 CIVRP_Item_Data["item_ammo_ar2"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_ammo_ar2"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_ammo_ar2"].FireFunction = function(plyUser, swepWeapon, tblItem)
-	plyUser:GiveAmmo(30,"ar2")
+	plyUser:GiveAmmo(30, "ar2")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
 end
@@ -288,6 +288,8 @@ CIVRP_Item_Data["weapon_pistol"].WEAPONDATA = {}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.NextFire = 0
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.AmmoType = "pistol"
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.ClipSize = 18
+--This is for server side to keep track of the ammo when the weapon is not active
+CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.LoadedBullets = 18
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Damage = 10 
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Cone = 0.02
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Recoil = 2
@@ -299,10 +301,13 @@ CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tb
 	if swepWeapon:Clip1() <= 0 then
 		if plyUser:GetAmmoCount(tblItem.AmmoType) >= tblItem.WEAPONDATA.ClipSize then
 			swepWeapon:DefaultReload()
+			tblItem.LoadedBullets = tblItem.WEAPONDATA.ClipSize
 		end
 	else
-		self.Weapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
-		self:TakePrimaryAmmo(1)
+		swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
+		swepWeapon:SetClip1(swepWeapon:Clip1() - 1)
+		tblItem.LoadedBullets = tblItem.LoadedBullets - 1
+		--swepWeapon:TakePrimaryAmmo(1)
 		FireBullets(plyUser, tblItem.WEAPONDATA.NumShots, tblItem.WEAPONDATA.Cone, tblItem.WEAPONDATA.Damage)
 		PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
 	end
