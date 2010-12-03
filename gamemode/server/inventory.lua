@@ -1,5 +1,11 @@
 local META = FindMetaTable("Entity")
 
+function CIVRP_SELECTED_Update(ply) 
+	umsg.Start("CIVRP_SELECTED_Update", self)
+		umsg.Long(ply.ItemData["SELECTED"])
+	umsg.End()	
+end
+
 function CIVRP_Item_Data_Update(ply,slot,itemstr) 
 	umsg.Start("CIVRP_Item_Data_Update", self)
 		umsg.Long(ply.ItemData["SELECTED"])
@@ -52,7 +58,7 @@ function META:RemoveItem(strItem,amount,slot)
 			if slot != "SELECTED" && itemdata.Class == strItem then
 				self.ItemData[slot] = {}
 				if self:IsPlayer() then
-					CIVRP_Item_Data_Update(self,slot,"")
+					CIVRP_Item_Data_Update(self,slot,"empty")
 				end
 				break
 			end
