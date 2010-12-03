@@ -93,9 +93,9 @@ function SWEP:LoadWeapon(itemtbl)
 			self.Primary.Cone			= itemtbl.WEAPONDATA.Cone || 0
 			self.Primary.Delay			= itemtbl.WEAPONDATA.Delay || 0
 			self.Primary.ClipSize		= itemtbl.WEAPONDATA.ClipSize || -1
-			self.Primary.DefaultClip	= 0
-
-			self.Primary.ClipSize		= itemtbl.WEAPONDATA.ClipSize || -1
+			self.Primary.LoadedBullets	= itemtbl.WEAPONDATA.LoadedBullets || itemtbl.WEAPONDATA.ClipSize || -1
+			self.Primary.DefaultClip	= -1
+			
 			self.Primary.Automatic		= itemtbl.WEAPONDATA.Automatic || false
 			self.Primary.Ammo			= itemtbl.WEAPONDATA.Ammo || "none"
 			--if ( SinglePlayer() && CLIENT ) || CLIENT then
@@ -110,12 +110,14 @@ function SWEP:LoadWeapon(itemtbl)
 		self.Primary.Delay			= 0.0
 		self.Primary.ClipSize		= -1
 		self.Primary.DefaultClip	= -1
-
-		self.Primary.ClipSize		= -1
-		self.Primary.DefaultClip	= -1
+		self.Primary.LoadedBullets	= -1
+		
 		self.Primary.Automatic		= false
 		self.Primary.Ammo			= "none"
 	end
+	print("TITS")
+	print(self.Primary.LoadedBullets)
+	self:SetClip1(self.Primary.LoadedBullets)
 end
 
 function SWEP:Holster()
@@ -143,9 +145,9 @@ function SWEP:CanSecondaryAttack()
 end
 function SWEP:PrimaryAttack()
 	if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
-		PrintTable(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
+		--PrintTable(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
 		if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].FireFunction(self:GetOwner(), self, self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]]) then
-			self:GetOwner():RemoveItem(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class,1)
+			self:GetOwner():RemoveItem(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class, 1)
 		end	 
 	end
 end
@@ -168,9 +170,9 @@ function SWEP:SecondaryAttack()
 				if entity:GetPhysicsObject():IsValid() then
 					entity:GetPhysicsObject():Wake()
 					entity:GetPhysicsObject():SetVelocity(self:GetOwner():GetVelocity())
-					entity:GetPhysicsObject():ApplyForceCenter(self:GetOwner():GetAngles():Forward() *(entity:GetPhysicsObject():GetMass() * 100))
+					entity:GetPhysicsObject():ApplyForceCenter(self:GetOwner():GetAngles():Forward() * (entity:GetPhysicsObject():GetMass() * 100))
 				end
-				self:GetOwner():RemoveItem(strItem,1,self:GetOwner().ItemData["SELECTED"])
+				self:GetOwner():RemoveItem(strItem, 1, self:GetOwner().ItemData["SELECTED"])
 			end
 		end
 		self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
@@ -181,7 +183,7 @@ function SWEP:SecondaryAttack()
 			if trace.Hit && trace.HitNonWorld && trace.HitPos:Distance(self.Owner:GetPos()) < 200 then
 				local strItem = trace.Entity.ItemClass or trace.Entity:GetClass() 
 				if CIVRP_Item_Data[strItem] != nil then
-					self:GetOwner():AddItem(strItem,1) 
+					self:GetOwner():AddItem(strItem, 1) 
 					trace.Entity:Remove()
 				end
 			end
@@ -196,7 +198,7 @@ if CLIENT then
 	SWEP.EntViewModel:Spawn()
 	SWEP.EntViewModel:SetNoDraw(true)
 	local beforeAngles = Angle(0, 0, 0)
-	local beforeVectors = Vector(0,0,0)
+	local beforeVectors = Vector(0, 0, 0)
 	function SWEP:CalcView(ply, origin, angles, fov)
 		local view = {}
 		view.origin = origin
@@ -227,17 +229,18 @@ if CLIENT then
 		return view
 	end
 	
-	--[[function SWEP:CustomAmmoDisplay()
+	function SWEP:CustomAmmoDisplay()
 		self.AmmoDisplay = self.AmmoDisplay or {}
 		if LocalPlayer().ItemData != nil then
-		local tblWeaponData = LocalPlayer().ItemData
-		if tblWeaponData != nil and tblWeaponData.AmmoType != nil then
-			self.AmmoDisplay.Draw = true
-			self.AmmoDisplay.PrimaryClip = tblWeaponData.LoadedAmmo
-			self.AmmoDisplay.PrimaryAmmo = LocalPlayer():GetAmmoCount(tblWeaponData.AmmoType)
-		else
-			self.AmmoDisplay.Draw = false
+			local tblWeaponData = LocalPlayer().ItemData[LocalPlayer().ItemData["SELECTED"]] || "empty"
+			if tblWeaponData != "empty"	and tblWeaponData.WEAPONDATA.AmmoType != nil then
+				self.AmmoDisplay.Draw = true
+				self.AmmoDisplay.PrimaryClip = LocalPlayer():GetActiveWeapon():Clip1()
+				self.AmmoDisplay.PrimaryAmmo = LocalPlayer():GetAmmoCount(tblWeaponData.WEAPONDATA.AmmoType)
+			else
+				self.AmmoDisplay.Draw = false
+			end
 		end
 		return self.AmmoDisplay
-	end]]
+	end
 end
