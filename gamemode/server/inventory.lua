@@ -1,13 +1,13 @@
 local META = FindMetaTable("Entity")
 
 function CIVRP_SELECTED_Update(ply) 
-	umsg.Start("CIVRP_SELECTED_Update", self)
+	umsg.Start("CIVRP_SELECTED_Update", ply)
 		umsg.Long(ply.ItemData["SELECTED"])
 	umsg.End()	
 end
 
 function CIVRP_Item_Data_Update(ply,slot,itemstr) 
-	umsg.Start("CIVRP_Item_Data_Update", self)
+	umsg.Start("CIVRP_Item_Data_Update", ply)
 		umsg.Long(ply.ItemData["SELECTED"])
 		umsg.Long(slot)
 		if itemstr == nil then
