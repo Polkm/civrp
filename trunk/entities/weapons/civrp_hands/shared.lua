@@ -58,7 +58,16 @@ function SWEP:Deploy()
 end
 
 function SWEP:Reload()
-
+	if self:GetNextSecondaryFire() > CurTime() then return end
+	if SERVER then
+		if self:GetOwner().ItemData["SELECTED"] + 1 >= table.Count(self:GetOwner().ItemData) - 1 then
+			self:GetOwner().ItemData["SELECTED"] = 1
+		else
+			self:GetOwner().ItemData["SELECTED"] = self:GetOwner().ItemData["SELECTED"] + 1
+		end
+		CIVRP_SELECTED_Update(self:GetOwner())
+	end
+	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 end
 
 function SWEP:LoadWeapon(itemtbl)
@@ -120,8 +129,9 @@ function SWEP:CanSecondaryAttack()
 end
 function SWEP:PrimaryAttack()
 	if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
+		PrintTable(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
 		if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].FireFunction(self:GetOwner(), self, self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]]) then
-			self:GetOwner():RemoveItem(strItem,1,self:GetOwner().ItemData["SELECTED"])
+			self:GetOwner():RemoveItem(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class,1)
 		end	 
 	end
 end

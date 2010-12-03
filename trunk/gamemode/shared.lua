@@ -166,7 +166,7 @@ CIVRP_Item_Data["item_healthvial"].HoldPos = Vector(15, -15, 8)
 CIVRP_Item_Data["item_healthvial"].HoldAngle = Angle(0, 0, 0)
 CIVRP_Item_Data["item_healthvial"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_healthvial"].BobScale = .3 -- Percent
-CIVRP_Item_Data["item_healthvial"].FireFunction = function(plyUser,ItemTbl)
+CIVRP_Item_Data["item_healthvial"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	local worked = RestorHealth(plyUser, 20)
 	if worked then PlaySound(plyUser, "items/smallmedkit1.wav", 70) end
 	return worked
@@ -177,7 +177,7 @@ CIVRP_Item_Data["item_healthkit"].HoldPos = Vector(15, -4, 1) -- Forward,Up,Righ
 CIVRP_Item_Data["item_healthkit"].HoldAngle = Angle(90, 180, 0)
 CIVRP_Item_Data["item_healthkit"].LerpDegree = .5 -- Percent
 CIVRP_Item_Data["item_healthkit"].BobScale = .3 -- Percent
-CIVRP_Item_Data["item_healthkit"].FireFunction = function(plyUser,ItemTbl)
+CIVRP_Item_Data["item_healthkit"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	local worked = RestorHealth(plyUser, 50)
 	if worked then PlaySound(plyUser, "items/smallmedkit1.wav", 70) end
 	return worked
@@ -206,7 +206,7 @@ CIVRP_Item_Data["item_ammo_pistol"].HoldPos = Vector(20, -17, 1) -- Forward,Up,R
 CIVRP_Item_Data["item_ammo_pistol"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["item_ammo_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["item_ammo_pistol"].BobScale = .3 -- Percent
-CIVRP_Item_Data["item_ammo_pistol"].FireFunction = function(plyUser,ItemTbl)
+CIVRP_Item_Data["item_ammo_pistol"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(20,"pistol")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
@@ -217,7 +217,7 @@ CIVRP_Item_Data["item_ammo_smg1"].HoldPos = Vector(20, -18, 1) -- Forward,Up,Rig
 CIVRP_Item_Data["item_ammo_smg1"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["item_ammo_smg1"].LerpDegree = .5 -- Percent
 CIVRP_Item_Data["item_ammo_smg1"].BobScale = .3 -- Percent
-CIVRP_Item_Data["item_ammo_smg1"].FireFunction = function(plyUser,ItemTbl)
+CIVRP_Item_Data["item_ammo_smg1"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(45,"smg1")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
@@ -228,7 +228,7 @@ CIVRP_Item_Data["item_box_buckshot"].HoldPos = Vector(20, -16, 12) -- Forward,Up
 CIVRP_Item_Data["item_box_buckshot"].HoldAngle = Angle(0, 135, 0)
 CIVRP_Item_Data["item_box_buckshot"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["item_box_buckshot"].BobScale = .3 -- Percent
-CIVRP_Item_Data["item_box_buckshot"].FireFunction = function(plyUser,ItemTbl)
+CIVRP_Item_Data["item_box_buckshot"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(10,"buckshot")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
@@ -239,25 +239,25 @@ CIVRP_Item_Data["item_ammo_ar2"].HoldPos = Vector(20, -15, 15) -- Forward,Up,Rig
 CIVRP_Item_Data["item_ammo_ar2"].HoldAngle = Angle(90, 180, 0)
 CIVRP_Item_Data["item_ammo_ar2"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_ammo_ar2"].BobScale = .3 -- Percent
-CIVRP_Item_Data["item_ammo_ar2"].FireFunction = function(plyUser,ItemTbl)
+CIVRP_Item_Data["item_ammo_ar2"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(30,"ar2")
 	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
 	return true
 end
 
 CIVRP_Item_Data["item_flare"] = {Class = "item_flare", Model = "models/props_junk/flare.mdl"}
-CIVRP_Item_Data["item_flare"].HoldPos = Vector(20, 0, 15) -- Forward,Up,Right
-CIVRP_Item_Data["item_flare"].HoldAngle = Angle(90, 180, 0)
+CIVRP_Item_Data["item_flare"].HoldPos = Vector(20, -10, 7) -- Forward,Up,Right
+CIVRP_Item_Data["item_flare"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["item_flare"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_flare"].BobScale = .3 -- Percent
-CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser,ItemTbl)
+CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	local entity = ents.Create("prop_physics")
-	entity:SetModel(ItemTbl.Model)
-	entity.ItemClass = ItemTbl.Class
-	entity:SetAngles(plyUser:GetAngles() + ItemTbl.HoldAngle)
-	entity:SetPos(plyUser:GetShootPos() + plyUser:GetAngles():Forward() * (ItemTbl.HoldPos.x) + plyUser:GetAngles():Up() * ItemTbl.HoldPos.y + plyUser:GetAngles():Right() * ItemTbl.HoldPos.z )
+	entity:SetModel(tblItem.Model)
+	entity:SetAngles(plyUser:GetAngles() + tblItem.HoldAngle)
+	entity:SetPos(plyUser:GetShootPos() + plyUser:GetAngles():Forward() * (tblItem.HoldPos.x) + plyUser:GetAngles():Up() * tblItem.HoldPos.y + plyUser:GetAngles():Right() * tblItem.HoldPos.z )
 	entity:Spawn()
 	entity:Activate()
+	entity:SetSkin(2)
 	entity:SetOwner(nil)
 	entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 	if entity:GetPhysicsObject():IsValid() then
@@ -269,7 +269,6 @@ CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser,ItemTbl)
 	entity.Flare:SetParent(entity)
 	entity.Flare:SetAngles(Angle(entity:GetAngles().p + 90,entity:GetAngles().y,entity:GetAngles().r))
 	entity.Flare:SetPos(entity:GetPos() + entity:GetAngles():Up() * 6)
-	entity.Flare:SetSkin(2)
 	--entity.Flare:SetKeyValue("scale","1")
 	--entity.Flare:SetKeyValue("spawnflags","2")
 	entity.Flare:SetNoDraw(true)
