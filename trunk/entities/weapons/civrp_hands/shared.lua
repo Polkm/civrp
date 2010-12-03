@@ -60,12 +60,26 @@ end
 function SWEP:Reload()
 	if self:GetNextSecondaryFire() > CurTime() then return end
 	if SERVER then
-		if self:GetOwner().ItemData["SELECTED"] + 1 >= table.Count(self:GetOwner().ItemData) - 1 then
-			self:GetOwner().ItemData["SELECTED"] = 1
+		if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class == nil then
+			for i = 1, table.Count(self:GetOwner().ItemData) - 1 do
+				if self:GetOwner().ItemData["SELECTED"] + 1 >= table.Count(self:GetOwner().ItemData) - 1 then
+					self:GetOwner().ItemData["SELECTED"] = 1
+				else
+					self:GetOwner().ItemData["SELECTED"] = self:GetOwner().ItemData["SELECTED"] + 1
+				end		
+				if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
+					CIVRP_SELECTED_Update(self:GetOwner())
+					break	
+				end
+			end
 		else
-			self:GetOwner().ItemData["SELECTED"] = self:GetOwner().ItemData["SELECTED"] + 1
+			if self:GetOwner().ItemData["SELECTED"] + 1 >= table.Count(self:GetOwner().ItemData) - 1 then
+				self:GetOwner().ItemData["SELECTED"] = 1
+			else
+				self:GetOwner().ItemData["SELECTED"] = self:GetOwner().ItemData["SELECTED"] + 1
+			end	
+			CIVRP_SELECTED_Update(self:GetOwner())			
 		end
-		CIVRP_SELECTED_Update(self:GetOwner())
 	end
 	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 end

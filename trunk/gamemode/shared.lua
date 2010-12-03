@@ -160,6 +160,7 @@ function META:SelectItem(strItem)
 	end
 end
 
+
 CIVRP_Item_Data = {}
 CIVRP_Item_Data["item_healthvial"] = {Class = "item_healthvial", Model = "models/healthvial.mdl"}
 CIVRP_Item_Data["item_healthvial"].HoldPos = Vector(15, -15, 8)
@@ -263,7 +264,7 @@ CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser, swepWeapon, tblIt
 	if entity:GetPhysicsObject():IsValid() then
 		entity:GetPhysicsObject():Wake()
 		entity:GetPhysicsObject():SetVelocity(plyUser:GetVelocity())
-		entity:GetPhysicsObject():ApplyForceCenter(plyUser:GetAngles():Forward() *(entity:GetPhysicsObject():GetMass() * 100))
+		entity:GetPhysicsObject():ApplyForceCenter(plyUser:GetAngles():Forward() *(entity:GetPhysicsObject():GetMass() * 1000))
 	end
 	entity.Flare = ents.Create("env_flare")
 	entity.Flare:SetParent(entity)
