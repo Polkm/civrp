@@ -1,9 +1,53 @@
-
 function GM:OnNPCKilled(  NPC,  killer,  weapon )
-
+	if NPC.SETTLEMENTID != nil then
+		if CIVRP_Settlements[NPC.SETTLEMENTID] != "empty" then
+			local ID = NPC.SETTLEMENTID
+			timer.Simple(10,function() if CIVRP_Settlements[ID] != "empty" then CIVRP_Settlement_Disband(ID) end end)
+		end
+	end
 end
 
-CIVRP_MaxSettlements = 2
+CIVRP_MaxSettlements = 4
+
+function CIVRP_Settlement_Disband(ID)	
+	CIVRP_Settlement_Clean(ID)
+	CIVRP_Settlement_Decay(ID)	
+	CIVRP_Settlements[ID] = "empty"
+end
+
+function CIVRP_Settlement_Decay(ID)	
+	local data = CIVRP_Settlements[ID] || nil
+	if data == nil then return false end
+	for _,object in pairs(data.Objects) do
+		if !object:IsValid() then
+			table.remove(data.Objects,_)
+		elseif object:IsValid() && object.Removelevel == data.TechLevel then
+			object:Remove()
+		elseif object:IsValid() then
+			if object.DecayFunction != nil then
+				object.DecayFunction(object,data)
+			end
+			timer.Simple(math.random(1,10),	function() 
+				if object:IsValid() then 
+					if object:GetPhysicsObject():IsValid() then 
+						object:GetPhysicsObject():EnableMotion(true) 
+						object:GetPhysicsObject():ApplyForceCenter(Vector(math.random(100,200)*object:GetPhysicsObject():GetMass(),math.random(100,200)*object:GetPhysicsObject():GetMass(),math.random(100,200)*object:GetPhysicsObject():GetMass()))
+						timer.Simple(math.random(1,3), function() if object:IsValid() then  object:Remove() end end)
+					else
+						object:Remove()
+					end
+				end	
+			end)
+		end
+	end
+	for _,npc in pairs(data.Npcs) do
+		if !npc:IsValid() then
+			table.remove(data.Npcs,_)
+		elseif npc:IsValid() then
+			npc:TakeDamage(150)
+		end	
+	end
+end
 
 function CIVRP_Settlement_Clean(ID)	
 	local data = CIVRP_Settlements[ID] || nil
@@ -67,7 +111,7 @@ function CIVRP_Progress_Settlement(ID)
 					end
 				end
 				if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-					timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
+					timer.Simple(3,function() CIVRP_Progress_Settlement(ID) end)
 				end
 			end
 		end
@@ -81,7 +125,7 @@ CIVRP_Events["Combine_Settlement01"].Condition = function(ply)
 		for i = 1, CIVRP_MaxSettlements do
 			CIVRP_Settlements[i] = "empty"
 		end
-		return false
+		return true
 	end
 	for _,data in pairs(CIVRP_Settlements) do
 		if data == "empty" then
@@ -100,6 +144,10 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(data)
 	thumper:Spawn()
 	thumper:Activate()
 	thumper.Removelevel = 4
+	thumper.DecayFunction = function(self,data)
+		self:Fire("Disable",'',0)
+		self.DecayFunction = nil
+	end
 	if thumper:GetPhysicsObject():IsValid() then
 		thumper:GetPhysicsObject():EnableMotion(false)
 	end
@@ -197,8 +245,8 @@ end
 CIVRP_Events["Combine_Settlement01"].Function = function(ply)	
 	local objects = {}
 	
-	local vx = math.random(-15600, 15600)---
-	local vy = math.random(-15600, 15600)--
+	local vx = math.random(-1400, 1400)---
+	local vy = math.random(-1400, 1400)--
 	local CENTER = Vector(vx,vy,128)
 	
 	local apc = ents.Create("prop_physics")
@@ -243,5 +291,5 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	end
 
 	local ID = CIVRP_Register_Settlement(leader,objects,npcs,CENTER,"Combine_Settlement01")
-	timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
+	timer.Simple(3,function() CIVRP_Progress_Settlement(ID) end)
 end

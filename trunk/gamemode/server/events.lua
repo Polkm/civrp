@@ -252,3 +252,4 @@ CIVRP_Events["CrashedVan"].Function = function(ply)
 		table.insert(items, item)
 	end
 end
+--]]
