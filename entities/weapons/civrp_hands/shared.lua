@@ -106,7 +106,7 @@ function SWEP:LoadWeapon(itemtbl)
 			self.Primary.DefaultClip	= -1
 			
 			self.Primary.Automatic		= itemtbl.WEAPONDATA.Automatic || false
-			self.Primary.Ammo			= itemtbl.WEAPONDATA.Ammo || "none"
+			self.Primary.Ammo			= itemtbl.WEAPONDATA.AmmoType || "none"
 			--if ( SinglePlayer() && CLIENT ) || CLIENT then
 				self.DrawAmmo = itemtbl.WEAPONDATA.DrawAmmo || false
 			--end
@@ -145,22 +145,20 @@ function SWEP:CustomReload()
 end
 
 function SWEP:LoadClip()
-	if self:IsValid() then
-		if (self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self.Weapon:Clip1()) >= self.Primary.ClipSize then
-			if SERVER then
-				self:GetOwner():RemoveAmmo(self.Primary.ClipSize - self.Weapon:Clip1()  ,self.Primary.Ammo )
-			end
-			self.Weapon:SetClip1(self.Primary.ClipSize)
-		else
-			self.Weapon:SetClip1(self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self.Weapon:Clip1())
-			if SERVER then
-				self:GetOwner():RemoveAmmo(self:GetOwner():GetAmmoCount(self.Primary.Ammo),self.Primary.Ammo)
-			end
-		end
-		self:SetNWBool("reloading", false)
+	print(self:GetOwner():GetAmmoCount(self.Primary.Ammo))
+	print(self.Primary.ClipSize)
+	if (self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self.Weapon:Clip1()) >= self.Primary.ClipSize then
+		if SERVER then
+			self:GetOwner():RemoveAmmo(self.Primary.ClipSize - self.Weapon:Clip1()  ,self.Primary.Ammo )
+		end	
+		self.Weapon:SetClip1(self.Primary.ClipSize)
 	else
-		self:SetNWBool("reloading", false)
-	end	
+		self.Weapon:SetClip1(self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self.Weapon:Clip1())
+		if SERVER then
+			self:GetOwner():RemoveAmmo(self:GetOwner():GetAmmoCount(self.Primary.Ammo),self.Primary.Ammo)
+		end
+	end
+	self:SetNWBool("reloading", false)
 	self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].WEAPONDATA.LoadedBullets = self.Weapon:Clip1()--self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].WEAPONDATA.ClipSize
 	return true
 end

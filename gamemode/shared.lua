@@ -300,9 +300,7 @@ CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Automatic = false
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.DrawAmmo = true
 CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	if swepWeapon:Clip1() <= 0 then
-		if plyUser:GetAmmoCount(tblItem.WEAPONDATA.AmmoType) >= tblItem.WEAPONDATA.ClipSize then
-			swepWeapon:CustomReload()
-		end
+		swepWeapon:CustomReload()
 	else
 		swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
 		swepWeapon:SetClip1(swepWeapon:Clip1() - 1)
