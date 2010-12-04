@@ -20,6 +20,27 @@ end)
 
 
 CIVRP_Events = {}
+
+CIVRP_Events["Settlement"] = {}
+CIVRP_Events["Settlement"].Condition = function(ply) 
+	return true
+end
+CIVRP_Events["Settlement"].Function = function(ply)	
+	local vx = math.random(0,128)---15600, 15600)
+	local vy = math.random(0,128)--15600, 15600)
+	local apc = ents.Create("prop_physics")
+	apc:SetModel("models/combine_apc_wheelcollision.mdl")
+	apc:SetPos(Vector(vx,vy,128))
+	apc:SetAngles(Angle(0,math.random(0,180),0))
+	apc:Spawn()
+	apc:Activate()
+	if apc:GetPhysicsObject():IsValid() then
+		apc:GetPhysicsObject():EnableMotion(false)
+	end
+	
+end
+
+--[[
 CIVRP_Events["Ambush"] = {}
 CIVRP_Events["Ambush"].Condition = function(ply) 
 	if table.Count(ents.FindByClass("npc_*")) >= 5 then return false end
@@ -253,3 +274,4 @@ CIVRP_Events["CrashedVan"].Function = function(ply)
 	end
 end
 
+]]
