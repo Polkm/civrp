@@ -284,4 +284,8 @@ if CLIENT then
 		end
 		return self.AmmoDisplay
 	end
+	
+	function SWEP:GetTracerOrigin()
+		 return self.EntViewModel:GetPos()
+	end
 end
