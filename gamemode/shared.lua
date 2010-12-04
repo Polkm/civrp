@@ -295,18 +295,18 @@ CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Cone = 0.02
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Recoil = 2
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Delay = 0.02
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.NumShots = 1
+CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.ReloadSpeed = 1
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.Automatic = false
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.DrawAmmo = true
 CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	if swepWeapon:Clip1() <= 0 then
-		if plyUser:GetAmmoCount(tblItem.AmmoType) >= tblItem.WEAPONDATA.ClipSize then
-			swepWeapon:DefaultReload()
-			tblItem.LoadedBullets = tblItem.WEAPONDATA.ClipSize
+		if plyUser:GetAmmoCount(tblItem.WEAPONDATA.AmmoType) >= tblItem.WEAPONDATA.ClipSize then
+			swepWeapon:CustomReload()
 		end
 	else
 		swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
 		swepWeapon:SetClip1(swepWeapon:Clip1() - 1)
-		tblItem.LoadedBullets = tblItem.LoadedBullets - 1
+		tblItem.WEAPONDATA.LoadedBullets = tblItem.WEAPONDATA.LoadedBullets - 1
 		--swepWeapon:TakePrimaryAmmo(1)
 		FireBullets(plyUser, tblItem.WEAPONDATA.NumShots, tblItem.WEAPONDATA.Cone, tblItem.WEAPONDATA.Damage)
 		PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")

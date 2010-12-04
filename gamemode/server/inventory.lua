@@ -30,12 +30,16 @@ function META:AddItem(strItem, amount)
 		if slot != "SELECTED" && itemdata.Class == nil then
 			self.ItemData[slot] = itemtbl
 			if self:IsPlayer() then
+				if itemtbl.WEAPONDATA != nil then
+					if self:GetActiveWeapon():GetClass() == "civrp_hands" then
+						self:GetActiveWeapon():LoadWeapon(self.ItemData[slot])
+					end
+				end
 				CIVRP_Item_Data_Update(self, slot,itemtbl.Class)
 			end
 			break
 		end
 	end
-	PrintTable(self.ItemData)
 end
 
 function META:RemoveItem(strItem,amount,slot)
@@ -61,7 +65,5 @@ function META:RemoveItem(strItem,amount,slot)
 			end
 		end
 	end
-	PrintTable(self.ItemData)
-	print("Removed")
 end
 
