@@ -104,7 +104,7 @@ CIVRP_CHUNKSIZE = 500
 CIVRP_ENVIORMENTSIZE = 0--10000
 
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
-CIVRP_DIFFICULTY = "Peacefull" --Good for debuggin
+CIVRP_DIFFICULTY = "Normal" --Good for debuggin
 
 local function RestorHealth(plyUser, amount)
 	if plyUser:Health() < plyUser:GetMaxHealth() then
@@ -285,6 +285,9 @@ CIVRP_Item_Data["weapon_pistol"].MuzzlePos = Vector(7, 0, 0)
 CIVRP_Item_Data["weapon_pistol"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["weapon_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].BobScale = .3 -- Percent
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS = {}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Idle"] = {{Pos = Vector(15, -8, 8), Ang = Angle(0, 180, 0)},}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire"] = {{Pos = Vector(15, -8, 8), Ang = Angle(0, 190, 0)},}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA = {}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.NextFire = 0
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.AmmoType = "pistol"
@@ -315,22 +318,10 @@ CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tb
 			local effectdata = EffectData()
 			effectdata:SetOrigin(swepWeapon:GetViewModelMuzzlePostion())
 			effectdata:SetAngle(plyUser:GetAngles())
-			effectdata:SetScale(1)
+			effectdata:SetScale(.5)
 			util.Effect("MuzzleEffect", effectdata)
+			swepWeapon:PlayCustomAnimation("Fire")
 		end
-		--[[
-		local effectdata = EffectData()
-		effectdata:SetStart(swepWeapon:GetViewModelPostion())
-		effectdata:SetOrigin(swepWeapon:GetViewModelPostion())
-		effectdata:SetScale(1)
-		util.Effect("MuzzleFlash", effectdata)
-		local effectdata = EffectData()
-		effectdata:SetStart(plyUser:GetPos())
-		effectdata:SetOrigin(plyUser:GetPos())
-		effectdata:SetOrigin(plyUser:GetPos())
-		effectdata:SetScale(1)
-		util.Effect("MuzzleFlash", effectdata)
-		]]
 	end
 	return false
 end
