@@ -61,6 +61,11 @@ end
 
 function SWEP:Reload()
 	if self:GetNextSecondaryFire() > CurTime() then return end
+	self:CycleSelect()
+	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+end
+
+function SWEP:CycleSelect()
 	if SERVER then
 		if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class == nil then
 			for i = 1, table.Count(self:GetOwner().ItemData) - 1 do
@@ -85,7 +90,6 @@ function SWEP:Reload()
 			CIVRP_SELECTED_Update(self:GetOwner())			
 		end
 	end
-	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 end
 
 function SWEP:LoadWeapon(itemtbl)
