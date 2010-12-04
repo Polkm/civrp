@@ -17,15 +17,15 @@ function CIVRP_Item_Data_Update(ply,slot,itemstr)
 	umsg.End()	
 end
  
-function META:AddItem(strItem, amount)
+function META:AddItem(strItem, amount, tblCustomTable)
 	if CIVRP_Item_Data[strItem] == nil then
 		return false
 	end
 	amount = amount || 1
 	self.ItemData = self.ItemData || {}
 	
-	local itemtbl = CIVRP_Item_Data[strItem]
-	itemtbl.Class = strItem
+	local itemtbl = tblCustomTable or table.Copy(CIVRP_Item_Data[strItem]) --Make a new table
+	--itemtbl.Class = strItem this doesn't seam nessisary?
 	for slot, itemdata in pairs(self.ItemData) do
 		if slot != "SELECTED" && itemdata.Class == nil then
 			self.ItemData[slot] = itemtbl

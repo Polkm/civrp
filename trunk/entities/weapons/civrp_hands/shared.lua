@@ -202,6 +202,7 @@ function SWEP:SecondaryAttack()
 				local entity = ents.Create("prop_physics")
 				entity:SetModel(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Model)
 				entity.ItemClass = self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class
+				entity.ItemTable = self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]]
 				entity:SetAngles(self:GetOwner():GetAngles() + self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldAngle)
 				entity:SetPos(self:GetOwner():GetShootPos() + self:GetOwner():GetAngles():Forward() * (self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.x) + self:GetOwner():GetAngles():Up() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.y + self:GetOwner():GetAngles():Right() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.z )
 				entity:Spawn()
@@ -224,7 +225,7 @@ function SWEP:SecondaryAttack()
 			if trace.Hit && trace.HitNonWorld && trace.HitPos:Distance(self.Owner:GetPos()) < 200 then
 				local strItem = trace.Entity.ItemClass or trace.Entity:GetClass() 
 				if CIVRP_Item_Data[strItem] != nil then
-					self:GetOwner():AddItem(strItem, 1) 
+					self:GetOwner():AddItem(strItem, 1, trace.Entity.ItemTable) 
 					trace.Entity:Remove()
 				end
 			end
