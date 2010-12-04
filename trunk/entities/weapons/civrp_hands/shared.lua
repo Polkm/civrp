@@ -35,6 +35,8 @@ SWEP.Primary.DefaultClip	= -1
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "none"
 
+SWEP.Primary.ReloadSpeed = 0
+
 SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
@@ -68,6 +70,7 @@ function SWEP:Reload()
 					self:GetOwner().ItemData["SELECTED"] = self:GetOwner().ItemData["SELECTED"] + 1
 				end		
 				if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
+					self:LoadWeapon(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
 					CIVRP_SELECTED_Update(self:GetOwner())
 					break	
 				end
@@ -78,6 +81,7 @@ function SWEP:Reload()
 			else
 				self:GetOwner().ItemData["SELECTED"] = self:GetOwner().ItemData["SELECTED"] + 1
 			end	
+			self:LoadWeapon(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
 			CIVRP_SELECTED_Update(self:GetOwner())			
 		end
 	end
@@ -94,6 +98,7 @@ function SWEP:LoadWeapon(itemtbl)
 			self.Primary.Delay			= itemtbl.WEAPONDATA.Delay || 0
 			self.Primary.ClipSize		= itemtbl.WEAPONDATA.ClipSize || -1
 			self.Primary.LoadedBullets	= itemtbl.WEAPONDATA.LoadedBullets || itemtbl.WEAPONDATA.ClipSize || -1
+			self.Primary.ReloadSpeed  = itemtbl.WEAPONDATA.ReloadSpeed || 0
 			self.Primary.DefaultClip	= -1
 			
 			self.Primary.Automatic		= itemtbl.WEAPONDATA.Automatic || false
@@ -112,12 +117,48 @@ function SWEP:LoadWeapon(itemtbl)
 		self.Primary.DefaultClip	= -1
 		self.Primary.LoadedBullets	= -1
 		
+		self.Primary.ReloadSpeed = 0 
+		
 		self.Primary.Automatic		= false
 		self.Primary.Ammo			= "none"
 	end
-	print("TITS")
-	print(self.Primary.LoadedBullets)
 	self:SetClip1(self.Primary.LoadedBullets)
+end
+
+function SWEP:CustomReload()
+	if self:GetNWBool("reloading") then return false end
+	if SERVER then
+		self:SetNWBool("reloading", true)
+	end
+	self:GetOwner():RestartGesture(self:GetOwner():Weapon_TranslateActivity(ACT_HL2MP_GESTURE_RELOAD))
+	self:SetNextPrimaryFire(CurTime() + self.Primary.ReloadSpeed)
+	self:SetNextSecondaryFire(CurTime() + self.Primary.ReloadSpeed)
+	if self.Primary.ReloadSpeed > 0 then
+		timer.Simple(self.Primary.ReloadSpeed, function() if self:IsValid() then self:LoadClip() end end)
+	else
+		self:LoadClip()
+	end
+end
+
+function SWEP:LoadClip()
+	if self:IsValid() then
+		if (self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self.Weapon:Clip1()) >= self.Primary.ClipSize then
+			if SERVER then
+				self:GetOwner():RemoveAmmo(self.Primary.ClipSize - self.Weapon:Clip1()  ,self.Primary.Ammo )
+			end
+			self.Weapon:SetClip1(self.Primary.ClipSize)
+		else
+			self.Weapon:SetClip1(self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self.Weapon:Clip1())
+			if SERVER then
+				self:GetOwner():RemoveAmmo(self:GetOwner():GetAmmoCount(self.Primary.Ammo),self.Primary.Ammo)
+			end
+		end
+		self:SetNWBool("reloading", false)
+	else
+		self:SetNWBool("reloading", false)
+	end	
+	self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].WEAPONDATA.LoadedBullets = self.Weapon:Clip1()--self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].WEAPONDATA.ClipSize
+	return true
 end
 
 function SWEP:Holster()
@@ -233,7 +274,7 @@ if CLIENT then
 		self.AmmoDisplay = self.AmmoDisplay or {}
 		if LocalPlayer().ItemData != nil then
 			local tblWeaponData = LocalPlayer().ItemData[LocalPlayer().ItemData["SELECTED"]] || "empty"
-			if tblWeaponData != "empty"	and tblWeaponData.WEAPONDATA.AmmoType != nil then
+			if tblWeaponData != "empty"	and tblWeaponData.WEAPONDATA != nil then
 				self.AmmoDisplay.Draw = true
 				self.AmmoDisplay.PrimaryClip = LocalPlayer():GetActiveWeapon():Clip1()
 				self.AmmoDisplay.PrimaryAmmo = LocalPlayer():GetAmmoCount(tblWeaponData.WEAPONDATA.AmmoType)
