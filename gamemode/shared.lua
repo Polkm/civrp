@@ -281,6 +281,7 @@ end
 
 CIVRP_Item_Data["weapon_pistol"] = {Class = "weapon_pistol", Model = "models/weapons/W_pistol.mdl"}
 CIVRP_Item_Data["weapon_pistol"].HoldPos = Vector(15, -8, 8)
+CIVRP_Item_Data["weapon_pistol"].MuzzlePos = Vector(7, 0, 0)
 CIVRP_Item_Data["weapon_pistol"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["weapon_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].BobScale = .3 -- Percent
@@ -305,9 +306,31 @@ CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tb
 		swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
 		swepWeapon:SetClip1(swepWeapon:Clip1() - 1)
 		tblItem.WEAPONDATA.LoadedBullets = tblItem.WEAPONDATA.LoadedBullets - 1
-		--swepWeapon:TakePrimaryAmmo(1)
 		FireBullets(plyUser, tblItem.WEAPONDATA.NumShots, tblItem.WEAPONDATA.Cone, tblItem.WEAPONDATA.Damage)
-		PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
+		if SERVER then
+			PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
+			plyUser:MuzzleFlash()
+		end
+		if CLIENT or SinglePlayer() then
+			local effectdata = EffectData()
+			effectdata:SetOrigin(swepWeapon:GetViewModelMuzzlePostion())
+			effectdata:SetAngle(plyUser:GetAngles())
+			effectdata:SetScale(1)
+			util.Effect("MuzzleEffect", effectdata)
+		end
+		--[[
+		local effectdata = EffectData()
+		effectdata:SetStart(swepWeapon:GetViewModelPostion())
+		effectdata:SetOrigin(swepWeapon:GetViewModelPostion())
+		effectdata:SetScale(1)
+		util.Effect("MuzzleFlash", effectdata)
+		local effectdata = EffectData()
+		effectdata:SetStart(plyUser:GetPos())
+		effectdata:SetOrigin(plyUser:GetPos())
+		effectdata:SetOrigin(plyUser:GetPos())
+		effectdata:SetScale(1)
+		util.Effect("MuzzleFlash", effectdata)
+		]]
 	end
 	return false
 end
