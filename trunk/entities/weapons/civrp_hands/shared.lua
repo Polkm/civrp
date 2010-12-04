@@ -252,11 +252,23 @@ function SWEP:GetViewModelMuzzlePostion()
 	end
 end
 
+function SWEP:PlayCustomAnimation(strAnimation)
+	if CLIENT then
+		self.EntViewModel.AnimationTable = LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]].ANIMATIONS[strAnimation]
+		self.EntViewModel.AnimationFrame = 0
+	else
+		SendUsrMsg("CIVRP_PlayWeaponAnimation", self:GetOwner(), {strAnimation})
+	end
+end
+
 if CLIENT then
 	SWEP.EntViewModel = ClientsideModel('models/healthvial.mdl', RENDERGROUP_OPAQUE)
 	SWEP.EntViewModel:SetModel('models/healthvial.mdl')
 	SWEP.EntViewModel:Spawn()
 	SWEP.EntViewModel:SetNoDraw(true)
+	SWEP.EntViewModel.AnimationTable = {}
+	SWEP.EntViewModel.AnimationFrame = 0
+	
 	local beforeAngles = Angle(0, 0, 0)
 	local beforeVectors = Vector(0, 0, 0)
 	function SWEP:CalcView(ply, origin, angles, fov)
@@ -272,15 +284,23 @@ if CLIENT then
 				else
 					self.EntViewModel:SetNoDraw(false)
 					self.EntViewModel:SetModel(tblWeaponData.Model)
-				--	beforeVectors = self.EntViewModel:GetPos()
+					--beforeVectors = self.EntViewModel:GetPos()
 					self.EntViewModel:SetPos(origin + angles:Forward() * tblWeaponData.HoldPos.x + angles:Up() * tblWeaponData.HoldPos.y + angles:Right() * tblWeaponData.HoldPos.z)
-				--	if LocalPlayer():GetVelocity():Length() != 0 && LocalPlayer():OnGround() then
-					--	self.EntViewModel:SetPos(LerpVector( 0.5,beforeVectors,self.EntViewModel:GetPos()))
+					--if LocalPlayer():GetVelocity():Length() != 0 && LocalPlayer():OnGround() then
+					--self.EntViewModel:SetPos(LerpVector( 0.5,beforeVectors,self.EntViewModel:GetPos()))
 					--end
+					if self.EntViewModel.AnimationTable != nil  && self.EntViewModel.AnimationTable[1] != nil then
+						--PrintTable(self.EntViewModel.AnimationTable[1])
+					end
+					local tagertAngles = tblWeaponData.HoldAngle
+					if self.EntViewModel.AnimationTable != nil  && self.EntViewModel.AnimationTable[1] != nil then
+						tagertAngles = self.EntViewModel.AnimationTable[1].Ang
+					end
 					beforeAngles = self.EntViewModel:GetAngles()
 					self.EntViewModel:SetAngles(Angle(angles.p, angles.y, angles.r))
-					self.EntViewModel:SetAngles(self.EntViewModel:LocalToWorldAngles(tblWeaponData.HoldAngle))
+					self.EntViewModel:SetAngles(self.EntViewModel:LocalToWorldAngles(tagertAngles))
 					self.EntViewModel:SetAngles(LerpAngle(tblWeaponData.LerpDegree, beforeAngles, self.EntViewModel:GetAngles()))
+					--print(beforeAngles, self.EntViewModel:GetAngles())
 				end
 			else
 				self.EntViewModel:SetNoDraw(true)
@@ -307,4 +327,9 @@ if CLIENT then
 	function SWEP:GetTracerOrigin()
 		 return self.EntViewModel:GetPos()
 	end
+	
+	function CIVRP_PlayWeaponAnimation(umsg)
+		LocalPlayer():GetActiveWeapon():PlayCustomAnimation(umsg:ReadString())
+	end
+	usermessage.Hook('CIVRP_PlayWeaponAnimation', CIVRP_PlayWeaponAnimation)
 end
