@@ -274,8 +274,8 @@ CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser, swepWeapon, tblIt
 	--entity.Flare:SetKeyValue("spawnflags","2")
 	entity.Flare:SetNoDraw(true)
 	entity.Flare:Spawn()
-	entity.Flare:Fire('Start','240',0)
-	timer.Simple(300,function()if entity.Flare:IsValid() then entity.Flare:Remove() end  if entity:IsValid() then entity:Remove() end end)
+	entity.Flare:Fire('Start', '240', 0)
+	timer.Simple(300, function() if entity.Flare:IsValid() then entity.Flare:Remove() end if entity:IsValid() then entity:Remove() end end)
 	return true
 end
 
