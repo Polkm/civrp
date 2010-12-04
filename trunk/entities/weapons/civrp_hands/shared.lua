@@ -194,7 +194,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
+	if self:GetOwner().ItemData && self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
 		if SERVER then
 			if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].SpawnFunction != nil then
 				local data = self:GetOwner().SpawnFunction(self)
@@ -231,6 +231,24 @@ function SWEP:SecondaryAttack()
 			end
 		end
 		self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+	end
+end
+
+function SWEP:GetViewModelPostion()
+	return self:GetOwner():GetShootPos() +
+		self:GetOwner():GetAngles():Forward() * (self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.x) +
+		self:GetOwner():GetAngles():Up() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.y +
+		self:GetOwner():GetAngles():Right() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.z
+end
+
+function SWEP:GetViewModelMuzzlePostion()
+	if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].MuzzlePos then
+		return self:GetViewModelPostion() +
+			self:GetOwner():GetAngles():Forward() * (self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].MuzzlePos.x) +
+			self:GetOwner():GetAngles():Up() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].MuzzlePos.y +
+			self:GetOwner():GetAngles():Right() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].MuzzlePos.z
+	else
+		return self:GetViewModelPostion()
 	end
 end
 
