@@ -37,7 +37,7 @@ SWEP.Primary.Ammo			= "none"
 
 SWEP.Primary.ReloadSpeed = 0
 
-SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.ClipSize		= 1
 SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
@@ -145,8 +145,6 @@ function SWEP:CustomReload()
 end
 
 function SWEP:LoadClip()
-	print(self:GetOwner():GetAmmoCount(self.Primary.Ammo))
-	print(self.Primary.ClipSize)
 	if (self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self.Weapon:Clip1()) >= self.Primary.ClipSize then
 		if SERVER then
 			self:GetOwner():RemoveAmmo(self.Primary.ClipSize - self.Weapon:Clip1()  ,self.Primary.Ammo )
