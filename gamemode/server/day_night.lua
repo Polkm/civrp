@@ -5,14 +5,14 @@ end]]
 CIVRP_WorldData = {}
 CIVRP_WorldData.Time = 0
 CIVRP_WorldData.CurStage = 0
-CIVRP_WorldData.DayLength = 60
+CIVRP_WorldData.DayLength = 600
 CIVRP_WorldData.Dawn = {Start = CIVRP_WorldData.DayLength/8,End = CIVRP_WorldData.DayLength/3,}
 CIVRP_WorldData.Dusk = {Start = CIVRP_WorldData.DayLength*(2/3),End = CIVRP_WorldData.DayLength*(7/8),}
 CIVRP_WorldData.NextTime = 0
 CIVRP_WorldData.TimeNextSecond = 0 
 CIVRP_WorldData.DarknessHigh = 255
 CIVRP_WorldData.Interval = 0.1
-CIVRP_WorldData.Fog = {Enabled = true,Ent = nil,Duration = 0}
+CIVRP_WorldData.Fog = {Enabled = false,Ent = nil,Duration = 0}
 CIVRP_WorldData.DayNight = false
 
 

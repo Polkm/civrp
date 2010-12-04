@@ -9,7 +9,7 @@ function CIVRP_CreateEvent()
 	if table.Count(tbl) >= 1 then
 		CIVRP_Events[table.Random(tbl)].Function(ply)
 	end
-	timer.Simple(math.random(55, 65) * GetPlayerFactor() / GetDifficultyFactor(), function() CIVRP_CreateEvent() end)
+	timer.Simple(math.random(25, 65) --[[* GetPlayerFactor() / GetDifficultyFactor()]], function() CIVRP_CreateEvent() end)
 end
 hook.Add("Initialize", "initializing_threat_systems", function()
 	if CIVRP_DIFFICULTY != "Peacefull" then --No baddies for peace lovers
@@ -17,166 +17,9 @@ hook.Add("Initialize", "initializing_threat_systems", function()
 	end
 end)
 
-CIVRP_MaxSettlements = 10
-
-function CIVRP_Register_Settlement(leader,propstbl,CENTERPOS,EventKey)
-	if CIVRP_Settlements == nil then
-		CIVRP_Settlements = {} 
-		for i = 1, CIVRP_MaxSettlements do
-			CIVRP_Settlements[i] = "empty"
-		end
-	end
-	for i = 1, table.Count(CIVRP_Settlements) do
-		if CIVRP_Settlements[i] == "empty" then
-			CIVRP_Settlements[i] = {}	
-			leader.SETTLEMENTID = i
-			CIVRP_Settlements[i].Leader = leader
-			CIVRP_Settlements[i].Objects = propstbl
-			CIVRP_Settlements[i].Center = CENTERPOS
-			CIVRP_Settlements[i].EventKey = EventKey 
-			CIVRP_Settlements[i].TechLevel = 0
-			return i
-		end
-	end
-end
-
-function CIVRP_Progress_Settlement(ID)
-	local settlement = CIVRP_Settlements[ID] 
-	if settlement != "empty" then
-		if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-			settlement.TechLevel = settlement.TechLevel + 1
-			for _,object in pairs(settlement.Objects) do
-				if !object:IsValid() then
-					table.remove(settlement.Objects,_)
-				elseif object:IsValid() && object.Removelevel == settlement.TechLevel then
-					object:Remove()
-				end	
-			end
-			local objects = CIVRP_Events[settlement.EventKey].Tech[settlement.TechLevel](settlement)
-			if objects != nil then
-				for _,object in pairs(objects) do
-					if object:IsValid() then
-						table.insert(settlement.Objects,object)
-					end
-				end
-			end
-			if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-				timer.Simple(3,function() CIVRP_Progress_Settlement(ID) end)
-			end
-		end
-	end
-end
-
 CIVRP_Events = {}
 
-CIVRP_Events["Combine_Settlement01"] = {}
-CIVRP_Events["Combine_Settlement01"].Condition = function(ply) 
-	return true
-end
-CIVRP_Events["Combine_Settlement01"].Tech = {}
-CIVRP_Events["Combine_Settlement01"].Tech[1] = function(data)
-	local objects = {}
-	
-	local thumper = ents.Create("prop_thumper")
-	thumper:SetPos(data.Center)
-	thumper:SetAngles(Angle(0,math.random(0,180),0))
-	thumper:Spawn()
-	thumper:Activate()
-	thumper.Removelevel = 4
-	if thumper:GetPhysicsObject():IsValid() then
-		thumper:GetPhysicsObject():EnableMotion(false)
-	end
-	table.insert(objects,thumper)
-	return objects
-end
 
-CIVRP_Events["Combine_Settlement01"].Tech[2] = function(data)
-	local objects = {}
-	local cades = math.random(4,14)
-	for i = 1, cades do
-		local distance = math.random(490, 510)
-		local angle = math.random(0, 360)
-		local cade = ents.Create("prop_physics")
-		cade:SetModel("models/props_combine/combine_barricade_short01a.mdl")
-		cade:SetPos(data.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
-		cade:SetAngles((cade:GetPos() - data.Center):Angle())
-		cade:SetPos(cade:GetPos() + Vector(0,0,30))
-		cade.RemoveLevel = 4
-		cade:Spawn()
-		cade:Activate()
-		if cade:GetPhysicsObject():IsValid() then
-			cade:GetPhysicsObject():EnableMotion(false)
-		end
-		table.insert(objects,cade)
-	end
-	return objects
-end
-
-CIVRP_Events["Combine_Settlement01"].Tech[3] = function(data)
-	local turrets = math.random(1,3)
-	for i = 1, turrets do
-		local distance = math.random(450, 480)
-		local angle = math.random(0, 360)
-		local turret = ents.Create("npc_turret_floor")
-		turret:SetPos(data.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
-		turret:SetAngles((turret:GetPos() - data.Center):Angle())
-		turret:SetPos(turret:GetPos() + Vector(0,0,30))
-		turret:Spawn()
-	end
-	return nil
-end
-
-CIVRP_Events["Combine_Settlement01"].Function = function(ply)	
-	local objects = {}
-	
-	local vx = math.random(0,600)---15600, 15600)
-	local vy = math.random(0,600)--15600, 15600)
-	local CENTER = Vector(vx,vy,128)
-	
-	local apc = ents.Create("prop_physics")
-	apc:SetModel("models/combine_apc_wheelcollision.mdl")
-	apc:SetPos(CENTER)
-	apc:SetAngles(Angle(0,math.random(0,180),0))
-	apc:Spawn()
-	apc:Activate()
-	apc.Removelevel = 1
-	if apc:GetPhysicsObject():IsValid() then
-		apc:GetPhysicsObject():EnableMotion(false)
-	end
-	table.insert(objects,apc)
-
-	local leader = ents.Create("npc_combine_s")
-	leader:SetPos(apc:GetPos() + apc:GetAngles():Right() * -200)
-	leader:SetModel("models/combine_super_soldier.mdl")
-	leader:SetAngles(Angle(0,math.random(0,180),0))
-	
-	local Weapons = {"weapon_ar2", "weapon_smg1",}
-	leader:SetKeyValue("additionalequipment", table.Random(Weapons))
-	
-	leader:Spawn()
-	leader:Activate()
-
-	local Minions = {}
-	Minions.Type = {}
-	Minions.Type[1] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"},}
-	Minions.Number = math.random(1,2)
-
-	for i = 1, Minions.Number do
-		local MinionSelection = table.Random(Minions.Type)
-		local npc = ents.Create(MinionSelection.Class)
-		npc:SetPos(leader:GetPos() + Vector(math.random(-100, 100), math.random(-100, 100), 0))
-		if MinionSelection.Weapons != nil then
-			npc:SetKeyValue("additionalequipment", table.Random(MinionSelection.Weapons))
-		end
-		npc:Spawn()		
-		npc:Activate()
-	end
-
-	local ID = CIVRP_Register_Settlement(leader,objects,CENTER,"Combine_Settlement01")
-	timer.Simple(3,function() CIVRP_Progress_Settlement(ID) end)
-end
-
---[[
 CIVRP_Events["Ambush"] = {}
 CIVRP_Events["Ambush"].Condition = function(ply) 
 	if table.Count(ents.FindByClass("npc_*")) >= 5 then return false end
@@ -409,5 +252,3 @@ CIVRP_Events["CrashedVan"].Function = function(ply)
 		table.insert(items, item)
 	end
 end
-
-]]
