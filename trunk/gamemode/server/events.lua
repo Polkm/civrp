@@ -7,7 +7,7 @@ function CIVRP_CreateEvent()
 		end
 	end
 	if table.Count(tbl) >= 1 then
-		CIVRP_Events[table.Random(tbl)].Function(ply)
+		CIVRP_Events["Ambush"].Function(ply)
 	end
 	timer.Simple(math.random(25, 65) --[[* GetPlayerFactor() / GetDifficultyFactor()]], function() CIVRP_CreateEvent() end)
 end
@@ -31,10 +31,11 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	local Bosses = {}
 	Bosses[1] = {}
 	Bosses[1].Class = "npc_antlionguard"
+	Bosses[1].Skins = 2
 	Bosses[1].Number = math.random(1, 2)
-	Bosses[1].MinionsNumber = math.random(1, 3)
+	Bosses[1].MinionsNumber = math.random(2, 3)
 	Bosses[1].Minions = {}
-	Bosses[1].Minions[1] = {Class = "npc_antlion"}
+	Bosses[1].Minions[1] = {Class = "npc_antlion", Skins = 4}
 	Bosses[1].Minions[2] = {Class = "npc_antlion_worker"}
 	
 	Bosses[2] = {}
@@ -43,7 +44,7 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	Bosses[2].MinionsNumber = math.random(1, 3)
 	Bosses[2].Minions = {}
 	--Bosses[2].Minions[1] = {Class = "npc_hunter"}
-	Bosses[2].Minions[2] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"}}
+	Bosses[2].Minions[2] = {Class = "npc_combine_s", Skins = 2, Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"}}
 	Bosses[2].Minions[3] = {Class = "npc_manhack"}
 	
 	Bosses[3] = {}
@@ -57,13 +58,19 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	local Selection = table.Random(Bosses) 
 	for i = 1, Selection.Number do
 		local npc = ents.Create(Selection.Class)
-		npc:SetPos(ply:GetPos() + Vector(math.random(-1500, 1500), math.random(-1500, 1500), 0))
+		local distance = math.random(200, 1200)
+		local angle = math.random(0, 360)
+		npc:SetPos(ply:GetPos() + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 10))
+		npc:SetSkin(math.random(0, (Selection.Skins or 1) - 1))
 		npc:Spawn()
 		npc:Activate()
 		for i = 1, Selection.MinionsNumber do
 			local MinionSelection = table.Random(Selection.Minions)
 			local npc = ents.Create(MinionSelection.Class)
-			npc:SetPos(ply:GetPos() + Vector(math.random(-1500, 1500), math.random(-1500, 1500), 0))
+			distance = math.random(200, 1200)
+			angle = math.random(0, 360)
+			npc:SetPos(ply:GetPos() + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 10))
+			npc:SetSkin(math.random(0, (MinionSelection.Skins or 1) - 1))
 			if MinionSelection.Weapons != nil then
 				npc:SetKeyValue("additionalequipment", table.Random(MinionSelection.Weapons))
 			end
@@ -194,12 +201,12 @@ end
 CIVRP_Events["CrashedVan"].Function = function(ply)
 	local SupplyList = {"weapon_shotgun", "weapon_357", "weapon_crowbar", "item_healthvial", "item_ammo_smg1", "item_ammo_smg1", "item_ammo_pistol", "item_ammo_pistol", "item_ammo_pistol", "item_ammo_357", "item_ammo_ar2",}
 	local VanModels = {"models/props_vehicles/van001a.mdl", "models/props_vehicles/van001a_nodoor.mdl"}
-	local VanSkins = 1
+	local VanSkins = 2
 	local items = {}
 	
 	local van = ents.Create("prop_physics")
 	van:SetModel(VanModels[math.random(1, table.Count(VanModels))])
-	van:SetSkin(math.random(0, VanSkins))
+	van:SetSkin(math.random(0, VanSkins - 1))
 	local tries = 0
 	local function Check()
 		van:SetPos(Vector(ply:GetPos().x + math.random(-3000,3000),ply:GetPos().y + math.random(-3000,3000),158))
