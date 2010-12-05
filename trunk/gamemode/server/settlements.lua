@@ -332,7 +332,7 @@ CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(data)
 	end
 	
 	local grub = {}
-	grub.Number = math.random(2, 4)
+	grub.Number = math.random(5, 10)
 	for i = 1, grub.Number do
 		local npc = ents.Create("npc_antlion_grub")
 		npc:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
