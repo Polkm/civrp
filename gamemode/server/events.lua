@@ -223,7 +223,7 @@ CIVRP_Events["CrashedVan"].Function = function(ply)
 		end
 	end
 	Check()
-	van:SetAngles(Angle(math.random(-5,5),math.random(0,180),math.random(-5,5)))
+	van:SetAngles(Angle(math.random(-5,5),math.random(0,360),math.random(-5,5)))
 	van:Spawn()
 	van:Activate()
 	if van:GetPhysicsObject():IsValid() then

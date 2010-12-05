@@ -33,7 +33,6 @@ function CIVRP_CreateSVCLObject(umsg)
 	table.insert(CIVRP_Enviorment_Data[intX][intY], {Vector = vector, Model = CIVRP_Enviorment_Models[model], Angle = angle})
 	if !ENVIORMENT_LOADED then
 		ENVIORMENT_LOADED = true
-		print("-------ENVIORMENT LOADED-------")
 	end
 end
 usermessage.Hook('CIVRP_CreateSVCLObject',CIVRP_CreateSVCLObject)
@@ -98,7 +97,6 @@ function CIVRP_UpdateEnviorment(umsg)
 	end
 	if entCount >= CIVRP_ENVIORMENTSIZE and !ENVIORMENT_LOADED then
 		ENVIORMENT_LOADED = true
-		print("EVNLOAFA")
 	end
 end
 usermessage.Hook('CIVRP_UpdateEnviorment', CIVRP_UpdateEnviorment)
