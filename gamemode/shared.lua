@@ -237,7 +237,7 @@ CIVRP_Item_Data["item_ammo_ar2"].FireFunction = function(plyUser, swepWeapon, tb
 end
 
 CIVRP_Item_Data["item_flare"] = {Class = "item_flare", Model = "models/props_junk/flare.mdl"}
-CIVRP_Item_Data["item_flare"].HoldPos = Vector(20, -10, 7) -- Forward,Up,Right
+CIVRP_Item_Data["item_flare"].HoldPos = Vector(20, -10, 8) -- Forward,Up,Right
 CIVRP_Item_Data["item_flare"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["item_flare"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_flare"].BobScale = .3 -- Percent
@@ -260,7 +260,7 @@ CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser, swepWeapon, tblIt
 	entity.Flare:SetParent(entity)
 	entity.Flare:SetAngles(Angle(entity:GetAngles().p + 90,entity:GetAngles().y,entity:GetAngles().r))
 	entity.Flare:SetPos(entity:GetPos() + entity:GetAngles():Up() * 6)
-	entity.Flare:SetKeyValue("scale","3")
+	entity.Flare:SetKeyValue("scale","10")
 	--entity.Flare:SetKeyValue("spawnflags","2")
 	entity.Flare:SetNoDraw(true)
 	entity.Flare:Spawn()

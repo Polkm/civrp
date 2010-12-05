@@ -4,6 +4,22 @@ CIVRP_Enviorment_Data = {}
 --CIVRP_Enviorment_Data_Quad3 = {}
 --CIVRP_Enviorment_Data_Quad4 = {}
 
+function GM:Initialize( )
+	--[[timer.Simple(1,function() 
+		local tower = ents.Create("prop_physics")
+		tower:SetModel("models/props/watchtower01.mdl")
+		tower:Spawn()
+		tower:PhysicsInit( SOLID_BBOX )
+		tower:PhysicsInitBox(Vector(-50,-50,-1400),Vector(50,50,000))
+		tower:SetCollisionGroup(COLLISION_GROUP_WORLD)
+		tower:SetPos(Vector(0,0,500))
+		if tower:GetPhysicsObject():IsValid() then
+			tower:GetPhysicsObject():EnableMotion(true)
+		end
+	end)]]
+end
+
+
 for i = 1, CIVRP_ENVIORMENTSIZE do 
 	local vx = math.random(-15600, 15600)
 	local vy = math.random(-15600, 15600)
@@ -30,7 +46,6 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 	CIVRP_Enviorment_Data[intSX][intSY][intX][intY] = CIVRP_Enviorment_Data[intSX][intSY][intX][intY] or {}
 
 	table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = mdl, Angle = Angle(0,math.random(0,360), 0)})
-
 	--[[table.insert(CIVRP_Enviorment_Data, {Vector = Vector(vx, vy, 128), Model = mdl, Angle = Angle(0, ay, 0)})
 	if vx >= 0 && vy  >= 0 then
 		table.insert(CIVRP_Enviorment_Data_Quad1,{Vector = Vector(vx,vy,128),Model = mdl,Angle = Angle(0,ay,0)})
