@@ -70,6 +70,31 @@ if SERVER then
 		end
 		umsg.End()
 	end
+	
+	function CreateCustomNPC(strClass, strSquadName, intHealthFctr, strMat, tblSkins, tblKeyValues)
+		local npc = ents.Create(strClass)
+		if strSquadName then npc:SetKeyValue("Squad Name", strSquadName) end
+		npc:SetHealth(npc:Health() * GetDifficultyFactor() * (intHealthFctr or 1))
+		npc:SetMaterial(strMat or nil)
+		if tblSkins then npc:SetSkin(table.Random(tblSkins)) end
+		if tblKeyValues != nil then
+			for key, tbl in pairs(tblKeyValues) do
+				if tbl.Min && tbl.Max then
+					npc:SetKeyValue(key, math.random(tbl.Min, tbl.Max))
+				else
+					npc:SetKeyValue(key, tostring(table.Random(tbl)))
+				end
+			end
+		end
+		return npc
+	end
+	
+	function GetRandomRadiusPos(vecOrigin, intMinRadius, intMaxRadius)
+		intMaxRadius = intMaxRadius or intMinRadius
+		distance = math.random(intMinRadius, intMaxRadius)
+		angle = math.random(0, 360)
+		return vecOrigin + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0)
+	end
 end
 
 local randseed = 1337
