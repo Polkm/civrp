@@ -19,7 +19,7 @@ function CheckDistanceFunction(item, distance, interval)
 	if item:IsValid() then 
 		for _,ply in pairs(player.GetAll()) do 
 			if ply:GetPos():Distance(item:GetPos()) <= distance then 
-				timer.Simple(interval, function() if item:IsValid() then CheckDistanceFunction(item, distance) end end)
+				timer.Simple(interval, function() if item:IsValid() then CheckDistanceFunction(item, distance, interval) end end)
 				return false
 			end
 		end
