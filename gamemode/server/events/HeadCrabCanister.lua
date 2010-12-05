@@ -24,8 +24,8 @@ CIVRP_Events["HeadCrabCanister"].Function = function(ply)
 	entCanister:SetKeyValue("HeadcrabType", table.Random(tblHeadCrabs))
 	entCanister:SetKeyValue("HeadcrabCount", math.random(intHeadCrabMin, intHeadCrabMax))
 	entCanister:SetKeyValue("LaunchPositionName", "HeadCrabCanTarget" .. entStartingPos:EntIndex())
-	entCanister:SetKeyValue("FlightSpeed", 350)
-	entCanister:SetKeyValue("FlightTime", 3.5)
+	entCanister:SetKeyValue("FlightSpeed", 1000)
+	entCanister:SetKeyValue("FlightTime", 1)
 	entCanister:SetKeyValue("Damage", intHeadCrabDamage) -- Damage when it impacts
 	entCanister:SetKeyValue("DamageRadius", 75) -- Damage radius
 	entCanister:SetKeyValue("SmokeLifetime", 25) -- How long it smokes
