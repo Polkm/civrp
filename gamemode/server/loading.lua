@@ -18,12 +18,23 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 	
 	--This is the code it would take to convert this sytem to a grided system
 	--[[
-	local vecPos = Vector(vx, vy, 128)
+	local intSX = math.floor(vecPos.x / CIVRP_SUPERCHUNKSIZE)
+	local intSY = math.floor(vecPos.y / CIVRP_SUPERCHUNKSIZE)
 	local intX = math.floor(vecPos.x / CIVRP_CHUNKSIZE)
 	local intY = math.floor(vecPos.y / CIVRP_CHUNKSIZE)
-	CIVRP_Enviorment_Data[intX] = CIVRP_Enviorment_Data[intX] or {}
-	CIVRP_Enviorment_Data[intX][intY] = CIVRP_Enviorment_Data[intX][intY] or {}
-	table.insert(CIVRP_Enviorment_Data[intX][intY], {Vector = vecPos, Model = mdl, Angle = Angle(0, ay, 0)})
+	
+	CIVRP_Enviorment_Data[intSX] = CIVRP_Enviorment_Data[intSX] or {}
+	CIVRP_Enviorment_Data[intSX][intSY] = CIVRP_Enviorment_Data[intSX][intSY] or {}
+	CIVRP_Enviorment_Data[intSX][intSY][intX] = CIVRP_Enviorment_Data[intSX][intSY][intX] or {}
+	CIVRP_Enviorment_Data[intSX][intSY][intX][intY] = CIVRP_Enviorment_Data[intSX][intSY][intX][intY] or {}
+	
+	CIVRP_Chunk_Data[intSX] = CIVRP_Chunk_Data[intSX] or {}
+	CIVRP_Chunk_Data[intSX][intSY] = CIVRP_Chunk_Data[intSX][intSY] or {}
+	CIVRP_Chunk_Data[intSX][intSY][intX] = CIVRP_Chunk_Data[intSX][intSY][intX] or {}
+	CIVRP_Chunk_Data[intSX][intSY][intX][intY] = CIVRP_Chunk_Data[intSX][intSY][intX][intY] or {}
+	CIVRP_Chunk_Data[intSX][intSY][intX][intY].Spawned = false
+
+	table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = CIVRP_Enviorment_Models[model], Angle = Angle(0, tonumber(DecompressInteger(expstring[2])), 0)})
 	]]
 	table.insert(CIVRP_Enviorment_Data, {Vector = Vector(vx, vy, 128), Model = mdl, Angle = Angle(0, ay, 0)})
 	if vx >= 0 && vy  >= 0 then
