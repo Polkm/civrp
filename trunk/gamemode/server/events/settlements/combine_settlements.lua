@@ -130,18 +130,24 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	local vy = math.random(-14000, 14000)--
 	local CENTER = Vector(vx,vy,128)
 	
-	local apc = ents.Create("prop_physics")
-	apc:SetModel("models/combine_apc_wheelcollision.mdl")
-	apc:SetPos(CENTER)
+	local apc = ents.Create( "prop_vehicle_apc" )
+	apc:SetKeyValue( "model", "models/combine_apc.mdl" )
+	apc:SetKeyValue( "vehiclescript", "scripts/vehicles/apc_npc.txt" )
+	apc:SetKeyValue( "actionScale", "1" )
+	apc:SetPos( CENTER )
 	apc:SetAngles(Angle(0,math.random(0,360),0))
 	apc:Spawn()
+	apc:SetName( "Combine_apc" .. apc:EntIndex() )
 	apc:Activate()
-	apc.Removelevel = 1
-	if apc:GetPhysicsObject():IsValid() then
-		apc:GetPhysicsObject():EnableMotion(false)
-	end
 	table.insert(objects,apc)
-
+	
+	local apc_driver = ents.Create( "npc_apcdriver" )
+	apc_driver:SetKeyValue( "vehicle", "Combine_apc" .. apc:EntIndex() )
+	apc_driver:SetName( "Combine_apc" .. apc:EntIndex() .. "_driver" )
+	apc_driver:SetPos( CENTER )
+	apc_driver:Spawn()
+	apc_driver:Activate()
+	
 	local leader = ents.Create("npc_combine_s")
 	leader:SetPos(apc:GetPos() + apc:GetAngles():Right() * -200)
 	leader:SetModel("models/combine_super_soldier.mdl")
@@ -152,7 +158,7 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	
 	leader:Spawn()
 	leader:Activate()
-
+	
 	local Minions = {}
 	Minions.Type = {}
 	Minions.Type[1] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"},}
