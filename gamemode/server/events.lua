@@ -125,7 +125,7 @@ CIVRP_Events["Healthkit"].Condition = function(ply)
 	return false
 end
 CIVRP_Events["Healthkit"].Function = function(ply)
-	local item = ents.Create("item_healthkit")
+	local item = ents.Create("prop_physics")
 	local distance = math.random(10, 500)
 	local angle = math.random(0, 360)
 	item:SetModel(CIVRP_Item_Data["item_healthkit"].Model)

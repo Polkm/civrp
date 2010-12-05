@@ -55,7 +55,6 @@ function CIVRP_SendData(ply)
 		for Chunk2,_ in pairs(CIVRP_Enviorment_Data[Chunk1]) do
 			for Chunk3,_ in pairs(CIVRP_Enviorment_Data[Chunk1][Chunk2]) do
 				for Chunk4,_ in pairs(CIVRP_Enviorment_Data[Chunk1][Chunk2][Chunk3]) do
-					PrintTable(CIVRP_Enviorment_Data[Chunk1][Chunk2][Chunk3][Chunk4])
 					for _,data in pairs(CIVRP_Enviorment_Data[Chunk1][Chunk2][Chunk3][Chunk4]) do
 						if tbl[tostring(data.Model)] == nil then
 							tbl[tostring(data.Model)] = {}
