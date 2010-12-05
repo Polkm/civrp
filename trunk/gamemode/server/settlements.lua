@@ -27,12 +27,12 @@ function CIVRP_Settlement_Decay(ID)
 			if object.DecayFunction != nil then
 				object.DecayFunction(object,data)
 			end
-			timer.Simple(math.random(25,70),	function() 
+			timer.Simple(math.random(200,400),	function() 
 				if object:IsValid() then 
 					if object:GetPhysicsObject():IsValid() then 
 						object:GetPhysicsObject():EnableMotion(true) 
 						object:GetPhysicsObject():ApplyForceCenter(Vector(math.random(50,100)*object:GetPhysicsObject():GetMass(),math.random(50,100)*object:GetPhysicsObject():GetMass(),math.random(50,100)*object:GetPhysicsObject():GetMass()))
-						timer.Simple(math.random(25,35), function() if object:IsValid() then  object:Remove() end end)
+						timer.Simple(math.random(30,60), function() if object:IsValid() then  object:Remove() end end)
 					else
 						object:Remove()
 					end
