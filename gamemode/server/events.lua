@@ -32,11 +32,11 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	local Bosses = {}
 	Bosses[1] = {}
 	Bosses[1].Class = "npc_antlionguard"
-	Bosses[1].Skins = 2
+	Bosses[1].Skins = {0, 1}
 	Bosses[1].Number = math.random(1, 2)
 	Bosses[1].MinionsNumber = math.random(2, 3)
 	Bosses[1].Minions = {}
-	Bosses[1].Minions[1] = {Class = "npc_antlion", Skins = 4}
+	Bosses[1].Minions[1] = {Class = "npc_antlion", Skins = {0, 1, 2, 3}}
 	Bosses[1].Minions[2] = {Class = "npc_antlion_worker"}
 	
 	Bosses[2] = {}
@@ -44,9 +44,12 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	Bosses[2].Number = math.random(1, 3)
 	Bosses[2].MinionsNumber = math.random(1, 3)
 	Bosses[2].Minions = {}
-	--Bosses[2].Minions[1] = {Class = "npc_hunter"}
-	Bosses[2].Minions[2] = {Class = "npc_combine_s", Skins = 2, Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"}}
-	Bosses[2].Minions[3] = {Class = "npc_manhack"}
+	Bosses[2].Minions[1] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1"}}
+	Bosses[2].Minions[2] = {Class = "npc_combine_s", Skins = {1}, Weapons = {"weapon_shotgun"}}
+	--Forest Ranger that uses a custom mat
+	--Bosses[2].Minions[3] = {Class = "npc_combine_s", Mat = "Models/Combine_soldier/combinesoldiersheet_forestranger", Weapons = {"weapon_ar2", "weapon_shotgun"}}
+	Bosses[2].Minions[4] = {Class = "npc_manhack"}
+	Bosses[2].Minions[5] = {Class = "npc_manhack"}
 	
 	Bosses[3] = {}
 	Bosses[3].Class = "npc_fastzombie"
@@ -56,13 +59,14 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	Bosses[3].Minions[1] = {Class = "npc_poisonzombie"}
 	Bosses[3].Minions[2] = {Class = "npc_zombie"}
 	
-	local Selection = table.Random(Bosses) 
+	local Selection = table.Random(Bosses)
 	for i = 1, Selection.Number do
 		local npc = ents.Create(Selection.Class)
 		local distance = math.random(200, 1200)
 		local angle = math.random(0, 360)
 		npc:SetPos(ply:GetPos() + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 10))
-		npc:SetSkin(math.random(0, (Selection.Skins or 1) - 1))
+		if Selection.Skins then npc:SetSkin(table.Random(Selection.Skins)) end
+		npc:SetMaterial(Selection.Mat or nil)
 		npc:Spawn()
 		npc:Activate()
 		for i = 1, Selection.MinionsNumber do
@@ -71,7 +75,8 @@ CIVRP_Events["Ambush"].Function = function(ply)
 			distance = math.random(200, 1200)
 			angle = math.random(0, 360)
 			npc:SetPos(ply:GetPos() + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 10))
-			npc:SetSkin(math.random(0, (MinionSelection.Skins or 1) - 1))
+			if MinionSelection.Skins then npc:SetSkin(table.Random(MinionSelection.Skins)) end
+			npc:SetMaterial(MinionSelection.Mat or nil)
 			if MinionSelection.Weapons != nil then
 				npc:SetKeyValue("additionalequipment", table.Random(MinionSelection.Weapons))
 			end
