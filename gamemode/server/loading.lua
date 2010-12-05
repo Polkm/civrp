@@ -9,14 +9,14 @@ function GM:Initialize( )
 		local tower = ents.Create("prop_physics")
 		tower:SetModel("models/props/watchtower01.mdl")
 		tower:Spawn()
-		tower:PhysicsInit( SOLID_BBOX )
-		tower:PhysicsInitBox(Vector(-50,-50,-1400),Vector(50,50,000))
-		tower:SetCollisionGroup(COLLISION_GROUP_WORLD)
+	--	tower:PhysicsInit( SOLID_BBOX )
+		tower:PhysicsInitBox(Vector(-150,-150,-1400),Vector(150,150,1400))
+	--	tower:SetCollisionGroup(COLLISION_GROUP_WORLD)
 		tower:SetPos(Vector(0,0,500))
 		if tower:GetPhysicsObject():IsValid() then
-			tower:GetPhysicsObject():EnableMotion(true)
+			tower:GetPhysicsObject():EnableMotion(false)
 		end
-	end)]]
+	end)--]]
 end
 
 
@@ -64,7 +64,20 @@ ENCRYPTION = string.Implode("",{table.Random(ENCRYPTIONTBL),table.Random(ENCRYPT
 
 local LOADING_QUENED_DATA = {}
 
-function CIVRP_SendData(ply) 
+function CIVRP_SendData(ply,delay,mdl,str)
+--	print(math.Round(delay*10)/10)
+--	print(table.Count(string.ToTable(str)))
+	timer.Simple(math.Round(delay*10)/10,function() 
+		if ply:IsValid() then
+			umsg.Start("CUE", ply)
+				umsg.Long( tonumber(mdl) )
+				umsg.String(str)
+			umsg.End()	
+		end
+	end)
+end
+
+function CIVRP_PrepareData(ply) 
 	local tbl = {}
 	for Chunk1,_ in pairs(CIVRP_Enviorment_Data) do
 		for Chunk2,_ in pairs(CIVRP_Enviorment_Data[Chunk1]) do
@@ -80,13 +93,13 @@ function CIVRP_SendData(ply)
 			end
 		end
 	end
-
 	local timerz = 0
 	local str = ""
 	local number = 0
 	local exploded = nil
 	local vect1 = ""
 	local vect2 = ""
+	local delay = 0 
 	for mdl,dt in pairs(tbl) do
 		for _,data in pairs(dt) do
 			if data.Vector.x < 0 then
@@ -106,36 +119,28 @@ function CIVRP_SendData(ply)
 		exploded = string.Explode("'",str)
 		table.remove(exploded,1)
 		if table.Count(exploded) <= 18 then
-			--timer.Simple(
-			umsg.Start("CIVRP_UpdateEnviorment", ply)
-				umsg.Long( tonumber(mdl) )
-				umsg.String(str)
-			umsg.End()	
-			--table.insert(LOADING_QUENED_DATA)
+			delay = delay + 1
+			CIVRP_SendData(ply,delay,mdl,str)
 			str = ""
 		else
-			for i = 1,math.Round(table.Count(exploded)/18) do 
+			for i = 1,math.Round(table.Count(exploded)/16) do 
 				str = string.Implode("'",{exploded[1],exploded[2],exploded[3],exploded[4],exploded[5],exploded[6],exploded[7],exploded[8],exploded[9],exploded[10],exploded[11],exploded[12],exploded[13],exploded[14],exploded[15],exploded[16],exploded[17],exploded[18],})
 				str = "'"..str
-				table.remove(exploded,18) table.remove(exploded,17) table.remove(exploded,16) table.remove(exploded,15) table.remove(exploded,14) table.remove(exploded,13)
+				--table.remove(exploded,18) table.remove(exploded,17)
+				 table.remove(exploded,16) table.remove(exploded,15) table.remove(exploded,14) table.remove(exploded,13)
 				table.remove(exploded,12) table.remove(exploded,11) table.remove(exploded,10) table.remove(exploded,9) table.remove(exploded,8) table.remove(exploded,7) 
 				table.remove(exploded,6) table.remove(exploded,5) table.remove(exploded,4) table.remove(exploded,3) table.remove(exploded,2) table.remove(exploded,1)
-				umsg.Start("CIVRP_UpdateEnviorment", ply)
-					umsg.Long( tonumber(mdl) )
-					umsg.String(str)
-				umsg.End()	
+				CIVRP_SendData(ply,delay,mdl,str)
 			end
 			str = ""
 			for k,v in pairs(exploded) do 
 				str = string.Implode("'",{str,v})
 			end
 			if str != "" then
-				umsg.Start("CIVRP_UpdateEnviorment", ply)
-					umsg.Long( tonumber(mdl) )
-					umsg.String(str)
-				umsg.End()	
+				CIVRP_SendData(ply,delay,mdl,str)
 				str = ""
 			end
+			delay = delay + 1
 		end
 	end
 	
@@ -179,7 +184,7 @@ end
 
 function GM:PlayerInitialSpawn(ply)
 	timer.Simple(1, function() CIVRP_SendEncryption(ENCRYPTION) end)
-	timer.Simple(1, function() CIVRP_SendData(ply) end)
+	CIVRP_PrepareData(ply)
 	ply.ItemData = {}
 	ply.ItemData["SELECTED"] = 1
 	for i = 1, 10 do

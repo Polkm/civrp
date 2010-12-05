@@ -97,7 +97,7 @@ function CIVRP_UpdateEnviorment(umsg)
 		ENVIORMENT_LOADED = true
 	end
 end
-usermessage.Hook('CIVRP_UpdateEnviorment', CIVRP_UpdateEnviorment)
+usermessage.Hook('CUE', CIVRP_UpdateEnviorment)
 
 local vecPlyPos
 local intHalfSuperChunk

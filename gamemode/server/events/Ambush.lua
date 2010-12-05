@@ -45,12 +45,14 @@ CIVRP_Events["Ambush"].Function = function(ply)
 		boss:SetPos(GetRandomRadiusPos(ply:GetPos() + Vector(0, 0, 10), 200, 1200))
 		boss:Spawn()
 		boss:Activate()
+		CheckDistanceFunction(boss, 500, 120)
 		for i = 1, Selection.MinionsNumber do
 			local tblMinion = table.Random(Selection.Minions)
 			local npc = CreateCustomNPC(tblMinion.Class, Selection.Class .. CurTime(), tblMinion.HealthFactor, tblMinion.Mat, tblMinion.Skins, tblMinion.KeyValues)
 			npc:SetPos(GetRandomRadiusPos(ply:GetPos() + Vector(0, 0, 10), 200, 1200))
 			npc:Spawn()
 			npc:Activate()
+			CheckDistanceFunction(npc, 500, 120)
 		end
 	end
 end
