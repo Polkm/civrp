@@ -7,6 +7,7 @@ ServerPaths[2] = "gamemode/server/settlements"
 
 local SharedPaths = {}
 SharedPaths[1] = "gamemode/shared"
+SharedPaths[2] = "gamemode/shared/items"
 
 for _, strPaths in pairs(SharedPaths) do
 	local Path = string.Replace(GM.Folder,"gamemodes/","").."/" .. strPaths .. "/"
