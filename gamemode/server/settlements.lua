@@ -387,6 +387,6 @@ CIVRP_Events["Antlion_Settlement01"].Function = function(ply)
 		table.insert(npcs, npc)
 	end
 	local ID = CIVRP_Register_Settlement(leader, objects, npcs, CENTER, "Antlion_Settlement01")
-	timer.Simple(10, function() CIVRP_Progress_Settlement(ID) end)
+	timer.Simple(200, function() CIVRP_Progress_Settlement(ID) end)
 end
 --- Antlion Settlement End ---
