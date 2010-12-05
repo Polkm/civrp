@@ -51,8 +51,8 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	Bosses[2].Minions[2] = {Class = "npc_combine_s",
 		Skins = {1}, KeyValues = {additionalequipment = {"weapon_shotgun"}, NumGrenades = {Min = 0, Max = 1}, tacticalvariant = {true}}}
 	--Forest Ranger that uses a custom mat
-	--[[Bosses[2].Minions[3] = {Class = "npc_combine_s", Mat = "Models/Combine_soldier/combinesoldiersheet_forestranger",
-		KeyValues = {additionalequipment = {"weapon_ar2", "weapon_shotgun"}, NumGrenades = {Min = 0, Max = 2}, tacticalvariant = {true}}}]]
+	--Bosses[2].Minions[3] = {Class = "npc_combine_s", Mat = "Models/Combine_soldier/combinesoldiersheet_forestranger",
+	--	KeyValues = {additionalequipment = {"weapon_ar2", "weapon_shotgun"}, NumGrenades = {Min = 0, Max = 2}, tacticalvariant = {true}}}
 	Bosses[2].Minions[4] = {Class = "npc_manhack"}
 	
 	Bosses[3] = {}
@@ -78,8 +78,6 @@ CIVRP_Events["Ambush"].Function = function(ply)
 		end
 	end
 end
-
-
 
 CIVRP_Events["Patrol"] = {}
 CIVRP_Events["Patrol"].Condition = function(ply) 
