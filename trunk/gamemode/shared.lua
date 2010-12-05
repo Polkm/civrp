@@ -35,22 +35,6 @@ function AutoAdd_LuaFiles()
 	end
 end
 
-function GetPlayerFactor()
-	return 1 / ((math.Clamp(table.Count(player.GetAll()), 1, 4) / 2) + 0.5)
-end
-function GetDifficultyFactor()
-	if CIVRP_DIFFICULTY == "Peacefull" then
-		return 0.2
-	elseif CIVRP_DIFFICULTY == "Normal" then
-		return 1.0
-	elseif CIVRP_DIFFICULTY == "Hard" then
-		return 2.0
-	elseif CIVRP_DIFFICULTY == "Hell" then
-		return 4.0
-	end
-	return 1
-end
-
 function CheckDistanceFunction(item, distance, interval)
 	if item:IsValid() then 
 		for _,ply in pairs(player.GetAll()) do 
