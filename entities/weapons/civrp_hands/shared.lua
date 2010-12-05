@@ -53,7 +53,9 @@ function SWEP:Initialize()
 end
 
 function SWEP:Deploy()
-	self:GetOwner():SelectItem(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
+	if self:GetOwner().ItemData != nil then
+		self:GetOwner():SelectItem(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
+	end
 	if SERVER then
 		self.Owner:DrawViewModel(false)
 	end

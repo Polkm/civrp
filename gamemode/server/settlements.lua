@@ -2,7 +2,7 @@ function GM:OnNPCKilled(  NPC,  killer,  weapon )
 	if NPC.SETTLEMENTID != nil then
 		if CIVRP_Settlements[NPC.SETTLEMENTID] != "empty" then
 			local ID = NPC.SETTLEMENTID
-			timer.Simple(10,function() if CIVRP_Settlements[ID] != "empty" then CIVRP_Settlement_Disband(ID) end end)
+			timer.Simple(60,function() if CIVRP_Settlements[ID] != "empty" then CIVRP_Settlement_Disband(ID) end end)
 		end
 	end
 end
@@ -27,12 +27,12 @@ function CIVRP_Settlement_Decay(ID)
 			if object.DecayFunction != nil then
 				object.DecayFunction(object,data)
 			end
-			timer.Simple(math.random(1,10),	function() 
+			timer.Simple(math.random(25,70),	function() 
 				if object:IsValid() then 
 					if object:GetPhysicsObject():IsValid() then 
 						object:GetPhysicsObject():EnableMotion(true) 
-						object:GetPhysicsObject():ApplyForceCenter(Vector(math.random(100,200)*object:GetPhysicsObject():GetMass(),math.random(100,200)*object:GetPhysicsObject():GetMass(),math.random(100,200)*object:GetPhysicsObject():GetMass()))
-						timer.Simple(math.random(1,3), function() if object:IsValid() then  object:Remove() end end)
+						object:GetPhysicsObject():ApplyForceCenter(Vector(math.random(50,100)*object:GetPhysicsObject():GetMass(),math.random(50,100)*object:GetPhysicsObject():GetMass(),math.random(50,100)*object:GetPhysicsObject():GetMass()))
+						timer.Simple(math.random(25,35), function() if object:IsValid() then  object:Remove() end end)
 					else
 						object:Remove()
 					end
@@ -111,7 +111,7 @@ function CIVRP_Progress_Settlement(ID)
 					end
 				end
 				if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-					timer.Simple(3,function() CIVRP_Progress_Settlement(ID) end)
+					timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
 				end
 			end
 		end
@@ -235,18 +235,18 @@ CIVRP_Events["Combine_Settlement01"].Tech[3] = function(data)
 			end
 		end
 		if npcs != nil then
-			timer.Simple(30,function() think() end)
+			timer.Simple(60,function() think() end)
 		end
 	end
-	timer.Simple(30,function() think() end)
+	timer.Simple(60,function() think() end)
 	return {NPCS = npcs,OBJECTS = nil}
 end
 
 CIVRP_Events["Combine_Settlement01"].Function = function(ply)	
 	local objects = {}
 	
-	local vx = math.random(-1400, 1400)---
-	local vy = math.random(-1400, 1400)--
+	local vx = math.random(-14000, 14000)--
+	local vy = math.random(-14000, 14000)--
 	local CENTER = Vector(vx,vy,128)
 	
 	local apc = ents.Create("prop_physics")
@@ -291,5 +291,5 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	end
 
 	local ID = CIVRP_Register_Settlement(leader,objects,npcs,CENTER,"Combine_Settlement01")
-	timer.Simple(3,function() CIVRP_Progress_Settlement(ID) end)
+	timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
 end
