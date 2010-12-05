@@ -111,7 +111,7 @@ function CIVRP_Progress_Settlement(ID)
 					end
 				end
 				if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-					timer.Simple(50,function() CIVRP_Progress_Settlement(ID) end)
+					timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
 				end
 			end
 		end
@@ -430,6 +430,6 @@ CIVRP_Events["Antlion_Settlement01"].Function = function(ply)
 		table.insert(npcs, npc)
 	end
 	local ID = CIVRP_Register_Settlement(leader, objects, npcs, CENTER, "Antlion_Settlement01")
-	timer.Simple(20, function() CIVRP_Progress_Settlement(ID) end)
+	timer.Simple(200, function() CIVRP_Progress_Settlement(ID) end)
 end
 --- Antlion Settlement End ---
