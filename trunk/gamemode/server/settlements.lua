@@ -111,7 +111,7 @@ function CIVRP_Progress_Settlement(ID)
 					end
 				end
 				if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-					timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
+					timer.Simple(10,function() CIVRP_Progress_Settlement(ID) end)
 				end
 			end
 		end
@@ -314,81 +314,181 @@ CIVRP_Events["Antlion_Settlement01"].Condition = function(ply)
 end
 
 CIVRP_Events["Antlion_Settlement01"].Tech = {}
-CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(data)
-	local Minions = {}
-	Minions.Class = "npc_antlion_worker"
-	Minions.Number = math.random(2, 4)
-	
+CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(data)	
 	local npcs = {}
-	for i = 1, Minions.Number do
-		local npc = ents.Create(Minions.Class)
-		npc:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
-		npc:SetKeyValue("Start Burrowed", 1)
-		npc:Spawn()		
-		npc:Activate()
-		npc:Fire('Unburrow','',0.5)
-		table.insert(npcs, npc)
-	end
-	
-	local grub = {}
-	grub.Number = math.random(5, 10)
-	for i = 1, grub.Number do
-		local npc = ents.Create("npc_antlion_grub")
-		npc:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
-		npc:SetKeyValue("Start Burrowed", 1)
-		npc:Spawn()		
-		npc:Activate()
-		npc:Fire('Unburrow','',0.5)
-		table.insert(npcs, npc)
-	end
-
-	return {NPCS = npcs, OBJECTS = nil}
-end
-CIVRP_Events["Antlion_Settlement01"].Tech[2] = function(data)
 	local objects = {}
-	local DC = data.Center
-	local vx = math.Clamp(math.random(-1000, 1000) + DC.x, -13000, 13000)
-	local vy = math.Clamp(math.random(-1000, 1000) + DC.y, -13000, 13000)
 	
-	local ClampedV = Vector(vx, vy, DC.z)
+	local AntlionHiveLarger = ents.Create("prop_physics")
+	AntlionHiveLarger:SetModel("models/props_hive/nest_med_flat.mdl")
+	AntlionHiveLarger:SetPos(data.Center)
+	AntlionHiveLarger:SetAngles(Angle(0,math.random(0,360),0))
+	AntlionHiveLarger:Spawn()
+	if AntlionHiveLarger:GetPhysicsObject():IsValid() then
+		AntlionHiveLarger:GetPhysicsObject():EnableMotion(false)
+	end
+	AntlionHiveLarger.Removelevel = 2
+	table.insert(objects, AntlionHiveLarger)
+	
+	local numsmallhives = math.random(1, 4)
+	for i = 1, numsmallhives do
+		local AntlionHiveSmall = ents.Create("prop_physics")
+		AntlionHiveSmall:SetModel("models/props_hive/nest_sm_flat.mdl")
+		AntlionHiveSmall:SetPos(data.Center + Vector(math.random(-500, 500), math.random(-500, 500), 0))
+		AntlionHiveSmall:SetAngles(Angle(0,math.random(0,360),0))
+		AntlionHiveSmall:Spawn()
+		AntlionHiveSmall.Removelevel = 2
+		table.insert(objects, AntlionHiveSmall)
+	end
+	
+	local antents = data.Objects
+	for _,ent in pairs(antents) do
+		if (ValidEntity(ent) && ent:GetModel() == "models/props_hive/egg.mdl") then
+			local Antlion = ents.Create("npc_antlion")
+			Antlion:SetPos(ent:GetPos())
+			Antlion:SetAngles(Angle(0, math.random(0,360), 0) )
+			Antlion:SetKeyValue("Start Burrowed", 1)
+			Antlion:Spawn()		
+			Antlion:Activate()
+			Antlion:Fire('Unburrow','',0.5)
+			Antlion:SetColor(0, 0, 0, 0)
+			timer.Simple(0.2, function()
+				if (ValidEntity(Antlion)) then
+					Antlion:SetColor(255, 255, 255, 255)
+				end
+			end)
+			ent:Remove()
+			table.insert(npcs, Antlion)
+		end
+	end
+		
+	local numeggs = math.random(1, 5)
+	
+	for i = 1, numeggs do
+		local AntlionEgg = ents.Create("prop_physics")
+		AntlionEgg:SetModel("models/props_hive/egg.mdl")
+		AntlionEgg:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
+		AntlionEgg:SetAngles(Angle(0,math.random(0,360),0))
+		AntlionEgg:Spawn()
+		AntlionEgg:Activate()
+		if AntlionEgg:GetPhysicsObject():IsValid() then
+			AntlionEgg:GetPhysicsObject():EnableMotion(false)
+		end
+		table.insert(objects, AntlionEgg)
+	end	
+	
+	return {NPCS = npcs, OBJECTS = objects}
+end
+CIVRP_Events["Antlion_Settlement01"].Tech[2] = function(data)	
+	local npcs = {}
+	local objects = {}
+	
+	local AntlionHiveLarge = ents.Create("prop_physics")
+	AntlionHiveLarge:SetModel("models/props_hive/nest_lrg_flat.mdl")
+	AntlionHiveLarge:SetPos(data.Center)
+	AntlionHiveLarge:SetAngles(Angle(0,math.random(0,360),0))
+	AntlionHiveLarge:Spawn()
+	if AntlionHiveLarge:GetPhysicsObject():IsValid() then
+		AntlionHiveLarge:GetPhysicsObject():EnableMotion(false)
+	end
+	AntlionHiveLarge.Removelevel = 3
+	table.insert(objects, AntlionHiveLarge)
+	
+	local numsmallhives = math.random(1, 4)
+	for i = 1, numsmallhives do
+		local AntlionHiveSmall = ents.Create("prop_physics")
+		AntlionHiveSmall:SetModel("models/props_hive/nest_sm_flat.mdl")
+		AntlionHiveSmall:SetPos(data.Center + Vector(math.random(-500, 500), math.random(-500, 500), 0))
+		AntlionHiveSmall:SetAngles(Angle(0,math.random(0,360),0))
+		AntlionHiveSmall:Spawn()
+		AntlionHiveSmall.Removelevel = 3
+		table.insert(objects, AntlionHiveSmall)
+	end
+	
+	local antents = data.Objects
+	for _,ent in pairs(antents) do
+		if (ValidEntity(ent) && ent:GetModel() == "models/props_hive/egg.mdl") then
+			local Antlion = ents.Create("npc_antlion")
+			Antlion:SetPos(ent:GetPos())
+			Antlion:SetAngles(Angle(0, math.random(0,360), 0) )
+			Antlion:SetKeyValue("Start Burrowed", 1)
+			Antlion:Spawn()		
+			Antlion:Activate()
+			Antlion:Fire('Unburrow','',0.5)
+			Antlion:SetColor(0, 0, 0, 0)
+			timer.Simple(0.2, function()
+				if (ValidEntity(Antlion)) then
+					Antlion:SetColor(255, 255, 255, 255)
+				end
+			end)
+			ent:Remove()
+			table.insert(npcs, Antlion)
+		end
+	end
+		
+	local numeggs = math.random(1, 5)
+	
+	for i = 1, numeggs do
+		local AntlionEgg = ents.Create("prop_physics")
+		AntlionEgg:SetModel("models/props_hive/egg.mdl")
+		AntlionEgg:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
+		AntlionEgg:SetAngles(Angle(0,math.random(0,360),0))
+		AntlionEgg:Spawn()
+		AntlionEgg:Activate()
+		if AntlionEgg:GetPhysicsObject():IsValid() then
+			AntlionEgg:GetPhysicsObject():EnableMotion(false)
+		end
+		table.insert(objects, AntlionEgg)
+	end	
+	
+	return {NPCS = npcs, OBJECTS = objects}
+end
+CIVRP_Events["Antlion_Settlement01"].Tech[3] = function(data)	
+	local npcs = {}
+	local objects = {}
 	
 	local AntlionHill = ents.Create("prop_physics")
 	AntlionHill:SetModel("models/props_wasteland/antlionhill.mdl")
-	AntlionHill:SetPos(ClampedV)
+	AntlionHill:SetPos(data.Center)
 	AntlionHill:SetAngles(Angle(0,math.random(0,360),0))
 	AntlionHill:Spawn()
-	AntlionHill:Activate()
 	if AntlionHill:GetPhysicsObject():IsValid() then
 		AntlionHill:GetPhysicsObject():EnableMotion(false)
 	end
 	table.insert(objects, AntlionHill)
+		
+	local numgrubs = math.random(5, 10)
 	
-	data.Leader:SetLastPosition( ClampedV + AntlionHill:GetAngles():Right() * -200)
-	data.Leader:SetSchedule(  SCHED_FORCED_GO_RUN )
+	for i = 1, numgrubs do
+		local Antliongrub = ents.Create("npc_antlion_grub")
+		Antliongrub:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
+		Antliongrub:SetAngles(Angle(0,math.random(0,360),0))
+		Antliongrub:Spawn()
+		table.insert(objects, Antliongrub)
+	end	
 	
-	local npcs = {}
-
-	local Minions = {}
-	Minions.Type = {}
-	Minions.Type[1] = "npc_antlion_worker"
-	Minions.Type[2] = "npc_antlion_grub"
-	Minions.Type[3] = "npc_antlion"
-	Minions.Number = math.random(7, 12)
-	
-	
-	for i = 1, Minions.Number do
-		local npc = ents.Create(Minions.Type[math.random(1, 3)])
-		npc:SetPos(ClampedV + Vector(math.random(-400, 400), math.random(-400, 400), 0))
-		npc:SetKeyValue("Start Burrowed", 1)
-		npc:Spawn()		
-		npc:Activate()
-		npc:Fire('Unburrow','',0.5)
-		table.insert(npcs, npc)
+	local antents = data.Objects
+	for _,ent in pairs(antents) do
+		if (ValidEntity(ent) && ent:GetModel() == "models/props_hive/egg.mdl") then
+			local Antlion = ents.Create("npc_antlion_worker")
+			Antlion:SetPos(ent:GetPos())
+			Antlion:SetAngles(Angle(0, math.random(0,360), 0) )
+			Antlion:SetKeyValue("Start Burrowed", 1)
+			Antlion:Spawn()		
+			Antlion:Activate()
+			Antlion:Fire('Unburrow','',0.5)
+			Antlion:SetColor(color(0, 0, 0, 0))
+			timer.Simple(0.5, function()
+				if (ValidEntity(Antlion)) then
+					Antlion:SetColor(color(255, 255, 255, 255))
+				end
+			end)
+			ent:Remove()
+			table.insert(npcs, Antlion)
+		end
 	end
 	
 	return {NPCS = npcs, OBJECTS = objects}
 end
-
 
 CIVRP_Events["Antlion_Settlement01"].Function = function(ply)	
 	local objects = {}
@@ -397,40 +497,38 @@ CIVRP_Events["Antlion_Settlement01"].Function = function(ply)
 	local vy = math.random(-14000, 14000)--
 	local CENTER = Vector(vx, vy, 128)
 	
-	local AntlionHill = ents.Create("prop_physics")
-	AntlionHill:SetModel("models/props_wasteland/antlionhill.mdl")
-	AntlionHill:SetPos(CENTER)
-	AntlionHill:SetAngles(Angle(0,math.random(0,360),0))
-	AntlionHill:Spawn()
-	AntlionHill:Activate()
-	if AntlionHill:GetPhysicsObject():IsValid() then
-		AntlionHill:GetPhysicsObject():EnableMotion(false)
-	end
-	table.insert(objects,AntlionHill)
+	local AntlionHiveSmall = ents.Create("prop_physics")
+	AntlionHiveSmall:SetModel("models/props_hive/nest_sm_flat.mdl")
+	AntlionHiveSmall:SetPos(CENTER)
+	AntlionHiveSmall:SetAngles(Angle(0,math.random(0,360),0))
+	AntlionHiveSmall:Spawn()
+	AntlionHiveSmall.Removelevel = 1
+	table.insert(objects, AntlionHiveSmall)
 
 	local leader = ents.Create("npc_antlionguard")
-	leader:SetPos(AntlionHill:GetPos() + AntlionHill:GetAngles():Right() * -200)
+	leader:SetPos(AntlionHiveSmall:GetPos() + AntlionHiveSmall:GetAngles():Right() * -200)
 	leader:SetModel("models/antlion_guard.mdl")
 	leader:SetAngles(Angle(0,math.random(0,360),0))
-		
 	leader:Spawn()
 	leader:Activate()
 	
-	local Minions = {}
-	Minions.Class = "npc_antlion"
-	Minions.Number = math.random(1, 3)
+	local numeggs = math.random(1, 5)
 	
-	local npcs = {}
-	for i = 1, Minions.Number do
-		local npc = ents.Create(Minions.Class)
-		npc:SetPos(CENTER + Vector(math.random(-400, 400), math.random(-400, 400), 0))
-		npc:SetKeyValue("Start Burrowed", 1)
-		npc:Spawn()		
-		npc:Activate()
-		npc:Fire('Unburrow','',0.5)
-		table.insert(npcs, npc)
+	for i = 1, numeggs do
+		local AntlionEgg = ents.Create("prop_physics")
+		AntlionEgg:SetModel("models/props_hive/egg.mdl")
+		AntlionEgg:SetPos(CENTER + Vector(math.random(-400, 400), math.random(-400, 400), 0))
+		AntlionEgg:SetAngles(Angle(0,math.random(0,360),0))
+		AntlionEgg:Spawn()
+		AntlionEgg:Activate()
+		if AntlionEgg:GetPhysicsObject():IsValid() then
+			AntlionEgg:GetPhysicsObject():EnableMotion(false)
+		end
+		table.insert(objects, AntlionEgg)
 	end
-	local ID = CIVRP_Register_Settlement(leader, objects, npcs, CENTER, "Antlion_Settlement01")
-	timer.Simple(200, function() CIVRP_Progress_Settlement(ID) end)
+	
+
+	local ID = CIVRP_Register_Settlement(leader, objects, {}, CENTER, "Antlion_Settlement01")
+	timer.Simple(20, function() CIVRP_Progress_Settlement(ID) end)
 end
 --- Antlion Settlement End ---
