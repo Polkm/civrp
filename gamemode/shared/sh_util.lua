@@ -1,6 +1,7 @@
-function GetPlayerFactor()
-	return 1 / ((math.Clamp(table.Count(player.GetAll()), 1, 4) / 2) + 0.5)
+function GetPlayerFactor(intNumberOPlayer)
+	return 1 / ((math.Clamp(intNumberOPlayer || table.Count(player.GetAll()), 1, 4) / 2) + 0.5)
 end
+
 function GetDifficultyFactor()
 	if CIVRP_DIFFICULTY == "Peacefull" then
 		return 0.2
@@ -19,7 +20,7 @@ function CheckDistanceFunction(item, distance, interval)
 		for _,ply in pairs(player.GetAll()) do 
 			if ply:GetPos():Distance(item:GetPos()) <= distance then 
 				timer.Simple(interval, function() if item:IsValid() then CheckDistanceFunction(item, distance) end end)
-				return false 
+				return false
 			end
 		end
 		if !item:GetOwner():IsPlayer() then
