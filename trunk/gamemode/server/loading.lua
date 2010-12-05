@@ -27,12 +27,6 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 	CIVRP_Enviorment_Data[intSX][intSY] = CIVRP_Enviorment_Data[intSX][intSY] or {}
 	CIVRP_Enviorment_Data[intSX][intSY][intX] = CIVRP_Enviorment_Data[intSX][intSY][intX] or {}
 	CIVRP_Enviorment_Data[intSX][intSY][intX][intY] = CIVRP_Enviorment_Data[intSX][intSY][intX][intY] or {}
-	
-	CIVRP_Chunk_Data[intSX] = CIVRP_Chunk_Data[intSX] or {}
-	CIVRP_Chunk_Data[intSX][intSY] = CIVRP_Chunk_Data[intSX][intSY] or {}
-	CIVRP_Chunk_Data[intSX][intSY][intX] = CIVRP_Chunk_Data[intSX][intSY][intX] or {}
-	CIVRP_Chunk_Data[intSX][intSY][intX][intY] = CIVRP_Chunk_Data[intSX][intSY][intX][intY] or {}
-	CIVRP_Chunk_Data[intSX][intSY][intX][intY].Spawned = false
 
 	table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = CIVRP_Enviorment_Models[model], Angle = Angle(0, tonumber(DecompressInteger(expstring[2])), 0)})
 	]]
