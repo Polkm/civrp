@@ -76,6 +76,11 @@ if SERVER then
 		if strSquadName then npc:SetKeyValue("Squad Name", strSquadName) end
 		npc:SetHealth(npc:Health() * GetDifficultyFactor() * (intHealthFctr or 1))
 		npc:SetMaterial(strMat or nil)
+		if CIVRP_DIFFICULTY == "Hard" then
+			npc:SetCurrentWeaponProficiency(WEAPON_PROFICIENCY_GOOD)
+		elseif  CIVRP_DIFFICULTY == "Hell" then
+			npc:SetCurrentWeaponProficiency(WEAPON_PROFICIENCY_VERY_GOOD)
+		end
 		if tblSkins then npc:SetSkin(table.Random(tblSkins)) end
 		if tblKeyValues != nil then
 			for key, tbl in pairs(tblKeyValues) do
