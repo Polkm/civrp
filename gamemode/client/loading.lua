@@ -11,13 +11,11 @@ function GM:Initialize( )
 	end]]
 end
 
-
 function CIVRP_EncryptionCode(umsg)
 	local info = umsg:ReadString()
 	ENCRYPTION = info
 end
 usermessage.Hook('CIVRP_EncryptionCode', CIVRP_EncryptionCode)
-
 
 function CIVRP_CreateSVCLObject(umsg)
 	local vector = umsg:ReadVector()

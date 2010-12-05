@@ -293,6 +293,7 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	local ID = CIVRP_Register_Settlement(leader,objects,npcs,CENTER,"Combine_Settlement01")
 	timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
 end
+
 --- Combine Settlement End --
 --- Antlion Settlement Start ---
 CIVRP_Events["Antlion_Settlement01"] = {}

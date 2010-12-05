@@ -1,8 +1,8 @@
 CIVRP_Enviorment_Data = {}
-CIVRP_Enviorment_Data_Quad1 = {}
-CIVRP_Enviorment_Data_Quad2 = {}
-CIVRP_Enviorment_Data_Quad3 = {}
-CIVRP_Enviorment_Data_Quad4 = {}
+--CIVRP_Enviorment_Data_Quad1 = {}
+--CIVRP_Enviorment_Data_Quad2 = {}
+--CIVRP_Enviorment_Data_Quad3 = {}
+--CIVRP_Enviorment_Data_Quad4 = {}
 
 for i = 1, CIVRP_ENVIORMENTSIZE do 
 	local vx = math.random(-15600, 15600)
@@ -14,10 +14,11 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 			table.insert(tbl,num)
 		end
 	end
-	local mdl = math.random(1, table.Count(tbl))
+	local mdl = table.Random(tbl)
 	
 	--This is the code it would take to convert this sytem to a grided system
-	--[[
+
+	local vecPos = Vector(vx,vy,128)
 	local intSX = math.floor(vecPos.x / CIVRP_SUPERCHUNKSIZE)
 	local intSY = math.floor(vecPos.y / CIVRP_SUPERCHUNKSIZE)
 	local intX = math.floor(vecPos.x / CIVRP_CHUNKSIZE)
@@ -28,9 +29,9 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 	CIVRP_Enviorment_Data[intSX][intSY][intX] = CIVRP_Enviorment_Data[intSX][intSY][intX] or {}
 	CIVRP_Enviorment_Data[intSX][intSY][intX][intY] = CIVRP_Enviorment_Data[intSX][intSY][intX][intY] or {}
 
-	table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = CIVRP_Enviorment_Models[model], Angle = Angle(0, tonumber(DecompressInteger(expstring[2])), 0)})
-	]]
-	table.insert(CIVRP_Enviorment_Data, {Vector = Vector(vx, vy, 128), Model = mdl, Angle = Angle(0, ay, 0)})
+	table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vecPos, Model = mdl, Angle = Angle(0,math.random(0,360), 0)})
+
+	--[[table.insert(CIVRP_Enviorment_Data, {Vector = Vector(vx, vy, 128), Model = mdl, Angle = Angle(0, ay, 0)})
 	if vx >= 0 && vy  >= 0 then
 		table.insert(CIVRP_Enviorment_Data_Quad1,{Vector = Vector(vx,vy,128),Model = mdl,Angle = Angle(0,ay,0)})
 	elseif vx < 0 && vy  >= 0 then
@@ -39,7 +40,7 @@ for i = 1, CIVRP_ENVIORMENTSIZE do
 		table.insert(CIVRP_Enviorment_Data_Quad3,{Vector = Vector(vx,vy,128),Model = mdl,Angle = Angle(0,ay,0)})
 	elseif vx >= 0 && vy  < 0 then
 		table.insert(CIVRP_Enviorment_Data_Quad4,{Vector = Vector(vx,vy,128),Model = mdl,Angle = Angle(0,ay,0)})
-	end
+	end]]
 end
 
 local ENCRYPTIONTBL = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"}
@@ -50,12 +51,22 @@ local LOADING_QUENED_DATA = {}
 
 function CIVRP_SendData(ply) 
 	local tbl = {}
-	for _, data in pairs(CIVRP_Enviorment_Data) do 
-		if tbl[tostring(data.Model)] == nil then
-			tbl[tostring(data.Model)] = {}
+	for Chunk1,_ in pairs(CIVRP_Enviorment_Data) do
+		for Chunk2,_ in pairs(CIVRP_Enviorment_Data[Chunk1]) do
+			for Chunk3,_ in pairs(CIVRP_Enviorment_Data[Chunk1][Chunk2]) do
+				for Chunk4,_ in pairs(CIVRP_Enviorment_Data[Chunk1][Chunk2][Chunk3]) do
+					PrintTable(CIVRP_Enviorment_Data[Chunk1][Chunk2][Chunk3][Chunk4])
+					for _,data in pairs(CIVRP_Enviorment_Data[Chunk1][Chunk2][Chunk3][Chunk4]) do
+						if tbl[tostring(data.Model)] == nil then
+							tbl[tostring(data.Model)] = {}
+						end
+						table.insert(tbl[tostring(data.Model)],{Vector = data.Vector,Angle = data.Angle})
+					end
+				end
+			end
 		end
-		table.insert(tbl[tostring(data.Model)],{Vector = data.Vector,Angle = data.Angle})
 	end
+
 	local timerz = 0
 	local str = ""
 	local number = 0
@@ -117,8 +128,18 @@ function CIVRP_SendData(ply)
 end
 
 function CIVRP_CreateSVCLObject(vector,angle,model)	
-	table.insert(CIVRP_Enviorment_Data, {Vector = vector, Model = model, Angle = angle})
-	if vector.x >= 0 && vector.y  >= 0 then
+	local intSX = math.floor(vector.x / CIVRP_SUPERCHUNKSIZE)
+	local intSY = math.floor(vector.y / CIVRP_SUPERCHUNKSIZE)
+	local intX = math.floor(vector.x / CIVRP_CHUNKSIZE)
+	local intY = math.floor(vector.y / CIVRP_CHUNKSIZE)
+	
+	CIVRP_Enviorment_Data[intSX] = CIVRP_Enviorment_Data[intSX] or {}
+	CIVRP_Enviorment_Data[intSX][intSY] = CIVRP_Enviorment_Data[intSX][intSY] or {}
+	CIVRP_Enviorment_Data[intSX][intSY][intX] = CIVRP_Enviorment_Data[intSX][intSY][intX] or {}
+	CIVRP_Enviorment_Data[intSX][intSY][intX][intY] = CIVRP_Enviorment_Data[intSX][intSY][intX][intY] or {}
+
+	table.insert(CIVRP_Enviorment_Data[intSX][intSY][intX][intY], {Vector = vector, Model = model, Angle = angle})
+	--[[if vector.x >= 0 && vector.y  >= 0 then
 		table.insert(CIVRP_Enviorment_Data_Quad1,{Vector = vector,Model = model,Angle = angle})
 	elseif vector.x < 0 && vector.y  >= 0 then
 		table.insert(CIVRP_Enviorment_Data_Quad2,{Vector = vector,Model = model,Angle = angle})
@@ -126,7 +147,7 @@ function CIVRP_CreateSVCLObject(vector,angle,model)
 		table.insert(CIVRP_Enviorment_Data_Quad3,{Vector = vector,Model = model,Angle = angle})
 	elseif vector.x >= 0 && vector.y  < 0 then
 		table.insert(CIVRP_Enviorment_Data_Quad4,{Vector = vector,Model = model,Angle = angle})
-	end
+	end]]
 	for _,ply in pairs(player.GetAll()) do
 		umsg.Start("CIVRP_CreateSVCLObject", ply)
 			umsg.Vector(vector)
@@ -161,6 +182,41 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 	local vector = Vector(tonumber(str[1]),tonumber(str[2]),tonumber(str[3]))
 	if Encryption != ENCRYPTION then return false end
 	if ply:GetPos():Distance(vector) >= CIVRP_SOLIDDISTANCE then return false end
+	
+	local intSX = math.floor(vector.x / CIVRP_SUPERCHUNKSIZE)
+	local intSY = math.floor(vector.y / CIVRP_SUPERCHUNKSIZE)
+	local intX = math.floor(vector.x / CIVRP_CHUNKSIZE)
+	local intY = math.floor(vector.y / CIVRP_CHUNKSIZE)
+	
+	CIVRP_Enviorment_Data[intSX] = CIVRP_Enviorment_Data[intSX] or {}
+	CIVRP_Enviorment_Data[intSX][intSY] = CIVRP_Enviorment_Data[intSX][intSY] or {}
+	CIVRP_Enviorment_Data[intSX][intSY][intX] = CIVRP_Enviorment_Data[intSX][intSY][intX] or {}
+	CIVRP_Enviorment_Data[intSX][intSY][intX][intY] = CIVRP_Enviorment_Data[intSX][intSY][intX][intY] or {}	
+	for _,data in pairs(CIVRP_Enviorment_Data[intSX][intSY][intX][intY]) do
+		if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
+			local entity = ents.Create("prop_physics") 
+			entity:SetPos(data.Vector)
+			entity:SetModel(CIVRP_Enviorment_Models[data.Model].Model)
+			entity:SetAngles(data.Angle)
+			entity:Spawn()
+			entity:Activate()
+			entity:DrawShadow(false)
+			if entity:GetPhysicsObject():IsValid() then
+				entity:GetPhysicsObject():EnableMotion(false)
+			end
+			entity.Think = function() 
+				if ply:GetPos():Distance(data.Vector) >= CIVRP_SOLIDDISTANCE then
+					entity:Remove()
+					data.InUse = false
+					return false
+				end
+				timer.Simple(5,function() if entity:IsValid() then entity.Think() end end)
+			end
+			timer.Simple(5,function() if entity:IsValid() then entity.Think() end end)
+			data.InUse = true	
+		end
+	end
+	--[[
 		if vector.x >= 0 && vector.y >= 0 then
 			for _,data in pairs(CIVRP_Enviorment_Data_Quad1) do
 				if data.Vector == vector && Model == data.Model && data.Angle == angle && !data.InUse then
@@ -261,7 +317,7 @@ function CIVRP_EnableProp(ply,Model,Vect,Ang,Encryption)
 					data.InUse = true	
 				end
 			end
-		end	
+		end	]]
 end
 concommand.Add("CIVRP_EnableProp",function(ply,cmd,args) CIVRP_EnableProp(ply,tonumber(args[1]),tostring(args[2]),tostring(args[3]),tostring(args[4])) end)
 
