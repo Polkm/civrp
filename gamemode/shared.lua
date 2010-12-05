@@ -104,7 +104,7 @@ CIVRP_CHUNKSIZE = 500
 CIVRP_ENVIORMENTSIZE = 5000--10000
 
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
-CIVRP_DIFFICULTY = "Peacefull" --Good for debuggin
+CIVRP_DIFFICULTY = "Normal" --Good for debuggin
 
 local function RestorHealth(plyUser, amount)
 	if plyUser:Health() < plyUser:GetMaxHealth() then
@@ -270,7 +270,7 @@ CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser, swepWeapon, tblIt
 	entity.Flare:SetParent(entity)
 	entity.Flare:SetAngles(Angle(entity:GetAngles().p + 90,entity:GetAngles().y,entity:GetAngles().r))
 	entity.Flare:SetPos(entity:GetPos() + entity:GetAngles():Up() * 6)
-	--entity.Flare:SetKeyValue("scale","1")
+	entity.Flare:SetKeyValue("scale","3")
 	--entity.Flare:SetKeyValue("spawnflags","2")
 	entity.Flare:SetNoDraw(true)
 	entity.Flare:Spawn()
