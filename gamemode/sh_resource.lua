@@ -36,7 +36,6 @@ if SERVER then
 			resource.AddFile(dir .. "/" .. f)
 		end
 	end	
-	resource.AddDir("sound/bnd/commander", ".wav")
 else
 	for _, strPaths in pairs(ClientPaths) do
 		local Path = string.Replace(GM.Folder,"gamemodes/","").."/" .. strPaths .. "/"
