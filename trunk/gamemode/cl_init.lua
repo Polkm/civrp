@@ -1,7 +1,7 @@
 RunConsoleCommand("gm_clearfonts")
 
 include( 'shared.lua' )
-include( 'sh_resource' )
+include( 'sh_resource.lua' )
 
 function GM:Initialize()
 	if !file.Exists("models/props_foliage/tree_pine_large.mdl", true) then

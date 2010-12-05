@@ -1,9 +1,9 @@
 --Include shared lua files
 include("shared.lua")
-include("sh_resource")
+include("sh_resource.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
-AddCSLuaFile("sh_resource")
+AddCSLuaFile("sh_resource.lua")
 
 function GM:PlayerLoadout(ply)
 	ply:Give("civrp_hands")
