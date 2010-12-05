@@ -62,23 +62,3 @@ local function FireBullets(plyUser, intNumber, intSpread, intDamage)
 	tblBullet.Damage = intDamage or 1
 	plyUser:FireBullets(tblBullet)
 end
-
-local META = FindMetaTable("Entity")
-
-function META:SelectItem(strItem)
-	if self.ItemData == nil then
-		self.ItemData = {}
-		return false
-	end
-	for slot,itemdata in pairs(self.ItemData) do
-		if slot != "SELECTED" && itemdata.Class == strItem then
-			self.ItemData["SELECTED"] = slot
-			break
-		end
-	end
-	if self:IsPlayer() then
-		if self:GetActiveWeapon():GetClass() == "civrp_hands" then
-			self:GetActiveWeapon():LoadWeapon(self.ItemData[self.ItemData["SELECTED"]])
-		end
-	end
-end
