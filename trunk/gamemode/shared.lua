@@ -21,7 +21,7 @@ function AutoAdd_LuaFiles()
 		end
 		for _, file in pairs(file.Find('../gamemodes/' .. GM.Path .. '/gamemode/server/settlements/*') || {} ) do
 			if string.find(file,".lua") then
-				include('server/'..file)
+				include('server/settlements/'..file)
 				Msg(file..",")
 			end
 		end
