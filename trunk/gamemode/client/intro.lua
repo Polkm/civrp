@@ -1,4 +1,3 @@
-
 function GM:Intro_Start()
 	timer.Simple(1,function()
 		Sound_GlobalMusic = CreateSound(LocalPlayer(),"/CIVRP/intro/IntroTheme.mp3")
