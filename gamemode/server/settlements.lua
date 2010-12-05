@@ -111,7 +111,7 @@ function CIVRP_Progress_Settlement(ID)
 					end
 				end
 				if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-					timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
+					timer.Simple(50,function() CIVRP_Progress_Settlement(ID) end)
 				end
 			end
 		end
@@ -318,8 +318,6 @@ CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(data)
 	Minions.Class = "npc_antlion_worker"
 	Minions.Number = math.random(2, 4)
 	
-	PrintTable(data)
-	
 	local npcs = {}
 	for i = 1, Minions.Number do
 		local npc = ents.Create(Minions.Class)
@@ -345,6 +343,51 @@ CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(data)
 
 	return {NPCS = npcs, OBJECTS = nil}
 end
+CIVRP_Events["Antlion_Settlement01"].Tech[2] = function(data)
+	local objects = {}
+	local DC = data.Center
+	local vx = math.Clamp(math.random(-1000, 1000) + DC.x, -13000, 13000)
+	local vy = math.Clamp(math.random(-1000, 1000) + DC.y, -13000, 13000)
+	
+	local ClampedV = Vector(vx, vy, DC.z)
+	
+	local AntlionHill = ents.Create("prop_physics")
+	AntlionHill:SetModel("models/props_wasteland/antlionhill.mdl")
+	AntlionHill:SetPos(ClampedV)
+	AntlionHill:SetAngles(Angle(0,math.random(0,180),0))
+	AntlionHill:Spawn()
+	AntlionHill:Activate()
+	if AntlionHill:GetPhysicsObject():IsValid() then
+		AntlionHill:GetPhysicsObject():EnableMotion(false)
+	end
+	table.insert(objects, AntlionHill)
+	
+	data.Leader:SetLastPosition( ClampedV + AntlionHill:GetAngles():Right() * -200)
+	data.Leader:SetSchedule(  SCHED_FORCED_GO_RUN )
+	
+	local npcs = {}
+
+	local Minions = {}
+	Minions.Type = {}
+	Minions.Type[1] = "npc_antlion_worker"
+	Minions.Type[2] = "npc_antlion_grub"
+	Minions.Type[3] = "npc_antlion"
+	Minions.Number = math.random(7, 12)
+	
+	
+	for i = 1, Minions.Number do
+		local npc = ents.Create(Minions.Type[math.random(1, 3)])
+		npc:SetPos(ClampedV + Vector(math.random(-400, 400), math.random(-400, 400), 0))
+		npc:SetKeyValue("Start Burrowed", 1)
+		npc:Spawn()		
+		npc:Activate()
+		npc:Fire('Unburrow','',0.5)
+		table.insert(npcs, npc)
+	end
+	
+	return {NPCS = npcs, OBJECTS = objects}
+end
+
 
 CIVRP_Events["Antlion_Settlement01"].Function = function(ply)	
 	local objects = {}
@@ -379,7 +422,7 @@ CIVRP_Events["Antlion_Settlement01"].Function = function(ply)
 	local npcs = {}
 	for i = 1, Minions.Number do
 		local npc = ents.Create(Minions.Class)
-		npc:SetPos(leader:GetPos() + Vector(math.random(-100, 100), math.random(-100, 100), 0))
+		npc:SetPos(CENTER + Vector(math.random(-400, 400), math.random(-400, 400), 0))
 		npc:SetKeyValue("Start Burrowed", 1)
 		npc:Spawn()		
 		npc:Activate()
@@ -387,6 +430,6 @@ CIVRP_Events["Antlion_Settlement01"].Function = function(ply)
 		table.insert(npcs, npc)
 	end
 	local ID = CIVRP_Register_Settlement(leader, objects, npcs, CENTER, "Antlion_Settlement01")
-	timer.Simple(200, function() CIVRP_Progress_Settlement(ID) end)
+	timer.Simple(20, function() CIVRP_Progress_Settlement(ID) end)
 end
 --- Antlion Settlement End ---
