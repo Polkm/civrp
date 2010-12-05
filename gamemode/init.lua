@@ -11,3 +11,8 @@ function GM:PlayerLoadout(ply)
 	ply:Give("weapon_pistol")
 	ply:Give("weapon_crowbar")
 end
+function GM:PlayerSpawn(ply)
+	ply:SetPos(Vector(math.random(-13000,13000),math.random(-13000,13000),150))
+	GAMEMODE:PlayerSetModel( ply )
+	GAMEMODE:PlayerLoadout(ply)
+end

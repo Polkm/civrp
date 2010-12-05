@@ -1,17 +1,3 @@
-function CheckDistanceFunction(item, distance, interval)
-	if item:IsValid() then 
-		for _,ply in pairs(player.GetAll()) do 
-			if ply:GetPos():Distance(item:GetPos()) <= distance then 
-				timer.Simple(interval, function() if item:IsValid() then CheckDistanceFunction(item, distance, interval) end end)
-				return false 
-			end
-		end
-		if !item:GetOwner():IsPlayer() then
-			item:Remove() 
-		end
-	end
-end
-
 GM.Name 		= "Civilization Role Play"
 GM.Author 		= "Noobulater + Polkm"
 GM.Email 		= "killerkat48@yahoo.com"
@@ -48,7 +34,7 @@ CIVRP_SOLIDDISTANCE = 200
 CIVRP_FADEDISTANCE = 2500
 CIVRP_SUPERCHUNKSIZE = 2500
 CIVRP_CHUNKSIZE = 500
-CIVRP_ENVIORMENTSIZE = 2500--10000
+CIVRP_ENVIORMENTSIZE = 15000
 
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
 CIVRP_DIFFICULTY = "Normal" --Good for debuggin
