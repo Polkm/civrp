@@ -117,7 +117,7 @@ function CIVRP_Progress_Settlement(ID)
 		end
 	end
 end
-
+--- Combine Settlement Start --
 CIVRP_Events["Combine_Settlement01"] = {}
 CIVRP_Events["Combine_Settlement01"].Condition = function(ply) 
 	if CIVRP_Settlements == nil then
@@ -293,3 +293,100 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	local ID = CIVRP_Register_Settlement(leader,objects,npcs,CENTER,"Combine_Settlement01")
 	timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
 end
+--- Combine Settlement End --
+--- Antlion Settlement Start ---
+CIVRP_Events["Antlion_Settlement01"] = {}
+CIVRP_Events["Antlion_Settlement01"].Condition = function(ply) 
+	if CIVRP_Settlements == nil then
+		CIVRP_Settlements = {} 
+		for i = 1, CIVRP_MaxSettlements do
+			CIVRP_Settlements[i] = "empty"
+		end
+		return true
+	end
+	for _,data in pairs(CIVRP_Settlements) do
+		if data == "empty" then
+			return true
+		end
+	end
+	return false
+end
+
+CIVRP_Events["Antlion_Settlement01"].Tech = {}
+CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(data)
+	local Minions = {}
+	Minions.Class = "npc_antlion_worker"
+	Minions.Number = math.random(2, 4)
+	
+	PrintTable(data)
+	
+	local npcs = {}
+	for i = 1, Minions.Number do
+		local npc = ents.Create(Minions.Class)
+		npc:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
+		npc:SetKeyValue("Start Burrowed", 1)
+		npc:Spawn()		
+		npc:Activate()
+		npc:Fire('Unburrow','',0.5)
+		table.insert(npcs, npc)
+	end
+	
+	local grub = {}
+	grub.Number = math.random(2, 4)
+	for i = 1, grub.Number do
+		local npc = ents.Create("npc_antlion_grub")
+		npc:SetPos(data.Center + Vector(math.random(-400, 400), math.random(-400, 400), 0))
+		npc:SetKeyValue("Start Burrowed", 1)
+		npc:Spawn()		
+		npc:Activate()
+		npc:Fire('Unburrow','',0.5)
+		table.insert(npcs, npc)
+	end
+
+	return {NPCS = npcs, OBJECTS = nil}
+end
+
+CIVRP_Events["Antlion_Settlement01"].Function = function(ply)	
+	local objects = {}
+	
+	local vx = math.random(-14000, 14000)--
+	local vy = math.random(-14000, 14000)--
+	local CENTER = Vector(vx, vy, 128)
+	
+	local AntlionHill = ents.Create("prop_physics")
+	AntlionHill:SetModel("models/props_wasteland/antlionhill.mdl")
+	AntlionHill:SetPos(CENTER)
+	AntlionHill:SetAngles(Angle(0,math.random(0,180),0))
+	AntlionHill:Spawn()
+	AntlionHill:Activate()
+	if AntlionHill:GetPhysicsObject():IsValid() then
+		AntlionHill:GetPhysicsObject():EnableMotion(false)
+	end
+	table.insert(objects,AntlionHill)
+
+	local leader = ents.Create("npc_antlionguard")
+	leader:SetPos(AntlionHill:GetPos() + AntlionHill:GetAngles():Right() * -200)
+	leader:SetModel("models/antlion_guard.mdl")
+	leader:SetAngles(Angle(0,math.random(0,180),0))
+		
+	leader:Spawn()
+	leader:Activate()
+	
+	local Minions = {}
+	Minions.Class = "npc_antlion"
+	Minions.Number = math.random(1, 3)
+	
+	local npcs = {}
+	for i = 1, Minions.Number do
+		local npc = ents.Create(Minions.Class)
+		npc:SetPos(leader:GetPos() + Vector(math.random(-100, 100), math.random(-100, 100), 0))
+		npc:SetKeyValue("Start Burrowed", 1)
+		npc:Spawn()		
+		npc:Activate()
+		npc:Fire('Unburrow','',0.5)
+		table.insert(npcs, npc)
+	end
+	local ID = CIVRP_Register_Settlement(leader, objects, npcs, CENTER, "Antlion_Settlement01")
+	timer.Simple(10, function() CIVRP_Progress_Settlement(ID) end)
+end
+--- Antlion Settlement End ---
