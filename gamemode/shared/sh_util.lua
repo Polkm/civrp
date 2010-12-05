@@ -8,9 +8,9 @@ function GetDifficultyFactor()
 	elseif CIVRP_DIFFICULTY == "Normal" then
 		return 1.0
 	elseif CIVRP_DIFFICULTY == "Hard" then
-		return 2.0
+		return 1.5
 	elseif CIVRP_DIFFICULTY == "Hell" then
-		return 4.0
+		return 2.5
 	end
 	return 1
 end

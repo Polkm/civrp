@@ -7,9 +7,9 @@ function CIVRP_CreateEvent()
 		end
 	end
 	if table.Count(tbl) >= 1 then
-		CIVRP_Events[table.Random(tbl)].Function(ply)
+		CIVRP_Events["Ambush"].Function(ply)
 	end
-	timer.Simple(math.Round(math.random(55, 65) * GetPlayerFactor() / GetDifficultyFactor()), function() CIVRP_CreateEvent() end)
+	timer.Simple(math.Round(math.random(55, 65) * GetPlayerFactor()), function() CIVRP_CreateEvent() end)
 end
 
 hook.Add("Initialize", "initializing_threat_systems", function()
@@ -24,8 +24,7 @@ CIVRP_Events = {}
 CIVRP_Events["Ambush"] = {}
 CIVRP_Events["Ambush"].Condition = function(ply) 
 	if table.Count(ents.FindByClass("npc_*")) >= 5 then return false end
-	if IsDay() and ply:Health() >= 50 then return true
-	else return true end
+	if IsDay() and ply:Health() <= 30 then return false else return true end
 	return false
 end
 CIVRP_Events["Ambush"].Function = function(ply)
@@ -35,6 +34,7 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	Bosses[1].Skins = {0, 1}
 	Bosses[1].Number = math.random(1, 2)
 	Bosses[1].MinionsNumber = math.random(2, 3)
+	Bosses[1].HealthFactor = 0.9 --Tad too hard so nerf it a bit
 	Bosses[1].Minions = {}
 	Bosses[1].Minions[1] = {Class = "npc_antlion", Skins = {0, 1, 2, 3}}
 	Bosses[1].Minions[2] = {Class = "npc_antlion_worker"}
@@ -42,43 +42,56 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	Bosses[2] = {}
 	Bosses[2].Class = "npc_hunter"
 	Bosses[2].Number = math.random(1, 3)
-	Bosses[2].MinionsNumber = math.random(1, 3)
+	Bosses[2].MinionsNumber = math.random(2, 4)
+	Bosses[1].HealthFactor = 1.1 --Tad too easy make it harder
 	Bosses[2].Minions = {}
-	Bosses[2].Minions[1] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1"}}
-	Bosses[2].Minions[2] = {Class = "npc_combine_s", Skins = {1}, Weapons = {"weapon_shotgun"}}
+	Bosses[2].Minions[1] = {Class = "npc_combine_s",
+		KeyValues = {additionalequipment = {"weapon_ar2", "weapon_smg1"}, NumGrenades = {Min = 0, Max = 1}, tacticalvariant = {true}}}
+	Bosses[2].Minions[2] = {Class = "npc_combine_s",
+		Skins = {1}, KeyValues = {additionalequipment = {"weapon_shotgun"}, NumGrenades = {Min = 0, Max = 1}, tacticalvariant = {true}}}
 	--Forest Ranger that uses a custom mat
-	--Bosses[2].Minions[3] = {Class = "npc_combine_s", Mat = "Models/Combine_soldier/combinesoldiersheet_forestranger", Weapons = {"weapon_ar2", "weapon_shotgun"}}
+	--[[Bosses[2].Minions[3] = {Class = "npc_combine_s", Mat = "Models/Combine_soldier/combinesoldiersheet_forestranger",
+		KeyValues = {additionalequipment = {"weapon_ar2", "weapon_shotgun"}, NumGrenades = {Min = 0, Max = 2}, tacticalvariant = {true}}}]]
 	Bosses[2].Minions[4] = {Class = "npc_manhack"}
-	Bosses[2].Minions[5] = {Class = "npc_manhack"}
 	
 	Bosses[3] = {}
 	Bosses[3].Class = "npc_fastzombie"
-	Bosses[3].Number = math.random(1, 3)
-	Bosses[3].MinionsNumber = math.random(1, 3)
+	Bosses[3].Number = math.random(1, 4)
+	Bosses[3].MinionsNumber = math.random(2, 5)
 	Bosses[3].Minions = {}
 	Bosses[3].Minions[1] = {Class = "npc_poisonzombie"}
 	Bosses[3].Minions[2] = {Class = "npc_zombie"}
 	
-	local Selection = table.Random(Bosses)
+	local Selection = Bosses[2]
 	for i = 1, Selection.Number do
 		local npc = ents.Create(Selection.Class)
-		local distance = math.random(200, 1200)
+		local distance = math.random(300, 1400)
 		local angle = math.random(0, 360)
 		npc:SetPos(ply:GetPos() + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 10))
 		if Selection.Skins then npc:SetSkin(table.Random(Selection.Skins)) end
 		npc:SetMaterial(Selection.Mat or nil)
+		npc:SetKeyValue("Squad Name", Selection.Class .. CurTime())
+		npc:SetHealth(npc:Health() * GetDifficultyFactor() * (Selection.HealthFactor or 1))
 		npc:Spawn()
 		npc:Activate()
 		for i = 1, Selection.MinionsNumber do
 			local MinionSelection = table.Random(Selection.Minions)
 			local npc = ents.Create(MinionSelection.Class)
-			distance = math.random(200, 1200)
+			distance = math.random(300, 1400)
 			angle = math.random(0, 360)
 			npc:SetPos(ply:GetPos() + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 10))
 			if MinionSelection.Skins then npc:SetSkin(table.Random(MinionSelection.Skins)) end
 			npc:SetMaterial(MinionSelection.Mat or nil)
-			if MinionSelection.Weapons != nil then
-				npc:SetKeyValue("additionalequipment", table.Random(MinionSelection.Weapons))
+			npc:SetKeyValue("Squad Name", Selection.Class .. CurTime())
+			npc:SetHealth(npc:Health() * GetDifficultyFactor() * (MinionSelection.HealthFactor or 1))
+			if MinionSelection.KeyValues != nil then
+				for key, tbl in pairs(MinionSelection.KeyValues) do
+					if tbl.Min && tbl.Max then
+						npc:SetKeyValue(key, math.random(tbl.Min, tbl.Max))
+					else
+						npc:SetKeyValue(key, tostring(table.Random(tbl)))
+					end
+				end
 			end
 			npc:Spawn()		
 			npc:Activate()
@@ -314,7 +327,6 @@ end
 
 CIVRP_Events["AntlionBurrow"] = {}
 CIVRP_Events["AntlionBurrow"].Condition = function(ply) 
-	
 	return true
 end
 CIVRP_Events["AntlionBurrow"].Function = function(ply)	
