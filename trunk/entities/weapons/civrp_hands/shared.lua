@@ -187,52 +187,60 @@ function SWEP:CanSecondaryAttack()
 	return true
 end
 function SWEP:PrimaryAttack()
-	if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
-		--PrintTable(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
-		if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].FireFunction(self:GetOwner(), self, self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]]) then
-			self:GetOwner():RemoveItem(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class, 1)
-		end	 
+	if self:GetOwner().ItemData == nil then self:GetOwner().ItemData = {} return false end
+	if self:GetOwner().ItemData["SELECTED"] != nil then
+		if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
+			--PrintTable(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]])
+			if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].FireFunction(self:GetOwner(), self, self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]]) then
+				if SERVER then
+					self:GetOwner():RemoveItem(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class, 1)
+				end
+			end	 
+		end
 	end
 end
 
 function SWEP:SecondaryAttack()
-	if self:GetOwner().ItemData && self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
-		if SERVER then
-			if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].SpawnFunction != nil then
-				local data = self:GetOwner().SpawnFunction(self)
-			else
-				local entity = ents.Create("prop_physics")
-				entity:SetModel(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Model)
-				entity.ItemClass = self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class
-				entity.ItemTable = self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]]
-				entity:SetAngles(self:GetOwner():GetAngles() + self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldAngle)
-				entity:SetPos(self:GetOwner():GetShootPos() + self:GetOwner():GetAngles():Forward() * (self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.x) + self:GetOwner():GetAngles():Up() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.y + self:GetOwner():GetAngles():Right() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.z )
-				entity:Spawn()
-				entity:Activate()
-				entity:SetOwner(nil)
-				entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-				if entity:GetPhysicsObject():IsValid() then
-					entity:GetPhysicsObject():Wake()
-					entity:GetPhysicsObject():SetVelocity(self:GetOwner():GetVelocity())
-					entity:GetPhysicsObject():ApplyForceCenter(self:GetOwner():GetAngles():Forward() * (entity:GetPhysicsObject():GetMass() * 100))
-				end
-				self:GetOwner():RemoveItem(strItem, 1, self:GetOwner().ItemData["SELECTED"])
-			end
-		end
-		self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
-		self.Throwing = nil
-	else
-		if SERVER then
-			local trace = self.Owner:GetEyeTrace()
-			if trace.Hit && trace.HitNonWorld && trace.HitPos:Distance(self.Owner:GetPos()) < 200 then
-				local strItem = trace.Entity.ItemClass or trace.Entity:GetClass() 
-				if CIVRP_Item_Data[strItem] != nil then
-					self:GetOwner():AddItem(strItem, 1, trace.Entity.ItemTable) 
-					trace.Entity:Remove()
+	if self:GetOwner().ItemData == nil then self:GetOwner().ItemData = {} return false end
+	if self:GetOwner().ItemData["SELECTED"] != nil then
+		if self:GetOwner().ItemData && self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
+			if SERVER then
+				if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].SpawnFunction != nil then
+					local data = self:GetOwner().SpawnFunction(self)
+				else
+					local entity = ents.Create("prop_physics")
+					entity:SetModel(self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Model)
+					entity.ItemClass = self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class
+					entity.ItemTable = self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]]
+					entity:SetAngles(self:GetOwner():GetAngles() + self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldAngle)
+					entity:SetPos(self:GetOwner():GetShootPos() + self:GetOwner():GetAngles():Forward() * (self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.x) + self:GetOwner():GetAngles():Up() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.y + self:GetOwner():GetAngles():Right() * self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].HoldPos.z )
+					entity:Spawn()
+					entity:Activate()
+					entity:SetOwner(nil)
+					entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+					if entity:GetPhysicsObject():IsValid() then
+						entity:GetPhysicsObject():Wake()
+						entity:GetPhysicsObject():SetVelocity(self:GetOwner():GetVelocity())
+						entity:GetPhysicsObject():ApplyForceCenter(self:GetOwner():GetAngles():Forward() * (entity:GetPhysicsObject():GetMass() * 100))
+					end
+					self:GetOwner():RemoveItem(strItem, 1, self:GetOwner().ItemData["SELECTED"])
 				end
 			end
+			self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+			self.Throwing = nil
+		else
+			if SERVER then
+				local trace = self.Owner:GetEyeTrace()
+				if trace.Hit && trace.HitNonWorld && trace.HitPos:Distance(self.Owner:GetPos()) < 200 then
+					local strItem = trace.Entity.ItemClass or trace.Entity:GetClass() 
+					if CIVRP_Item_Data[strItem] != nil then
+						self:GetOwner():AddItem(strItem, 1, trace.Entity.ItemTable) 
+						trace.Entity:Remove()
+					end
+				end
+			end
+			self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 		end
-		self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 	end
 end
 
