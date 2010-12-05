@@ -111,7 +111,11 @@ function CIVRP_Progress_Settlement(ID)
 					end
 				end
 				if settlement.TechLevel < table.Count(CIVRP_Events[settlement.EventKey].Tech) then
-					timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
+					if (settlement.ProgressRate && settlement.ProgressRate > 0) then
+						timer.Simple(settlement.ProgressRate, function() CIVRP_Progress_Settlement(ID) end)
+					else
+						timer.Simple(300, function() CIVRP_Progress_Settlement(ID) end)
+					end
 				end
 			end
 		end
