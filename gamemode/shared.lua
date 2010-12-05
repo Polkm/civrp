@@ -38,27 +38,3 @@ CIVRP_ENVIORMENTSIZE = 15000
 
 CIVRP_DIFFICULTY_SETTINGS = {"Peacefull", "Normal", "Hard", "Hell"}
 CIVRP_DIFFICULTY = "Normal" --Good for debuggin
-
-local function RestorHealth(plyUser, amount)
-	if plyUser:Health() < plyUser:GetMaxHealth() then
-		plyUser:SetHealth(math.Clamp(plyUser:Health() + amount, 0, plyUser:GetMaxHealth()))
-		return true
-	end
-	return false
-end
-
-local function PlaySound(plyUser, strSound, volume, pitch)
-	plyUser:EmitSound(strSound, volume or 100, pitch or 100)
-end
-
-local function FireBullets(plyUser, intNumber, intSpread, intDamage)
-	local tblBullet = {}
-	tblBullet.Num = intNumber or 1
-	tblBullet.Src = plyUser:GetShootPos()
-	tblBullet.Dir = plyUser:GetAngles():Forward()
-	tblBullet.Spread = Vector(intSpread or 0.01, intSpread or 0.01, 0)
-	tblBullet.Tracer = 2
-	tblBullet.Force = intDamage or 1
-	tblBullet.Damage = intDamage or 1
-	plyUser:FireBullets(tblBullet)
-end

@@ -6,8 +6,8 @@ CIVRP_Item_Data["item_healthvial"].HoldAngle = Angle(0, 0, 0)
 CIVRP_Item_Data["item_healthvial"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_healthvial"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_healthvial"].FireFunction = function(plyUser, swepWeapon, tblItem)
-	local worked = RestorHealth(plyUser, 20)
-	if worked then PlaySound(plyUser, "items/smallmedkit1.wav", 70) end
+	local worked = plyUser:RestoreHealth(20)
+	if worked then plyUser:PlaySound("items/smallmedkit1.wav", 70) end
 	return worked
 end
 
@@ -17,8 +17,8 @@ CIVRP_Item_Data["item_healthkit"].HoldAngle = Angle(90, 180, 0)
 CIVRP_Item_Data["item_healthkit"].LerpDegree = .5 -- Percent
 CIVRP_Item_Data["item_healthkit"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_healthkit"].FireFunction = function(plyUser, swepWeapon, tblItem)
-	local worked = RestorHealth(plyUser, 50)
-	if worked then PlaySound(plyUser, "items/smallmedkit1.wav", 70) end
+	local worked = plyUser:RestoreHealth(20)
+	if worked then plyUser:PlaySound("items/smallmedkit1.wav", 70) end
 	return worked
 end
 --[[Example
@@ -47,7 +47,7 @@ CIVRP_Item_Data["item_ammo_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["item_ammo_pistol"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_ammo_pistol"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(20, "pistol")
-	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
+	plyUser:PlaySound("items/ammo_pickup.wav", 70)
 	return true
 end
 
@@ -58,7 +58,7 @@ CIVRP_Item_Data["item_ammo_smg1"].LerpDegree = .5 -- Percent
 CIVRP_Item_Data["item_ammo_smg1"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_ammo_smg1"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(45, "smg1")
-	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
+	plyUser:PlaySound("items/ammo_pickup.wav", 70)
 	return true
 end
 
@@ -69,7 +69,7 @@ CIVRP_Item_Data["item_box_buckshot"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["item_box_buckshot"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_box_buckshot"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(10, "buckshot")
-	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
+	plyUser:PlaySound("items/ammo_pickup.wav", 70)
 	return true
 end
 
@@ -80,7 +80,7 @@ CIVRP_Item_Data["item_ammo_ar2"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_ammo_ar2"].BobScale = .3 -- Percent
 CIVRP_Item_Data["item_ammo_ar2"].FireFunction = function(plyUser, swepWeapon, tblItem)
 	plyUser:GiveAmmo(30, "ar2")
-	PlaySound(plyUser, "items/ammo_pickup.wav", 70) 
+	plyUser:PlaySound("items/ammo_pickup.wav", 70)
 	return true
 end
 
@@ -149,9 +149,9 @@ CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tb
 		swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
 		swepWeapon:SetClip1(swepWeapon:Clip1() - 1)
 		tblItem.WEAPONDATA.LoadedBullets = tblItem.WEAPONDATA.LoadedBullets - 1
-		FireBullets(plyUser, tblItem.WEAPONDATA.NumShots, tblItem.WEAPONDATA.Cone, tblItem.WEAPONDATA.Damage)
+		plyUser:FireBullets(tblItem.WEAPONDATA.NumShots, tblItem.WEAPONDATA.Cone, tblItem.WEAPONDATA.Damage)
 		if SERVER then
-			PlaySound(plyUser, "weapons/pistol/pistol_fire2.wav")
+			plyUser:PlaySound("weapons/pistol/pistol_fire2.wav")
 			plyUser:MuzzleFlash()
 		end
 		if CLIENT or SinglePlayer() then
