@@ -3,7 +3,8 @@ ClientPaths[1] = "gamemode/client"
 
 local ServerPaths = {}
 ServerPaths[1] = "gamemode/server"
-ServerPaths[2] = "gamemode/server/settlements"
+ServerPaths[2] = "gamemode/server/events/"
+ServerPaths[3] = "gamemode/server/events/settlements"
 
 local SharedPaths = {}
 SharedPaths[1] = "gamemode/shared"
