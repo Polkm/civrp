@@ -10,13 +10,15 @@ function CIVRP_CreateEvent()
 		CIVRP_Events[table.Random(tbl)].Function(ply)
 		--CIVRP_Events["Ambush"].Function(ply)
 	end
-	timer.Simple(math.Round(math.random(55, 65) * GetPlayerFactor()), function() CIVRP_CreateEvent() end)
+	local delay = math.Round(math.random(55, 65) * GetPlayerFactor())
+	print(delay)
+	timer.Simple(delay, function() CIVRP_CreateEvent() end)
 end
 
 hook.Add("Initialize", "initializing_threat_systems", function()
-	if CIVRP_DIFFICULTY != "Peacefull" then --No baddies for peace lovers
+--	if CIVRP_DIFFICULTY != "Peacefull" then --No baddies for peace lovers
 		timer.Simple(10, function() CIVRP_CreateEvent() end)
-	end
+	--end
 end)
 
 CIVRP_Events = {}

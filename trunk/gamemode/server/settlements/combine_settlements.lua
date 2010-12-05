@@ -1,3 +1,20 @@
+CIVRP_Events["Combine_Settlement01"] = {}
+CIVRP_Events["Combine_Settlement01"].Condition = function(ply) 
+	if CIVRP_Settlements == nil then
+		CIVRP_Settlements = {} 
+		for i = 1, CIVRP_MaxSettlements do
+			CIVRP_Settlements[i] = "empty"
+		end
+		return true
+	end
+	for _,data in pairs(CIVRP_Settlements) do
+		if data == "empty" then
+			return true
+		end
+	end
+	return false
+end
+
 CIVRP_Events["Combine_Settlement01"].Tech = {}
 CIVRP_Events["Combine_Settlement01"].Tech[1] = function(data)
 	local objects = {}
