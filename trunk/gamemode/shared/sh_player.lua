@@ -1,4 +1,4 @@
-local _R.Player = Player
+local Player = _R.Player
 
 function Player:SelectItem(strItem)
 	if self.ItemData == nil then
