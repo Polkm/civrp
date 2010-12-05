@@ -9,8 +9,9 @@ function CIVRP_CreateEvent()
 	if table.Count(tbl) >= 1 then
 		CIVRP_Events["Ambush"].Function(ply)
 	end
-	timer.Simple(math.random(25, 65) --[[* GetPlayerFactor() / GetDifficultyFactor()]], function() CIVRP_CreateEvent() end)
+	timer.Simple(math.Round(math.random(25, 65) * GetPlayerFactor() / GetDifficultyFactor()), function() CIVRP_CreateEvent() end)
 end
+
 hook.Add("Initialize", "initializing_threat_systems", function()
 	if CIVRP_DIFFICULTY != "Peacefull" then --No baddies for peace lovers
 		timer.Simple(10, function() CIVRP_CreateEvent() end)
