@@ -414,12 +414,6 @@ CIVRP_Events["Antlion_Settlement01"].Tech[2] = function(data)
 			Antlion:Spawn()		
 			Antlion:Activate()
 			Antlion:Fire('Unburrow','',0.5)
-			Antlion:SetColor(0, 0, 0, 0)
-			timer.Simple(0.2, function()
-				if (ValidEntity(Antlion)) then
-					Antlion:SetColor(255, 255, 255, 255)
-				end
-			end)
 			ent:Remove()
 			table.insert(npcs, Antlion)
 		end
@@ -476,12 +470,6 @@ CIVRP_Events["Antlion_Settlement01"].Tech[3] = function(data)
 			Antlion:Spawn()		
 			Antlion:Activate()
 			Antlion:Fire('Unburrow','',0.5)
-			Antlion:SetColor(color(0, 0, 0, 0))
-			timer.Simple(0.5, function()
-				if (ValidEntity(Antlion)) then
-					Antlion:SetColor(color(255, 255, 255, 255))
-				end
-			end)
 			ent:Remove()
 			table.insert(npcs, Antlion)
 		end
