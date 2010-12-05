@@ -24,7 +24,7 @@ CIVRP_Events = {}
 
 CIVRP_Events["Ambush"] = {}
 CIVRP_Events["Ambush"].Condition = function(ply) 
-	if table.Count(ents.FindByClass("npc_*")) >= 5 then return false end
+	--if table.Count(ents.FindByClass("npc_*")) >= 5 then return false end
 	if IsDay() and ply:Health() <= 30 then return false else return true end
 	return false
 end
@@ -269,13 +269,13 @@ CIVRP_Events["HeadCrabCanister"].Condition = function(ply)
 	return true
 end
 CIVRP_Events["HeadCrabCanister"].Function = function(ply)
-	local intHeadCrabRange = 1000
+	local intHeadCrabRange = 700
 	local tblHeadCrabs = {"0", "1", "2"} --0 = Normal, 1 = Fast, 2 = Poision
 	local intHeadCrabMin = 4
 	local intHeadCrabMax = 8
 	local intHeadCrabDamage = 20
 	
-	local distance = math.random(500, intHeadCrabRange)
+	local distance = math.random(300, intHeadCrabRange)
 	local angle = math.random(0, 360)
 	local entStartingPos = ents.Create("info_target")
 	entStartingPos:SetPos(ply:GetPos() + (Vector(math.cos(angle) * (distance + 500), math.sin(angle) * (distance + 500)) + Vector(0, 0, 9500)))
