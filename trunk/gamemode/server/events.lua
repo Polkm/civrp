@@ -7,7 +7,7 @@ function CIVRP_CreateEvent()
 		end
 	end
 	if table.Count(tbl) >= 1 then
-		CIVRP_Events["Ambush"].Function(ply)
+		CIVRP_Events[table.Random(tbl)].Function(ply)
 	end
 	timer.Simple(math.Round(math.random(55, 65) * GetPlayerFactor()), function() CIVRP_CreateEvent() end)
 end
@@ -62,7 +62,7 @@ CIVRP_Events["Ambush"].Function = function(ply)
 	Bosses[3].Minions[1] = {Class = "npc_poisonzombie"}
 	Bosses[3].Minions[2] = {Class = "npc_zombie"}
 	
-	local Selection = Bosses[2]
+	local Selection = table.Random(Bosses)
 	for i = 1, Selection.Number do
 		local npc = ents.Create(Selection.Class)
 		local distance = math.random(300, 1400)
