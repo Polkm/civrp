@@ -1,5 +1,5 @@
 CIVRP_Events["Combine_Settlement01"] = {}
-CIVRP_Events["Combine_Settlement01"].ProgressRate = 5
+CIVRP_Events["Combine_Settlement01"].ProgressRate = 250
 CIVRP_Events["Combine_Settlement01"].EventKey = "Combine_Settlement01"
 CIVRP_Events["Combine_Settlement01"].Objects = {}
 CIVRP_Events["Combine_Settlement01"].Npcs = {}
@@ -20,9 +20,9 @@ CIVRP_Events["Combine_Settlement01"].Condition = function(ply)
 end
 
 CIVRP_Events["Combine_Settlement01"].Tech = {}
-CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTableTable)
+CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTable)
 	local thumper = ents.Create("prop_thumper")
-	thumper:SetPos(tblDataTableTable.Center)
+	thumper:SetPos(tblDataTable.Center)
 	thumper:SetAngles(Angle(0,math.random(0,360),0))
 	thumper:Spawn()
 	thumper:Activate()
@@ -47,13 +47,13 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTableTable)
 	thumper.DropItems[3].ItemClass = "item_metalprop"
 	thumper.DropItems[3].Offset = Vector(0, 0, 50)
 	thumper.RemoveLevel = 4
-	table.insert(tblDataTableTable.Objects, thumper)
+	table.insert(tblDataTable.Objects, thumper)
 	
 	local crate = CreateCustomProp("models/items/ammocrate_ar2.mdl", true, true)
 	crate:SetPos(thumper:GetPos() + thumper:GetAngles():Right() * 120 + thumper:GetAngles():Up() * 50)
 	crate:SetAngles(Angle(0,thumper:GetAngles().y - 90,0))
 	crate.Removelevel = 4
-	table.insert(tblDataTableTable.Objects, crate)
+	table.insert(tblDataTable.Objects, crate)
 
 	local SupplyList = {"item_healthvial","item_ammo_smg1","item_ammo_ar2","item_ammo_smg1_grenade","item_ammo_ar2_altfire", "weapon_frag",}
 	local itemtbl = {}
@@ -72,13 +72,13 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTableTable)
 	end
 end
 
-CIVRP_Events["Combine_Settlement01"].Tech[2] = function(tblDataTableTable)
+CIVRP_Events["Combine_Settlement01"].Tech[2] = function(tblDataTable)
 	for i = 1, math.random(4, 14) do
 		local distance = math.random(490, 510)
 		local angle = math.random(0, 360)
 		local cade = CreateCustomProp("models/props_combine/combine_barricade_short01a.mdl", false, true)
-		cade:SetPos(tblDataTableTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
-		cade:SetAngles((cade:GetPos() - tblDataTableTable.Center):Angle())
+		cade:SetPos(tblDataTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
+		cade:SetAngles((cade:GetPos() - tblDataTable.Center):Angle())
 		cade:SetPos(cade:GetPos() + Vector(0,0,30))
 		cade.DamageAllowed = true
 		cade:SetHealth(100)
@@ -87,17 +87,17 @@ CIVRP_Events["Combine_Settlement01"].Tech[2] = function(tblDataTableTable)
 		cade.DropItems[1].ItemClass = "item_metalprop"
 		cade.DropItems[1].Offset = Vector(0, 0, 40)
 		cade.RemoveLevel = 4
-		table.insert(tblDataTableTable.Objects, cade)
+		table.insert(tblDataTable.Objects, cade)
 	end
 end
 
-CIVRP_Events["Combine_Settlement01"].Tech[3] = function(tblDataTableTable)
+CIVRP_Events["Combine_Settlement01"].Tech[3] = function(tblDataTable)
 	for i = 1, math.random(1, 3) do
 		local distance = math.random(450, 480)
 		local angle = math.random(0, 360)
 		local turret = ents.Create("npc_turret_floor")
-		turret:SetPos(tblDataTableTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
-		turret:SetAngles((turret:GetPos() - tblDataTableTable.Center):Angle())
+		turret:SetPos(tblDataTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
+		turret:SetAngles((turret:GetPos() - tblDataTable.Center):Angle())
 		turret:SetPos(turret:GetPos() + Vector(0, 0, 30))
 		turret:Spawn()
 		turret:DropToFloor()
@@ -107,7 +107,7 @@ CIVRP_Events["Combine_Settlement01"].Tech[3] = function(tblDataTableTable)
 		turret.DropItems[1] = {}
 		turret.DropItems[1].ItemClass = "item_metalprop"
 		turret.DropItems[1].Offset = Vector(0, 0, 50)
-		table.insert(tblDataTableTable.Npcs, turret)
+		table.insert(tblDataTable.Npcs, turret)
 	end
 	local function think() 
 		if npcs != nil then
@@ -129,7 +129,7 @@ end
 CIVRP_Events["Combine_Settlement01"].Function = function(ply)	
 	local tblDataTable = CIVRP_Events["Combine_Settlement01"]
 	tblDataTable.Center = Vector(math.random(-14000, 14000), math.random(-14000, 14000), 128)
-	
+
 	local apc = ents.Create( "prop_vehicle_apc" )
 	apc:SetKeyValue( "model", "models/combine_apc.mdl" )
 	apc:SetKeyValue( "vehiclescript", "scripts/vehicles/apc_npc.txt" )
