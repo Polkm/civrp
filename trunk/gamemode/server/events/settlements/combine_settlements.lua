@@ -34,6 +34,19 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTableTable)
 	if thumper:GetPhysicsObject():IsValid() then
 		thumper:GetPhysicsObject():EnableMotion(false)
 	end
+	thumper.DamageAllowed = true
+	thumper:SetHealth(500)
+	thumper.DropItems = {}
+	thumper.DropItems[1] = {}
+	thumper.DropItems[1].ItemClass = "item_metalprop"
+	thumper.DropItems[1].Offset = Vector(0, 0, 50)
+	thumper.DropItems[2] = {}
+	thumper.DropItems[2].ItemClass = "item_metalprop"
+	thumper.DropItems[2].Offset = Vector(0, 0, 50)
+	thumper.DropItems[3] = {}
+	thumper.DropItems[3].ItemClass = "item_metalprop"
+	thumper.DropItems[3].Offset = Vector(0, 0, 50)
+	
 	table.insert(tblDataTableTable.Objects, thumper)
 	
 	local crate = CreateCustomProp("models/items/ammocrate_ar2.mdl", true, true)
@@ -67,6 +80,12 @@ CIVRP_Events["Combine_Settlement01"].Tech[2] = function(tblDataTableTable)
 		cade:SetPos(tblDataTableTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
 		cade:SetAngles((cade:GetPos() - tblDataTableTable.Center):Angle())
 		cade:SetPos(cade:GetPos() + Vector(0,0,30))
+		cade.DamageAllowed = true
+		cade:SetHealth(100)
+		cade.DropItems = {}
+		cade.DropItems[1] = {}
+		cade.DropItems[1].ItemClass = "item_metalprop"
+		cade.DropItems[1].Offset = Vector(0, 0, 40)
 		cade.RemoveLevel = 4
 		table.insert(tblDataTableTable.Objects, cade)
 	end
@@ -82,6 +101,12 @@ CIVRP_Events["Combine_Settlement01"].Tech[3] = function(tblDataTableTable)
 		turret:SetPos(turret:GetPos() + Vector(0, 0, 30))
 		turret:Spawn()
 		turret:DropToFloor()
+		turret.DamageAllowed = true
+		turret:SetHealth(100)
+		turret.DropItems = {}
+		turret.DropItems[1] = {}
+		turret.DropItems[1].ItemClass = "item_metalprop"
+		turret.DropItems[1].Offset = Vector(0, 0, 50)
 		table.insert(tblDataTableTable.Npcs, turret)
 	end
 	local function think() 
