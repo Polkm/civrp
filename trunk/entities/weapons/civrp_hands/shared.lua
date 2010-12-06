@@ -295,37 +295,43 @@ if CLIENT then
 				else
 					self.EntViewModel:SetNoDraw(false)
 					self.EntViewModel:SetModel(tblWeaponData.Model)
+					local tagertAngles = tblWeaponData.HoldAngle
+					local tagertPosition = tblWeaponData.HoldPos
+					if self.EntViewModel.AnimationTable != nil && self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame] != nil then
+						tagertAngles = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame].Angle
+						tagertPosition = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame].Pos
+						local percent = ((CurTime()-self.EntViewModel.AnimationStartTime)/self.EntViewModel.AnimationTable.Time)
+						local percentframe = 0
+						local timeperframe = 0 
+							timeperframe = ((self.EntViewModel.AnimationTable.Time)/(table.Count(self.EntViewModel.AnimationTable)-1))
+							percentframe = ((CurTime()-self.EntViewModel.AnimationStartTime)-(timeperframe*(self.EntViewModel.AnimationFrame-1)))/timeperframe
+						local subangle = Angle(0,0,0)
+						local subpos = Vector(0,0,0)
+						if self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1] != nil then
+							subangle = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1].Angle
+							subpos = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1].Pos
+						else
+							subangle = tblWeaponData.HoldAngle
+							subpos = tblWeaponData.HoldPos
+						end
+						local difpos = (tagertPosition - subpos)
+						local difangle = (tagertAngles - subangle)
+						tagertAngles = tagertAngles - difangle * percentframe
+						tagertPosition = tagertPosition - difpos * percentframe
+						if self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1] != nil then
+							self.EntViewModel.AnimationFrame = math.floor(((CurTime()-self.EntViewModel.AnimationStartTime)/timeperframe)) + 1
+						else
+							tagertAngles = tblWeaponData.HoldAngle
+							tagertPosition = tblWeaponData.HoldPos
+						end
+					end					
 					--beforeVectors = self.EntViewModel:GetPos()
-					self.EntViewModel:SetPos(origin + angles:Forward() * tblWeaponData.HoldPos.x + angles:Up() * tblWeaponData.HoldPos.y + angles:Right() * tblWeaponData.HoldPos.z)
+					self.EntViewModel:SetPos(origin + angles:Forward() * tagertPosition.x + angles:Up() * tagertPosition.y + angles:Right() * tagertPosition.z)
 					--if LocalPlayer():GetVelocity():Length() != 0 && LocalPlayer():OnGround() then
 					--self.EntViewModel:SetPos(LerpVector( 0.5,beforeVectors,self.EntViewModel:GetPos()))
 					--end
 					if self.EntViewModel.AnimationTable != nil  && self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame] != nil then
 						--PrintTable(self.EntViewModel.AnimationTable[1])
-					end
-					local tagertAngles = tblWeaponData.HoldAngle
-					if self.EntViewModel.AnimationTable != nil && self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame] != nil then
-						tagertAngles = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame].Angle
-						local percent = ((CurTime()-self.EntViewModel.AnimationStartTime)/self.EntViewModel.AnimationTable.Time)
-						local percentframe = 0
-						if self.EntViewModel.AnimationFrame > 1 then
-							percentframe = ((CurTime()-self.EntViewModel.AnimationStartTime)/(self.EntViewModel.AnimationTable.Time/(table.Count(self.EntViewModel.AnimationTable)-1)))-self.EntViewModel.AnimationFrame
-						else
-							percentframe = ((CurTime()-self.EntViewModel.AnimationStartTime)/(self.EntViewModel.AnimationTable.Time/(table.Count(self.EntViewModel.AnimationTable)-1)))
-						end
-						local subangle = Angle(0,0,0)
-						if self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1] != nil then
-							subangle = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1].Angle
-						else
-							subangle = tblWeaponData.HoldAngle
-						end
-						local difangle = (tagertAngles - subangle)
-						tagertAngles = tagertAngles - difangle	* percentframe
-						if self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1] != nil then
-							self.EntViewModel.AnimationFrame = math.Clamp(math.floor((table.Count(self.EntViewModel.AnimationTable)-1)*percent),1,(table.Count(self.EntViewModel.AnimationTable)-1))
-						else
-							tagertAngles = tblWeaponData.HoldAngle
-						end
 					end
 					beforeAngles = self.EntViewModel:GetAngles()
 					self.EntViewModel:SetAngles(Angle(angles.p, angles.y, angles.r))
