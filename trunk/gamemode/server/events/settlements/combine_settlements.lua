@@ -41,13 +41,14 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTable)
 	thumper.DropItems[1].ItemClass = "item_metalprop"
 	thumper.DropItems[1].Offset = Vector(0, 0, 50)
 	thumper.DropItems[1].Amount = 3
-	
 	thumper.Removelevel = 4
 	table.insert(tblDataTable.Objects, thumper)
 	
-	local crate = CreateCustomProp("models/items/ammocrate_ar2.mdl", true, true)
+
+	local crate = ents.Create("item_ammo_crate")
+	crate:SetKeyValue("AmmoType", table.Random(0, 1, 2, 3, 4, 5, 8))
 	crate:SetPos(thumper:GetPos() + thumper:GetAngles():Right() * 120 + thumper:GetAngles():Up() * 15)
-	crate:SetAngles(Angle(0,thumper:GetAngles().y - 90,0))
+	crate:SetAngles(Angle(0, thumper:GetAngles().y - 90, 0))
 	crate.Removelevel = 4
 	table.insert(tblDataTable.Objects, crate)
 
