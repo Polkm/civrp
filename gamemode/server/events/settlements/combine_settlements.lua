@@ -46,11 +46,11 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTable)
 	thumper.DropItems[3] = {}
 	thumper.DropItems[3].ItemClass = "item_metalprop"
 	thumper.DropItems[3].Offset = Vector(0, 0, 50)
-	thumper.RemoveLevel = 4
+	thumper.Removelevel = 4
 	table.insert(tblDataTable.Objects, thumper)
 	
 	local crate = CreateCustomProp("models/items/ammocrate_ar2.mdl", true, true)
-	crate:SetPos(thumper:GetPos() + thumper:GetAngles():Right() * 120 + thumper:GetAngles():Up() * 50)
+	crate:SetPos(thumper:GetPos() + thumper:GetAngles():Right() * 120 + thumper:GetAngles():Up() * 15)
 	crate:SetAngles(Angle(0,thumper:GetAngles().y - 90,0))
 	crate.Removelevel = 4
 	table.insert(tblDataTable.Objects, crate)
@@ -86,7 +86,7 @@ CIVRP_Events["Combine_Settlement01"].Tech[2] = function(tblDataTable)
 		cade.DropItems[1] = {}
 		cade.DropItems[1].ItemClass = "item_metalprop"
 		cade.DropItems[1].Offset = Vector(0, 0, 40)
-		cade.RemoveLevel = 4
+		cade.Removelevel = 4
 		table.insert(tblDataTable.Objects, cade)
 	end
 end
@@ -139,7 +139,7 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	apc:Spawn()
 	apc:SetName( "Combine_apc" .. apc:EntIndex() )
 	apc:Activate()
-	apc.RemoveLevel = 1
+	apc.Removelevel = 1
 	table.insert(tblDataTable.Objects, apc)
 	
 	local apc_driver = ents.Create( "npc_apcdriver" )
