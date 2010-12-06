@@ -94,6 +94,26 @@ if SERVER then
 		return npc
 	end
 	
+	function CreateCustomProp(strModel, DropToFloor, StopMotion)
+		local Prop = ents.Create("prop_physics")
+		Prop:SetModel(strModel)
+		Prop:Spawn()
+		if (DropToFloor) then Prop:DropToFloor() end
+		if (Prop:GetPhysicsObject():IsValid() &&  StopMotion) then
+			Prop:GetPhysicsObject():EnableMotion(false)
+		end
+		function Prop:SetKeyValues(tbltable)
+			for key, tbl in pairs(tbltable) do
+				if tbl.Min && tbl.Max then
+					npc:SetKeyValue(key, math.random(tbl.Min, tbl.Max))
+				else
+					npc:SetKeyValue(key, tostring(table.Random(tbl)))
+				end
+			end
+		end
+		return Prop
+	end
+	
 	function GetRandomRadiusPos(vecOrigin, intMinRadius, intMaxRadius)
 		intMaxRadius = intMaxRadius or intMinRadius
 		distance = math.random(intMinRadius, intMaxRadius)

@@ -36,17 +36,10 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTableTable)
 	end
 	table.insert(tblDataTableTable.Objects, thumper)
 	
-	local crate = ents.Create("prop_physics") 
+	local crate = CreateCustomProp("models/items/ammocrate_ar2.mdl", true, true)
 	crate:SetPos(thumper:GetPos() + thumper:GetAngles():Right() * 120 + thumper:GetAngles():Up() * 50)
-	crate:SetModel("models/items/ammocrate_ar2.mdl")
 	crate:SetAngles(Angle(0,thumper:GetAngles().y - 90,0))
-	crate:Spawn()
-	crate:DropToFloor()
 	crate.Removelevel = 4
-	crate:Activate() 
-	if crate:GetPhysicsObject():IsValid() then
-		crate:GetPhysicsObject():EnableMotion(false)
-	end
 	table.insert(tblDataTableTable.Objects, crate)
 
 	local SupplyList = {"item_healthvial","item_ammo_smg1","item_ammo_ar2","item_ammo_smg1_grenade","item_ammo_ar2_altfire", "weapon_frag",}
@@ -57,13 +50,10 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTableTable)
 	local selection = table.Random(itemtbl)
 	local number = math.random(2,3)
 	for i = 1, number do
-		local item = ents.Create("prop_physics")
-		item:SetModel(CIVRP_Item_Data[selection].Model)
+		local item = CreateCustomProp(CIVRP_Item_Data[selection].Model, false, false)
 		item:SetAngles(crate:GetAngles())
-		item:Spawn()
 		local width = Vector(item:OBBMaxs().x,item:OBBMaxs().y,0) - Vector(item:OBBMins().x,item:OBBMins().y,0)
 		item:SetPos(crate:GetPos() + crate:GetAngles():Up()  * 30 + crate:GetAngles():Up()  * 20 * i + crate:GetAngles():Right() * -10 * i + crate:GetAngles():Right() * 20 + width + crate:GetAngles():Forward() * -10 )
-		item:Activate()
 		item:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 		item.ItemClass = selection
 	end
@@ -73,17 +63,11 @@ CIVRP_Events["Combine_Settlement01"].Tech[2] = function(tblDataTableTable)
 	for i = 1, math.random(4, 14) do
 		local distance = math.random(490, 510)
 		local angle = math.random(0, 360)
-		local cade = ents.Create("prop_physics")
-		cade:SetModel("models/props_combine/combine_barricade_short01a.mdl")
+		local cade = CreateCustomProp("models/props_combine/combine_barricade_short01a.mdl", false, true)
 		cade:SetPos(tblDataTableTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
 		cade:SetAngles((cade:GetPos() - tblDataTableTable.Center):Angle())
 		cade:SetPos(cade:GetPos() + Vector(0,0,30))
 		cade.RemoveLevel = 4
-		cade:Spawn()
-		cade:Activate()
-		if cade:GetPhysicsObject():IsValid() then
-			cade:GetPhysicsObject():EnableMotion(false)
-		end
 		table.insert(tblDataTableTable.Objects, cade)
 	end
 end
