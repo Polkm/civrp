@@ -36,21 +36,23 @@ function GM:EntityTakeDamage( ent, inflictor, attacker, amount )
 			if (ent.DropItems) then
 				for _,v in pairs(ent.DropItems) do
 					local NewObj = nil
-					if (v.ItemClass) then
-						local Item = CIVRP_Item_Data[v.ItemClass]
-						NewObj = CreateCustomProp(Item.Model, true, false)
-						NewObj.ItemClass = v.ItemClass
-					else
-						NewObj = CreateCustomProp(v.Model, true, false)
-					end
-					if (ValidEntity(NewObj)) then
-						NewObj:SetPos(ent:GetPos() + (v.Offset or Vector(0, 0, 30)))
-						NewObj:SetVelocity(Vector(math.random(0, 100), math.random(0, 100) ,math.random(0, 100)))
-						timer.Simple(30, function() -- Used to clean up prop if it still valid
-							if (ValidEntity(NewObj)) then
-								NewObj:Remove()
-							end
-						end)
+					for i = 1, (v.Amount or 1) do
+						if (v.ItemClass) then
+							local Item = CIVRP_Item_Data[v.ItemClass]
+							NewObj = CreateCustomProp(Item.Model, true, false)
+							NewObj.ItemClass = v.ItemClass
+						else
+							NewObj = CreateCustomProp(v.Model, true, false)
+						end
+						if (ValidEntity(NewObj)) then
+							NewObj:SetPos(ent:GetPos() + (v.Offset or Vector(0, 0, 30)))
+							NewObj:SetVelocity(Vector(math.random(0, 100), math.random(0, 100) ,math.random(0, 100)))
+							timer.Simple(30, function() -- Used to clean up prop if it still valid
+								if (ValidEntity(NewObj)) then
+									NewObj:Remove()
+								end
+							end)
+						end
 					end
 				end
 			end

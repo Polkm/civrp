@@ -40,12 +40,8 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTable)
 	thumper.DropItems[1] = {}
 	thumper.DropItems[1].ItemClass = "item_metalprop"
 	thumper.DropItems[1].Offset = Vector(0, 0, 50)
-	thumper.DropItems[2] = {}
-	thumper.DropItems[2].ItemClass = "item_metalprop"
-	thumper.DropItems[2].Offset = Vector(0, 0, 50)
-	thumper.DropItems[3] = {}
-	thumper.DropItems[3].ItemClass = "item_metalprop"
-	thumper.DropItems[3].Offset = Vector(0, 0, 50)
+	thumper.DropItems[1].Amount = 3
+	
 	thumper.Removelevel = 4
 	table.insert(tblDataTable.Objects, thumper)
 	
