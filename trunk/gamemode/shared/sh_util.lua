@@ -76,6 +76,7 @@ if SERVER then
 		if strSquadName then npc:SetKeyValue("Squad Name", strSquadName) end
 		npc:SetHealth(npc:Health() * GetDifficultyFactor() * (intHealthFctr or 1))
 		npc:SetMaterial(strMat or nil)
+		
 		if CIVRP_DIFFICULTY == "Hard" then
 			npc:SetCurrentWeaponProficiency(WEAPON_PROFICIENCY_GOOD)
 		elseif  CIVRP_DIFFICULTY == "Hell" then
@@ -91,6 +92,7 @@ if SERVER then
 				end
 			end
 		end
+		npc:SetKeyValue( "spawnflags", npc:GetKeyValues().spawnflags + 1 + 512)
 		return npc
 	end
 	

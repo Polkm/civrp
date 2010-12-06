@@ -1,4 +1,5 @@
 function CIVRP_CreateEvent()
+	if (player.GetAll() != nil && table.Count(player.GetAll()) <= 0) then return false end
 	local ply = table.Random(player.GetAll())
 	local tbl = {}
 	for _, data in pairs(CIVRP_Events) do
