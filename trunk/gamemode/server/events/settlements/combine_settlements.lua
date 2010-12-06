@@ -1,4 +1,8 @@
 CIVRP_Events["Combine_Settlement01"] = {}
+CIVRP_Events["Combine_Settlement01"].ProgressRate = 250
+CIVRP_Events["Combine_Settlement01"].EventKey = "Combine_Settlement01"
+CIVRP_Events["Combine_Settlement01"].Objects = {}
+CIVRP_Events["Combine_Settlement01"].Npcs = {}
 CIVRP_Events["Combine_Settlement01"].Condition = function(ply) 
 	if CIVRP_Settlements == nil then
 		CIVRP_Settlements = {} 
@@ -16,11 +20,9 @@ CIVRP_Events["Combine_Settlement01"].Condition = function(ply)
 end
 
 CIVRP_Events["Combine_Settlement01"].Tech = {}
-CIVRP_Events["Combine_Settlement01"].Tech[1] = function(data)
-	local objects = {}
-	
+CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTable)
 	local thumper = ents.Create("prop_thumper")
-	thumper:SetPos(data.Center)
+	thumper:SetPos(tblDataTable.Center)
 	thumper:SetAngles(Angle(0,math.random(0,360),0))
 	thumper:Spawn()
 	thumper:Activate()
@@ -32,7 +34,7 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(data)
 	if thumper:GetPhysicsObject():IsValid() then
 		thumper:GetPhysicsObject():EnableMotion(false)
 	end
-	table.insert(objects,thumper)
+	table.insert(tblDataTable.Objects, thumper)
 	
 	local crate = ents.Create("prop_physics") 
 	crate:SetPos(thumper:GetPos() + thumper:GetAngles():Right() * 120 + thumper:GetAngles():Up() * 50)
@@ -45,12 +47,12 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(data)
 	if crate:GetPhysicsObject():IsValid() then
 		crate:GetPhysicsObject():EnableMotion(false)
 	end
-	table.insert(objects,crate)
+	table.insert(tblDataTable.Objects, crate)
 
 	local SupplyList = {"item_healthvial","item_ammo_smg1","item_ammo_ar2","item_ammo_smg1_grenade","item_ammo_ar2_altfire", "weapon_frag",}
 	local itemtbl = {}
 	for itemclass,data in pairs(CIVRP_Item_Data) do
-		table.insert(itemtbl,itemclass)
+		table.insert(itemtbl, itemclass)
 	end	
 	local selection = table.Random(itemtbl)
 	local number = math.random(2,3)
@@ -65,20 +67,16 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(data)
 		item:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 		item.ItemClass = selection
 	end
-	
-	return {NPCS = nil,OBJECTS = objects}
 end
 
-CIVRP_Events["Combine_Settlement01"].Tech[2] = function(data)
-	local objects = {}
-	local cades = math.random(4,14)
-	for i = 1, cades do
+CIVRP_Events["Combine_Settlement01"].Tech[2] = function(tblDataTable)
+	for i = 1, math.random(4, 14) do
 		local distance = math.random(490, 510)
 		local angle = math.random(0, 360)
 		local cade = ents.Create("prop_physics")
 		cade:SetModel("models/props_combine/combine_barricade_short01a.mdl")
-		cade:SetPos(data.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
-		cade:SetAngles((cade:GetPos() - data.Center):Angle())
+		cade:SetPos(tblDataTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
+		cade:SetAngles((cade:GetPos() - tblDataTable.Center):Angle())
 		cade:SetPos(cade:GetPos() + Vector(0,0,30))
 		cade.RemoveLevel = 4
 		cade:Spawn()
@@ -86,24 +84,21 @@ CIVRP_Events["Combine_Settlement01"].Tech[2] = function(data)
 		if cade:GetPhysicsObject():IsValid() then
 			cade:GetPhysicsObject():EnableMotion(false)
 		end
-		table.insert(objects,cade)
+		table.insert(tblDataTable.Objects, cade)
 	end
-	return {NPCS = nil,OBJECTS = objects}
 end
 
-CIVRP_Events["Combine_Settlement01"].Tech[3] = function(data)
-	local npcs =  {}
-	local turretnum = math.random(1,3)
-	for i = 1, turretnum do
+CIVRP_Events["Combine_Settlement01"].Tech[3] = function(tblDataTable)
+	for i = 1, math.random(1, 3) do
 		local distance = math.random(450, 480)
 		local angle = math.random(0, 360)
 		local turret = ents.Create("npc_turret_floor")
-		turret:SetPos(data.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
-		turret:SetAngles((turret:GetPos() - data.Center):Angle())
-		turret:SetPos(turret:GetPos() + Vector(0,0,30))
+		turret:SetPos(tblDataTable.Center + Vector(math.cos(angle) * distance, math.sin(angle) * distance, 0))
+		turret:SetAngles((turret:GetPos() - tblDataTable.Center):Angle())
+		turret:SetPos(turret:GetPos() + Vector(0, 0, 30))
 		turret:Spawn()
 		turret:DropToFloor()
-		table.insert(npcs,turret)
+		table.insert(tblDataTable.Npcs, turret)
 	end
 	local function think() 
 		if npcs != nil then
@@ -120,15 +115,11 @@ CIVRP_Events["Combine_Settlement01"].Tech[3] = function(data)
 		end
 	end
 	timer.Simple(60,function() think() end)
-	return {NPCS = npcs,OBJECTS = nil}
 end
 
 CIVRP_Events["Combine_Settlement01"].Function = function(ply)	
-	local objects = {}
-	
-	local vx = math.random(-14000, 14000)--
-	local vy = math.random(-14000, 14000)--
-	local CENTER = Vector(vx,vy,128)
+	local tblData = CIVRP_Events["Combine_Settlement01"]
+	tblData.Center = Vector(math.random(-14000, 14000), math.random(-14000, 14000), 128)
 	
 	local apc = ents.Create( "prop_vehicle_apc" )
 	apc:SetKeyValue( "model", "models/combine_apc.mdl" )
@@ -139,7 +130,7 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	apc:Spawn()
 	apc:SetName( "Combine_apc" .. apc:EntIndex() )
 	apc:Activate()
-	table.insert(objects,apc)
+	table.insert(tblData.Objects, apc)
 	
 	local apc_driver = ents.Create( "npc_apcdriver" )
 	apc_driver:SetKeyValue( "vehicle", "Combine_apc" .. apc:EntIndex() )
@@ -148,35 +139,34 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	apc_driver:Spawn()
 	apc_driver:Activate()
 	
-	local leader = ents.Create("npc_combine_s")
-	leader:SetPos(apc:GetPos() + apc:GetAngles():Right() * -200)
-	leader:SetModel("models/combine_super_soldier.mdl")
-	leader:SetAngles(Angle(0,math.random(0,360),0))
+	tblData.Leader = ents.Create("npc_combine_s")
+	tblData.Leader:SetPos(apc:GetPos() + apc:GetAngles():Right() * -200)
+	tblData.Leader:SetModel("models/combine_super_soldier.mdl")
+	tblData.Leader:SetAngles(Angle(0, math.random(0, 360), 0))
 	
 	local Weapons = {"weapon_ar2", "weapon_smg1",}
-	leader:SetKeyValue("additionalequipment", table.Random(Weapons))
+	tblData.Leader:SetKeyValue("additionalequipment", table.Random(Weapons))
 	
-	leader:Spawn()
-	leader:Activate()
+	tblData.Leader:Spawn()
+	tblData.Leader:Activate()
 	
 	local Minions = {}
 	Minions.Type = {}
 	Minions.Type[1] = {Class = "npc_combine_s", Weapons = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"},}
-	Minions.Number = math.random(1,2)
+	Minions.Number = math.random(1, 2)
 	
 	local npcs = {}
 	for i = 1, Minions.Number do
 		local MinionSelection = table.Random(Minions.Type)
 		local npc = ents.Create(MinionSelection.Class)
-		npc:SetPos(leader:GetPos() + Vector(math.random(-100, 100), math.random(-100, 100), 0))
+		npc:SetPos(tblData.Leader:GetPos() + Vector(math.random(-100, 100), math.random(-100, 100), 0))
 		if MinionSelection.Weapons != nil then
 			npc:SetKeyValue("additionalequipment", table.Random(MinionSelection.Weapons))
 		end
 		npc:Spawn()		
 		npc:Activate()
-		table.insert(npcs,npc)
+		table.insert(tblData.Npcs, npc)
 	end
 
-	local ID = CIVRP_Register_Settlement(leader,objects,npcs,CENTER,"Combine_Settlement01")
-	timer.Simple(300,function() CIVRP_Progress_Settlement(ID) end)
+	CIVRP_Register_Settlement(tblData)
 end
