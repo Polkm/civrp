@@ -49,25 +49,19 @@ end
 
 CIVRP_Events["Antlion_Settlement01"].Tech = {}
 CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(tblDataTableTable)	
-	local entMedHive = ents.Create("prop_physics")
-	entMedHive:SetModel("models/props_hive/nest_med_flat.mdl")
+	
+	local entMedHive = CreateCustomProp("models/props_hive/nest_med_flat.mdl", false, true)
 	entMedHive:SetPos(tblDataTableTable.Center)
 	entMedHive:SetAngles(Angle(0, math.random(0, 360), 0))
-	entMedHive:Spawn()
-	if entMedHive:GetPhysicsObject():IsValid() then entMedHive:GetPhysicsObject():EnableMotion(false) end
 	entMedHive.Removelevel = 2
 	table.insert(tblDataTableTable.Objects, entMedHive)
 	
 	HatchEggs(tblDataTableTable)
 	
 	for i = 1, math.random(3, 8) do
-		local entEgg = ents.Create("prop_physics")
-		entEgg:SetModel("models/props_hive/egg.mdl")
+		local entEgg = CreateCustomProp("models/props_hive/egg.mdl", false, true)
 		entEgg:SetPos(GetRandomRadiusPos(entMedHive:GetPos(), 200, 300))
 		entEgg:SetAngles((entEgg:GetPos() - entMedHive:GetPos()):Angle() + Angle(0, math.random(-5, 5), 0))
-		entEgg:Spawn()
-		entEgg:Activate()
-		if entEgg:GetPhysicsObject():IsValid() then entEgg:GetPhysicsObject():EnableMotion(false) end
 		table.insert(tblDataTableTable.Objects, entEgg)
 	end
 	
@@ -81,59 +75,41 @@ CIVRP_Events["Antlion_Settlement01"].Tech[1] = function(tblDataTableTable)
 	end
 	
 	for i = 1, math.random(1, 4) do
-		local entSmallHive = ents.Create("prop_physics")
-		entSmallHive:SetModel("models/props_hive/nest_sm_flat.mdl")
+		local entSmallHive = CreateCustomProp("models/props_hive/nest_sm_flat.mdl", false, true)
 		entSmallHive:SetPos(GetRandomRadiusPos(entMedHive:GetPos(), 200, 500))
 		entSmallHive:SetAngles(Angle(0, math.random(0, 360), 0))
-		entSmallHive:Spawn()
 		entSmallHive.Removelevel = 2
 		table.insert(tblDataTableTable.Objects, entSmallHive)
 	end
 end
 CIVRP_Events["Antlion_Settlement01"].Tech[2] = function(tblDataTableTable)
-	local entLargeHive = ents.Create("prop_physics")
-	entLargeHive:SetModel("models/props_hive/nest_lrg_flat.mdl")
+	local entLargeHive = CreateCustomProp("models/props_hive/nest_lrg_flat.mdl", false, true)
 	entLargeHive:SetPos(tblDataTableTable.Center)
 	entLargeHive:SetAngles(Angle(0, math.random(0, 360), 0))
-	entLargeHive:Spawn()
-	if entLargeHive:GetPhysicsObject():IsValid() then entLargeHive:GetPhysicsObject():EnableMotion(false) end
 	entLargeHive.Removelevel = 3
 	table.insert(tblDataTableTable.Objects, entLargeHive)
 	
 	HatchEggs(tblDataTableTable)
 	
 	for i = 1, math.random(2, 4) do
-		local AntlionHiveSmall = ents.Create("prop_physics")
-		AntlionHiveSmall:SetModel("models/props_hive/nest_sm_flat.mdl")
+		local AntlionHiveSmall = CreateCustomProp("models/props_hive/nest_sm_flat.mdl", false, true)
 		AntlionHiveSmall:SetPos(tblDataTableTable.Center + Vector(math.random(-500, 500), math.random(-500, 500), 0))
 		AntlionHiveSmall:SetAngles(Angle(0,math.random(0,360),0))
-		AntlionHiveSmall:Spawn()
 		--AntlionHiveSmall.Removelevel = 3
 		table.insert(tblDataTableTable.Objects, AntlionHiveSmall)
 	end
 	
 	for i = 1, math.random(2, 4) do
-		local AntlionEgg = ents.Create("prop_physics")
-		AntlionEgg:SetModel("models/props_hive/egg.mdl")
+		local AntlionEgg = CreateCustomProp("models/props_hive/egg.mdl", false, true)
 		AntlionEgg:SetPos(GetRandomRadiusPos(entLargeHive:GetPos(), 200, 300))
 		AntlionEgg:SetAngles((AntlionEgg:GetPos() - entLargeHive:GetPos()):Angle() + Angle(0, math.random(-5, 5), 0))
-		AntlionEgg:Spawn()
-		AntlionEgg:Activate()
-		if AntlionEgg:GetPhysicsObject():IsValid() then
-			AntlionEgg:GetPhysicsObject():EnableMotion(false)
-		end
 		table.insert(tblDataTableTable.Objects, AntlionEgg)
 	end
 end
 CIVRP_Events["Antlion_Settlement01"].Tech[3] = function(tblDataTableTable)	
-	local AntlionHill = ents.Create("prop_physics")
-	AntlionHill:SetModel("models/props_wasteland/antlionhill.mdl")
+	local AntlionHill = CreateCustomProp("models/props_wasteland/antlionhill.mdl", false, true)
 	AntlionHill:SetPos(tblDataTableTable.Center)
 	AntlionHill:SetAngles(Angle(0,math.random(0,360),0))
-	AntlionHill:Spawn()
-	if AntlionHill:GetPhysicsObject():IsValid() then
-		AntlionHill:GetPhysicsObject():EnableMotion(false)
-	end
 	table.insert(tblDataTableTable.Objects, AntlionHill)
 	
 	for i = 1, math.random(5, 10) do
@@ -161,22 +137,16 @@ CIVRP_Events["Antlion_Settlement01"].Function = function(ply)
 	tblDataTable.Leader:Spawn()
 	tblDataTable.Leader:Activate()
 	
-	local entSmallHive = ents.Create("prop_physics")
-	entSmallHive:SetModel("models/props_hive/nest_sm_flat.mdl")
+	local entSmallHive = CreateCustomProp("models/props_hive/nest_sm_flat.mdl", false, true)
 	entSmallHive:SetPos(tblDataTable.Center)
 	entSmallHive:SetAngles(Angle(0, math.random(0, 360), 0))
-	entSmallHive:Spawn()
 	entSmallHive.Removelevel = 1
 	table.insert(tblDataTable.Objects, entSmallHive)
 	
 	for i = 1, math.random(1, 5) do
-		local entEgg = ents.Create("prop_physics")
-		entEgg:SetModel("models/props_hive/egg.mdl")
+		local entEgg = CreateCustomProp("models/props_hive/egg.mdl", false, true)
 		entEgg:SetPos(GetRandomRadiusPos(tblDataTable.Center, 240, 300))
 		entEgg:SetAngles(Angle(0,math.random(0,360),0))
-		entEgg:Spawn()
-		entEgg:Activate()
-		if entEgg:GetPhysicsObject():IsValid() then entEgg:GetPhysicsObject():EnableMotion(false) end
 		table.insert(tblDataTable.Objects, entEgg)
 	end
 	
