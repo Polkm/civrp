@@ -119,6 +119,37 @@ CIVRP_Item_Data["item_flare"].FireFunction = function(plyUser, swepWeapon, tblIt
 	return true
 end
 
+CIVRP_Item_Data["weapon_crowbar"] = {Class = "weapon_crowbar", Model = "models/weapons/w_crowbar.mdl"}
+CIVRP_Item_Data["weapon_crowbar"].HoldPos = Vector(15, -12, 8)
+CIVRP_Item_Data["weapon_crowbar"].MuzzlePos = Vector(7, 0, 0)
+CIVRP_Item_Data["weapon_crowbar"].HoldAngle = Angle(90, 45, 0)
+CIVRP_Item_Data["weapon_crowbar"].LerpDegree = .3 -- Percent
+CIVRP_Item_Data["weapon_crowbar"].BobScale = .3 -- Percent
+CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS = {}
+CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Idle"] = {Time = 1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},}
+CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Fire01"] = {Time = 0.5,
+{Pos = Vector(15, -12, 8), Angle = Angle(90, 45, 0)},{Pos = Vector(25, -8, 3), Angle = Angle(150, 90, 50),},{Pos = Vector(15, -12, 8),Angle = Angle(90, 45, 0),}
+}
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA = {}
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.NextFire = 0
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.AmmoType = "none"
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.ClipSize = -1
+--This is for server side to keep track of the ammo when the weapon is not active
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.LoadedBullets = 18
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Damage = 15 
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Cone = 0.02
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Recoil = 2
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Delay = 0.6
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.NumShots = 1
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.ReloadSpeed = 1
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Automatic = false
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.DrawAmmo = false
+CIVRP_Item_Data["weapon_crowbar"].FireFunction = function(plyUser, swepWeapon, tblItem)
+	swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
+	swepWeapon:PlayCustomAnimation("Fire0"..math.random(1,1))
+	return false
+end
+
 CIVRP_Item_Data["weapon_pistol"] = {Class = "weapon_pistol", Model = "models/weapons/W_pistol.mdl"}
 CIVRP_Item_Data["weapon_pistol"].HoldPos = Vector(15, -8, 8)
 CIVRP_Item_Data["weapon_pistol"].MuzzlePos = Vector(7, 0, 0)
