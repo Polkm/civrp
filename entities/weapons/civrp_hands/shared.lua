@@ -307,7 +307,12 @@ if CLIENT then
 					if self.EntViewModel.AnimationTable != nil && self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame] != nil then
 						tagertAngles = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame].Angle
 						local percent = ((CurTime()-self.EntViewModel.AnimationStartTime)/self.EntViewModel.AnimationTable.Time)
-						percentframe = ((CurTime()-self.EntViewModel.AnimationStartTime)/(self.EntViewModel.AnimationTable.Time/(table.Count(self.EntViewModel.AnimationTable)-1)))-self.EntViewModel.AnimationFrame
+						local percentframe = 0
+						if self.EntViewModel.AnimationFrame > 1 then
+							percentframe = ((CurTime()-self.EntViewModel.AnimationStartTime)/(self.EntViewModel.AnimationTable.Time/(table.Count(self.EntViewModel.AnimationTable)-1)))-self.EntViewModel.AnimationFrame
+						else
+							percentframe = ((CurTime()-self.EntViewModel.AnimationStartTime)/(self.EntViewModel.AnimationTable.Time/(table.Count(self.EntViewModel.AnimationTable)-1)))
+						end
 						local subangle = Angle(0,0,0)
 						if self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1] != nil then
 							subangle = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1].Angle
