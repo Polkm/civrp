@@ -26,7 +26,12 @@ CIVRP_Events = {}
 function GM:EntityTakeDamage( ent, inflictor, attacker, amount )
 	if (ent.DamageAllowed && attcker:IsPlayer()) then
 		if (ent:Health() && ent:Health() >= 0) then
-			ent:SetHealth(ent:Health() - 20)
+			local tblWeaponData = attacker.ItemData[self:GetOwner().ItemData["SELECTED"]] or "empty"
+			if (tblWeaponData != "empty" && tblWeaponData.WEAPONDATA.Damage > 0)then
+				ent:SetHealth(ent:Health() - tblWeaponData.WEAPONDATA.Damage)
+			else
+				ent:SetHealth(ent:Health() - 20)
+			end
 		else
 			if (ent.DropItems) then
 				for _,v in pairs(ent.DropItems) do
