@@ -114,6 +114,7 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 	apc:Spawn()
 	apc:SetName( "Combine_apc" .. apc:EntIndex() )
 	apc:Activate()
+	apc.RemoveLevel = 1
 	table.insert(tblDataTable.Objects, apc)
 	
 	local apc_driver = ents.Create( "npc_apcdriver" )
