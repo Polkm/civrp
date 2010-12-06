@@ -265,7 +265,8 @@ end
 function SWEP:PlayCustomAnimation(strAnimation)
 	if CLIENT then
 		self.EntViewModel.AnimationTable = LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]].ANIMATIONS[strAnimation]
-		self.EntViewModel.AnimationFrame = 0
+		self.EntViewModel.AnimationStartTime = CurTime()
+		self.EntViewModel.AnimationFrame = 1
 	else
 		SendUsrMsg("CIVRP_PlayWeaponAnimation", self:GetOwner(), {strAnimation})
 	end
@@ -278,7 +279,7 @@ if CLIENT then
 	SWEP.EntViewModel:SetNoDraw(true)
 	SWEP.EntViewModel.AnimationTable = {}
 	SWEP.EntViewModel.AnimationFrame = 0
-	
+	SWEP.EntViewModel.AnimationStartTime = 0
 	local beforeAngles = Angle(0, 0, 0)
 	local beforeVectors = Vector(0, 0, 0)
 	function SWEP:CalcView(ply, origin, angles, fov)
@@ -299,18 +300,38 @@ if CLIENT then
 					--if LocalPlayer():GetVelocity():Length() != 0 && LocalPlayer():OnGround() then
 					--self.EntViewModel:SetPos(LerpVector( 0.5,beforeVectors,self.EntViewModel:GetPos()))
 					--end
-					if self.EntViewModel.AnimationTable != nil  && self.EntViewModel.AnimationTable[1] != nil then
+					if self.EntViewModel.AnimationTable != nil  && self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame] != nil then
 						--PrintTable(self.EntViewModel.AnimationTable[1])
 					end
 					local tagertAngles = tblWeaponData.HoldAngle
-					if self.EntViewModel.AnimationTable != nil  && self.EntViewModel.AnimationTable[1] != nil then
-						tagertAngles = self.EntViewModel.AnimationTable[1].Ang
+					if self.EntViewModel.AnimationTable != nil && self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame] != nil then
+						tagertAngles = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame].Angle
+						local percent = ((CurTime()-self.EntViewModel.AnimationStartTime)/self.EntViewModel.AnimationTable.Time)
+						percentframe = ((CurTime()-self.EntViewModel.AnimationStartTime)/(self.EntViewModel.AnimationTable.Time/(table.Count(self.EntViewModel.AnimationTable)-1)))-self.EntViewModel.AnimationFrame
+						local subangle = Angle(0,0,0)
+						if self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1] != nil then
+							subangle = self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1].Angle
+						else
+							subangle = tblWeaponData.HoldAngle
+						end
+						local difangle = (tagertAngles - subangle)
+						tagertAngles = tagertAngles - difangle	* percentframe
+						if self.EntViewModel.AnimationTable[self.EntViewModel.AnimationFrame + 1] != nil then
+							self.EntViewModel.AnimationFrame = math.Clamp(math.floor((table.Count(self.EntViewModel.AnimationTable)-1)*percent),1,(table.Count(self.EntViewModel.AnimationTable)-1))
+						else
+							tagertAngles = tblWeaponData.HoldAngle
+						end
 					end
 					beforeAngles = self.EntViewModel:GetAngles()
 					self.EntViewModel:SetAngles(Angle(angles.p, angles.y, angles.r))
 					self.EntViewModel:SetAngles(self.EntViewModel:LocalToWorldAngles(tagertAngles))
 					self.EntViewModel:SetAngles(LerpAngle(tblWeaponData.LerpDegree, beforeAngles, self.EntViewModel:GetAngles()))
 					--print(beforeAngles, self.EntViewModel:GetAngles())
+					if self.EntViewModel.AnimationTable != nil then
+						if CurTime() - self.EntViewModel.AnimationStartTime >= self.EntViewModel.AnimationTable.Time then
+							self.EntViewModel.AnimationTable = nil
+						end
+					end
 				end
 			else
 				self.EntViewModel:SetNoDraw(true)

@@ -126,8 +126,8 @@ CIVRP_Item_Data["weapon_pistol"].HoldAngle = Angle(0, 180, 0)
 CIVRP_Item_Data["weapon_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].BobScale = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].ANIMATIONS = {}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Idle"] = {{Pos = Vector(15, -8, 8), Ang = Angle(0, 180, 0)},}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire"] = {{Pos = Vector(15, -8, 8), Ang = Angle(0, 190, 0)},}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Idle"] = {Time = 1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire"] = {Time = 5,{Pos = Vector(25, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(25, -8, 8), Angle = Angle(0, 190, 0)},{Pos = Vector(25, -8, 8), Angle = Angle(40, 130, 0)},{Pos = Vector(25, -8, 8), Angle = Angle(80, 140, 0)},{Pos = Vector(25, -8, 8), Angle = Angle(120, 60, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA = {}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.NextFire = 0
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.AmmoType = "pistol"
@@ -149,7 +149,7 @@ CIVRP_Item_Data["weapon_pistol"].FireFunction = function(plyUser, swepWeapon, tb
 		swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
 		swepWeapon:SetClip1(swepWeapon:Clip1() - 1)
 		tblItem.WEAPONDATA.LoadedBullets = tblItem.WEAPONDATA.LoadedBullets - 1
-		plyUser:FireBullets(tblItem.WEAPONDATA.NumShots, tblItem.WEAPONDATA.Cone, tblItem.WEAPONDATA.Damage)
+		plyUser:CreateBullet(tblItem.WEAPONDATA.NumShots, tblItem.WEAPONDATA.Cone, tblItem.WEAPONDATA.Damage)
 		if SERVER then
 			plyUser:PlaySound("weapons/pistol/pistol_fire2.wav")
 			plyUser:MuzzleFlash()
