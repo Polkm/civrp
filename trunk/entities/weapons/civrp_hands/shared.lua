@@ -339,7 +339,7 @@ if CLIENT then
 					self.EntViewModel:SetAngles(LerpAngle(tblWeaponData.LerpDegree, beforeAngles, self.EntViewModel:GetAngles()))
 					--print(beforeAngles, self.EntViewModel:GetAngles())
 					if self.EntViewModel.AnimationTable != nil then
-						if CurTime() - self.EntViewModel.AnimationStartTime >= self.EntViewModel.AnimationTable.Time then
+						if !self.EntViewModel.AnimationTable.Time || CurTime() - self.EntViewModel.AnimationStartTime >= self.EntViewModel.AnimationTable.Time then
 							self.EntViewModel.AnimationTable = nil
 						end
 					end
@@ -355,7 +355,7 @@ if CLIENT then
 		self.AmmoDisplay = self.AmmoDisplay or {}
 		if LocalPlayer().ItemData != nil then
 			local tblWeaponData = LocalPlayer().ItemData[LocalPlayer().ItemData["SELECTED"]] || "empty"
-			if tblWeaponData != "empty"	and tblWeaponData.WEAPONDATA != nil then
+			if tblWeaponData != "empty"	and tblWeaponData.WEAPONDATA != nil && tblWeaponData.WEAPONDATA.AmmoType != "none" then
 				self.AmmoDisplay.Draw = true
 				self.AmmoDisplay.PrimaryClip = LocalPlayer():GetActiveWeapon():Clip1()
 				self.AmmoDisplay.PrimaryAmmo = LocalPlayer():GetAmmoCount(tblWeaponData.WEAPONDATA.AmmoType)
