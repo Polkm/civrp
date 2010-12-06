@@ -120,34 +120,40 @@ CIVRP_Events["Combine_Settlement01"].Tech[3] = function(tblDataTable)
 			timer.Simple(60,function() think() end)
 		end
 	end
-	timer.Simple(60,function() think() end)
+	timer.Simple(60, function() think() end)
+end
+
+CIVRP_Events["Combine_Settlement01"].Disband = function(tblDataTable)
+	if ValidEntity(tblDataTable.Apc) then
+		tblDataTable.Apc:Fire("Destroy", 0)
+	end
 end
 
 CIVRP_Events["Combine_Settlement01"].Function = function(ply)	
 	local tblDataTable = CIVRP_Events["Combine_Settlement01"]
 	tblDataTable.Center = Vector(math.random(-14000, 14000), math.random(-14000, 14000), 128)
 
-	local apc = ents.Create( "prop_vehicle_apc" )
-	apc:SetKeyValue( "model", "models/combine_apc.mdl" )
-	apc:SetKeyValue( "vehiclescript", "scripts/vehicles/apc_npc.txt" )
-	apc:SetKeyValue( "actionScale", "1" )
-	apc:SetPos( tblDataTable.Center )
-	apc:SetAngles(Angle(0,math.random(0,360),0))
-	apc:Spawn()
-	apc:SetName( "Combine_apc" .. apc:EntIndex() )
-	apc:Activate()
-	apc.Removelevel = 1
-	table.insert(tblDataTable.Objects, apc)
+	tblDataTable.Apc = ents.Create( "prop_vehicle_apc" )
+	tblDataTable.Apc:SetKeyValue( "model", "models/combine_apc.mdl" )
+	tblDataTable.Apc:SetKeyValue( "vehiclescript", "scripts/vehicles/apc_npc.txt" )
+	tblDataTable.Apc.Apcc:SetKeyValue( "actionScale", "1" )
+	tblDataTable.Apc:SetPos( tblDataTable.Center )
+	tblDataTable.Apc:SetAngles(Angle(0,math.random(0,360),0))
+	tblDataTable.Apc:Spawn()
+	tblDataTable.Apc:SetName( "Combine_apc" .. tblDataTable.Apc:EntIndex() )
+	tblDataTable.Apc:Activate()
+	tblDataTable.Apc.Removelevel = 1
+	table.insert(tblDataTable.Objects, tblDataTable.Apc)
 	
 	local apc_driver = ents.Create( "npc_apcdriver" )
-	apc_driver:SetKeyValue( "vehicle", "Combine_apc" .. apc:EntIndex() )
-	apc_driver:SetName( "Combine_apc" .. apc:EntIndex() .. "_driver" )
+	apc_driver:SetKeyValue( "vehicle", "Combine_apc" .. tblDataTable.Apc:EntIndex() )
+	apc_driver:SetName( "Combine_apc" .. tblDataTable.Apc:EntIndex() .. "_driver" )
 	apc_driver:SetPos( tblDataTable.Center )
 	apc_driver:Spawn()
 	apc_driver:Activate()
 	
 	tblDataTable.Leader = ents.Create("npc_combine_s")
-	tblDataTable.Leader:SetPos(apc:GetPos() + apc:GetAngles():Right() * -200)
+	tblDataTable.Leader:SetPos(tblDataTable.Apc:GetPos() + tblDataTable.Apc:GetAngles():Right() * -200)
 	tblDataTable.Leader:SetModel("models/combine_super_soldier.mdl")
 	tblDataTable.Leader:SetAngles(Angle(0, math.random(0, 360), 0))
 	
@@ -177,3 +183,4 @@ CIVRP_Events["Combine_Settlement01"].Function = function(ply)
 
 	CIVRP_Register_Settlement(tblDataTable)
 end
+
