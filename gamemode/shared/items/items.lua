@@ -127,10 +127,10 @@ CIVRP_Item_Data["weapon_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].BobScale = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].ANIMATIONS = {}
 CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Idle"] = {Time = 1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire01"] = {Time = 0.1,{Pos = Vector(25, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(10, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire02"] = {Time = 0.1,{Pos = Vector(25, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(10, 170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire03"] = {Time = 0.1,{Pos = Vector(25, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(40, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire04"] = {Time = 0.1,{Pos = Vector(25, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(40,170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire01"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(10, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire02"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(10, 170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire03"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(40, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire04"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(40,170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA = {}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.NextFire = 0
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.AmmoType = "pistol"
