@@ -28,7 +28,7 @@ function Player:PlaySound(strSound, volume, pitch)
 	self:EmitSound(strSound, volume or 100, pitch or 100)
 end
 
-function Player:FireBullets(intNumber, intSpread, intDamage)
+function Player:CreateBullet(intNumber, intSpread, intDamage)
 	local tblBullet = {}
 	tblBullet.Num = intNumber or 1
 	tblBullet.Src = self:GetShootPos()
