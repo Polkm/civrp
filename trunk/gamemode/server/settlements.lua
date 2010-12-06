@@ -8,7 +8,8 @@ function GM:OnNPCKilled(entNPC, entKiller, entWeapon)
 	end
 end
 
-function CIVRP_Settlement_Disband(ID)	
+function CIVRP_Settlement_Disband(ID)
+	CIVRP_Settlements[ID].Disband(CIVRP_Settlements[ID])
 	CIVRP_Settlement_Clean(ID)
 	CIVRP_Settlement_Decay(ID)	
 	CIVRP_Settlements[ID] = "empty"
