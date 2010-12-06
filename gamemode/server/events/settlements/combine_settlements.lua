@@ -1,5 +1,5 @@
 CIVRP_Events["Combine_Settlement01"] = {}
-CIVRP_Events["Combine_Settlement01"].ProgressRate = 250
+CIVRP_Events["Combine_Settlement01"].ProgressRate = 5
 CIVRP_Events["Combine_Settlement01"].EventKey = "Combine_Settlement01"
 CIVRP_Events["Combine_Settlement01"].Objects = {}
 CIVRP_Events["Combine_Settlement01"].Npcs = {}
@@ -46,7 +46,7 @@ CIVRP_Events["Combine_Settlement01"].Tech[1] = function(tblDataTableTable)
 	thumper.DropItems[3] = {}
 	thumper.DropItems[3].ItemClass = "item_metalprop"
 	thumper.DropItems[3].Offset = Vector(0, 0, 50)
-	
+	thumper.RemoveLevel = 4
 	table.insert(tblDataTableTable.Objects, thumper)
 	
 	local crate = CreateCustomProp("models/items/ammocrate_ar2.mdl", true, true)

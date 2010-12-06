@@ -62,7 +62,7 @@ function CIVRP_Settlement_Clean(ID)
 	for _, npc in pairs(data.Npcs) do
 		if !npc:IsValid() then
 			table.remove(data.Npcs,_)
-		elseif npc:IsValid() && npc.Removelevel && npc.Removelevel == data.TechLevel then
+		elseif npc:IsValid() && npc.Removelevel && npc.Removelevel <= data.TechLevel then
 			table.remove(data.Npcs, _)
 			npc:Remove()
 		end
