@@ -12,10 +12,13 @@ CIVRP_Item_Data["item_healthvial"].FireFunction = function(plyUser, swepWeapon, 
 end
 
 CIVRP_Item_Data["item_metalprop"] = {Class = "item_metalprop", Model = "models/Gibs/Scanner_gib02.mdl"}
-CIVRP_Item_Data["item_metalprop"].HoldPos = Vector(15, -15, 8)
-CIVRP_Item_Data["item_metalprop"].HoldAngle = Angle(0, 0, 0)
+CIVRP_Item_Data["item_metalprop"].HoldPos = Vector(12, -5, 5)
+CIVRP_Item_Data["item_metalprop"].HoldAngle = Angle(0, 180, 90)
 CIVRP_Item_Data["item_metalprop"].LerpDegree = .2 -- Percent
 CIVRP_Item_Data["item_metalprop"].BobScale = .3 -- Percent
+CIVRP_Item_Data["item_metalprop"].FireFunction = function(plyUser, swepWeapon, tblItem)
+	return false -- for later?
+end
 
 CIVRP_Item_Data["item_healthkit"] = {Class = "item_healthkit", Model = "models/Items/HealthKit.mdl"}
 CIVRP_Item_Data["item_healthkit"].HoldPos = Vector(15, -4, 1) -- Forward,Up,Right

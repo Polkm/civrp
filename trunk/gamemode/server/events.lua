@@ -24,7 +24,7 @@ end)
 CIVRP_Events = {}
 
 function GM:EntityTakeDamage( ent, inflictor, attacker, amount )
-	if (ent:GetClass() == "prop_physics" && ent.DamageAllowed)
+	if (ent.DamageAllowed) then
 		if (ent:Health() && ent:Health() >= 0) then
 			ent:SetHealth(ent:Health() - 20)
 		else
