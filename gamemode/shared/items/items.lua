@@ -135,9 +135,11 @@ CIVRP_Item_Data["weapon_crowbar"].HoldAngle = Angle(90, 45, 0)
 CIVRP_Item_Data["weapon_crowbar"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["weapon_crowbar"].BobScale = .3 -- Percent
 CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS = {}
-CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Idle"] = {Time = 1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},}
-CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Fire01"] = {Time = 0.5,
-{Pos = Vector(15, -12, 8), Angle = Angle(90, 45, 0)},{Pos = Vector(25, -8, 3), Angle = Angle(150, 90, 50),},{Pos = Vector(15, -12, 8),Angle = Angle(90, 45, 0),}
+CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Idle"] = {Time = 1, {Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},}
+CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Fire01"] = {Time = 0.3,
+	{Pos = Vector(13, -12, 8), Angle = Angle(90, 45, 0)},
+	{Pos = Vector(25, -8, 3), Angle = Angle(150, 90, 50)},
+	{Pos = Vector(13, -12, 8),Angle = Angle(90, 45, 0)},
 }
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA = {}
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.NextFire = 0
@@ -148,7 +150,7 @@ CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.LoadedBullets = 18
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Damage = 15 
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Cone = 0.02
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Recoil = 2
-CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Delay = 0.6
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Delay = 0.5
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.NumShots = 1
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.ReloadSpeed = 1
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Automatic = false
@@ -167,10 +169,10 @@ CIVRP_Item_Data["weapon_pistol"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].BobScale = .3 -- Percent
 CIVRP_Item_Data["weapon_pistol"].ANIMATIONS = {}
 CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Idle"] = {Time = 1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire01"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(10, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire02"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(10, 170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire03"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(40, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
-CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire04"] = {Time = 0.1,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(15, -8, 8), Angle = Angle(40,170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire01"] = {Time = 0.15,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(14, -8, 8), Angle = Angle(10, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire02"] = {Time = 0.15,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(14, -8, 8), Angle = Angle(10, 170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire03"] = {Time = 0.15,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(14, -8, 8), Angle = Angle(40, 190, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
+CIVRP_Item_Data["weapon_pistol"].ANIMATIONS["Fire04"] = {Time = 0.15,{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},{Pos = Vector(14, -8, 8), Angle = Angle(40,170, 0),},{Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0),}}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA = {}
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.NextFire = 0
 CIVRP_Item_Data["weapon_pistol"].WEAPONDATA.AmmoType = "pistol"
