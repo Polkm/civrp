@@ -26,9 +26,9 @@ local function HatchEggs(tblDataTableTable, boolWorker)
 		if ValidEntity(ent) && ent:GetModel() == "models/props_hive/egg.mdl" then
 			local entAntlion
 			if boolWorker then
-				entAntlion = CreateCustomNPC("npc_antlion_worker", tblDataTableTable.SquadName, nil, nil, nil, {["Start Burrowed"] = {1}})
+				entAntlion = CreateCustomNPC("npc_antlion_worker", tblDataTableTable.SquadName, nil, nil, nil, {["startburrowed"] = {1}})
 			else
-				entAntlion = CreateCustomNPC("npc_antlion", tblDataTableTable.SquadName, nil, nil, {0, 1, 2, 3}, {["Start Burrowed"] = {1}})
+				entAntlion = CreateCustomNPC("npc_antlion", tblDataTableTable.SquadName, nil, nil, {0, 1, 2, 3}, {["startburrowed"] = {1}})
 			end
 			entAntlion:SetPos(ent:GetPos())
 			entAntlion:SetAngles(ent:GetAngles())
@@ -36,11 +36,7 @@ local function HatchEggs(tblDataTableTable, boolWorker)
 			entAntlion:Activate()
 			entAntlion:Fire('Unburrow','',0.5)
 			entAntlion:SetColor(0, 0, 0, 0)
-			timer.Simple(0.2, function()
-				if (ValidEntity(entAntlion)) then
-					entAntlion:SetColor(255, 255, 255, 255)
-				end
-			end)
+
 			ent:Remove()
 			table.insert(tblDataTableTable.Npcs, entAntlion)
 		end
