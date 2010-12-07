@@ -1,4 +1,5 @@
 CIVRP_Events["Invasion"] = {}
+CIVRP_Events["Invasion"].Chance = 50
 CIVRP_Events["Invasion"].Condition = function(ply) 
 	if (IsDay()) then return false end
 	if (ply:Health() <= 30) then return false end
