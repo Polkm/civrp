@@ -1,5 +1,5 @@
 function CIVRP_CreateEvent()
-	if (player.GetAll() != nil && table.Count(player.GetAll()) <= 0) then 
+	if (player.GetAll() != nil || table.Count(player.GetAll()) <= 0) then 
 		timer.Simple(10, function() CIVRP_CreateEvent() end)
 		return
 	end
