@@ -15,13 +15,19 @@ function CIVRP_CreateEvent()
 		end
 	end
 	if table.Count(tbl) >= 1 then
-		CIVRP_Events[table.Random(tbl)].Function(ply)
-		ply:ChatPrint(tostring(table.Random(tbl)) .. " Has spawned near you!")
+		local randomtbl = table.Random(tbl)
+		CIVRP_Events[randomtbl].Function(ply)
+		ply:ChatPrint(tostring(randomtbl) .. " Has spawned near you!")
 		--CIVRP_Events["Ambush"].Function(ply)
 	else
 		timer.Simple(1, function() CIVRP_CreateEvent() end)
 	end
-	local delay = math.Round(math.random(55, 65) * GetPlayerFactor())
+	local delay = 0
+	if (SinglePlayer()) then
+		delay = 20
+	else
+		delay = math.Round(math.random(35, 45) * GetPlayerFactor())
+	end
 	print(delay)
 	timer.Simple(delay, function() CIVRP_CreateEvent() end)
 end
