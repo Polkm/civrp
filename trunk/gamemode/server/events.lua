@@ -7,12 +7,18 @@ function CIVRP_CreateEvent()
 	local tbl = {}
 	for _, data in pairs(CIVRP_Events) do
 		if data.Condition(ply) then
-			table.insert(tbl, _)
+			local intChance = data.Chance or 100
+			intChance = 100 / math.Clamp(intChance, 0, 100)
+			if math.random(1, (intChance or 100)) == 1 then
+				table.insert(tbl, _)
+			end
 		end
 	end
 	if table.Count(tbl) >= 1 then
 		CIVRP_Events[table.Random(tbl)].Function(ply)
 		--CIVRP_Events["Ambush"].Function(ply)
+	else
+		timer.Simple(1, function() CIVRP_CreateEvent() end)
 	end
 	local delay = math.Round(math.random(55, 65) * GetPlayerFactor())
 	print(delay)
