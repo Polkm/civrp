@@ -1,5 +1,5 @@
 function CIVRP_CreateEvent()
-	if (player.GetAll() != nil || table.Count(player.GetAll()) <= 0) then 
+	if (player.GetAll() == nil || table.Count(player.GetAll()) <= 0) then 
 		timer.Simple(10, function() CIVRP_CreateEvent() end)
 		return
 	end
@@ -16,6 +16,7 @@ function CIVRP_CreateEvent()
 	end
 	if table.Count(tbl) >= 1 then
 		CIVRP_Events[table.Random(tbl)].Function(ply)
+		ply:ChatPrint(tostring(table.Random(tbl)) .. " Has spawned near you!")
 		--CIVRP_Events["Ambush"].Function(ply)
 	else
 		timer.Simple(1, function() CIVRP_CreateEvent() end)
