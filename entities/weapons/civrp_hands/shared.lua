@@ -34,7 +34,7 @@ SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "none"
-
+SWEP.Primary.Range = 100
 SWEP.Primary.ReloadSpeed = 0
 
 SWEP.Secondary.ClipSize		= 1
@@ -105,6 +105,9 @@ function SWEP:LoadWeapon(itemtbl)
 			self.Primary.ClipSize		= itemtbl.WEAPONDATA.ClipSize || -1
 			self.Primary.LoadedBullets	= itemtbl.WEAPONDATA.LoadedBullets || itemtbl.WEAPONDATA.ClipSize || -1
 			self.Primary.ReloadSpeed  = itemtbl.WEAPONDATA.ReloadSpeed || 0
+			
+			self.Primary.Range = itemtbl.WEAPONDATA.Range || 100
+			
 			self.Primary.DefaultClip	= -1
 			
 			self.Primary.Automatic		= itemtbl.WEAPONDATA.Automatic || false
