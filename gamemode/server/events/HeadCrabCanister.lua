@@ -1,4 +1,5 @@
 CIVRP_Events["HeadCrabCanister"] = {}
+CIVRP_Events["HeadCrabCanister"].Chance = 80
 CIVRP_Events["HeadCrabCanister"].Condition = function(ply) 
 	return true
 end

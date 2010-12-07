@@ -1,4 +1,5 @@
 CIVRP_Events["AntlionBurrow"] = {}
+CIVRP_Events["AntlionBurrow"].Chance = 50
 CIVRP_Events["AntlionBurrow"].Condition = function(ply) 
 	return true
 end

@@ -1,4 +1,5 @@
 CIVRP_Events["Ambush"] = {}
+CIVRP_Events["Ambush"].Chance = 40
 CIVRP_Events["Ambush"].Condition = function(ply) 
 	--if table.Count(ents.FindByClass("npc_*")) >= 5 then return false end
 	if IsDay() and ply:Health() <= 30 then return false else return true end

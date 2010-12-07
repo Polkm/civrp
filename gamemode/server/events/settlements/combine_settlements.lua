@@ -1,4 +1,5 @@
 CIVRP_Events["Combine_Settlement01"] = {}
+CIVRP_Events["Combine_Settlement01"].Chance = 15
 CIVRP_Events["Combine_Settlement01"].ProgressRate = 250
 CIVRP_Events["Combine_Settlement01"].EventKey = "Combine_Settlement01"
 CIVRP_Events["Combine_Settlement01"].Objects = {}

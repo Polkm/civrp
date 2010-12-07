@@ -1,4 +1,5 @@
 CIVRP_Events["Antlion_Settlement01"] = {}
+CIVRP_Events["Antlion_Settlement01"].Chance = 20
 CIVRP_Events["Antlion_Settlement01"].ProgressRate = 250
 CIVRP_Events["Antlion_Settlement01"].EventKey = "Antlion_Settlement01"
 CIVRP_Events["Antlion_Settlement01"].Objects = {}
