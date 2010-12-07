@@ -18,7 +18,7 @@ function CIVRP_CreateEvent()
 		local randomtbl = table.Random(tbl)
 		CIVRP_Events[randomtbl].Function(ply)
 		if (SinglePlayer()) then
-			ply:ChatPrint(tostring(randomtbl) .. " has spawned near you!")
+			ply:ChatPrint(tostring(randomtbl) .. " has spawned!")
 		end
 		--CIVRP_Events["Ambush"].Function(ply)
 	else
