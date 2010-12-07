@@ -136,12 +136,12 @@ CIVRP_Item_Data["weapon_crowbar"].LerpDegree = .3 -- Percent
 CIVRP_Item_Data["weapon_crowbar"].BobScale = .3 -- Percent
 CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS = {}
 CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Idle"] = {Time = 1, {Pos = Vector(15, -8, 8), Angle = Angle(0, 180, 0)},}
-CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Fire01"] = {Time = 0.5,
+CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Fire01"] = {Time = 0.4,
 	{Pos = Vector(13, -12, 8), Angle = Angle(90, 45, 0)},
-	{Pos = Vector(25, -8, 3), Angle = Angle(150, 90, 50)},
+	{Pos = Vector(35, -14, 3), Angle = Angle(150, 90, 50)},
 	{Pos = Vector(13, -12, 8),Angle = Angle(90, 45, 0)},
 }
-CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Fire02"] = {Time = 0.5,
+CIVRP_Item_Data["weapon_crowbar"].ANIMATIONS["Fire02"] = {Time = 0.4,
 	{Pos = Vector(13, -12, 8), Angle = Angle(90, 45, 0)},
 	{Pos = Vector(35, -16, 10), Angle = Angle(170, 60, 00)},
 	{Pos = Vector(13, -12, 8),Angle = Angle(90, 45, 0)},
@@ -155,13 +155,24 @@ CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.LoadedBullets = 18
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Damage = 15 
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Cone = 0.02
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Recoil = 2
-CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Delay = 0.6
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Delay = 0.4
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Range = 100
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.NumShots = 1
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.ReloadSpeed = 1
-CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Automatic = false
+CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.Automatic = true
 CIVRP_Item_Data["weapon_crowbar"].WEAPONDATA.DrawAmmo = false
 CIVRP_Item_Data["weapon_crowbar"].FireFunction = function(plyUser, swepWeapon, tblItem)
+	if SERVER then
+		local tr = plyUser:GetEyeTrace()
+		if tr.HitNonWorld then
+			if tr.Entity:IsNPC() || tr.Entity:IsPlayer() then
+				tr.Entity:TakeDamage(tblItem.WEAPONDATA.Damage)
+				plyUser:PlaySound("physics/flesh/flesh_impact_bullet"..math.random(1,5)..".wav")
+			end
+		else
+			plyUser:PlaySound("weapons/iceaxe/iceaxe_swing1.wav")
+		end
+	end
 	swepWeapon:SetNextPrimaryFire(CurTime() + tblItem.WEAPONDATA.Delay)
 	swepWeapon:PlayCustomAnimation("Fire0"..math.random(1,2))
 	return false
