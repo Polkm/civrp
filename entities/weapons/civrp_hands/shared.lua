@@ -181,7 +181,7 @@ function SWEP:Think()
 				self.Throwing = self.Throwing + 1
 			elseif !input.IsMouseDown(MOUSE_RIGHT) || self.Throwing >= 100 then
 				if LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]].Lit != nil then
-					LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]].Lit = nil
+					LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]].Lit = nil 
 				end
 				self.Throwing = self.Throwing + 1
 				RunConsoleCommand("CIVRP_DropItem",math.Round((self.Throwing/15)*10)/10)
