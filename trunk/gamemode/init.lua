@@ -7,9 +7,8 @@ AddCSLuaFile("sh_resource.lua")
 
 function GM:PlayerLoadout(ply)
 	ply:Give("civrp_hands")
-	ply:Give("weapon_smg1")
-	ply:Give("weapon_pistol")
-	ply:Give("weapon_crowbar")
+	
+	timer.Simple(1,function() if ply:IsValid() then ply:AddItem(table.Random({"weapon_shotgun","weapon_crowbar","weapon_pistol","weapon_smg"}))  end end)
 end
 function GM:PlayerSpawn(ply)
 	ply:SetPos(Vector(math.random(-13000,13000),math.random(-13000,13000),150))

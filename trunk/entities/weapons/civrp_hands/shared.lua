@@ -41,7 +41,7 @@ SWEP.Secondary.ClipSize		= 1
 SWEP.Secondary.DefaultClip	= 1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
-SWEP.Secondary.Delay		= 0.2
+SWEP.Secondary.Delay		= 2
 
 SWEP.Throwing = nil
 SWEP.LoadedAmmo = 0
@@ -174,11 +174,21 @@ function SWEP:Holster()
 end
 
 function SWEP:Think()
-	if self.Throwing != nil then
-		if input.IsMouseDown(MOUSE_RIGHT) then
-			self.Throwing = self.Throwing + 1
-		elseif !input.IsMouseDown(MOUSE_RIGHT) then
-			return
+	if self:GetNextSecondaryFire() > CurTime() then return false end
+	if self.Throwing then
+		if CLIENT then
+			if input.IsMouseDown(MOUSE_RIGHT) then
+				self.Throwing = self.Throwing + 1
+			elseif !input.IsMouseDown(MOUSE_RIGHT) || self.Throwing >= 100 then
+				if LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]].Lit != nil then
+					LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]].Lit = nil
+				end
+				self.Throwing = self.Throwing + 1
+				RunConsoleCommand("CIVRP_DropItem",math.Round((self.Throwing/15)*10)/10)
+				self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+				self.Throwing = nil
+				return
+			end
 		end
 	end
 end
@@ -207,6 +217,24 @@ function SWEP:SecondaryAttack()
 	if self:GetOwner().ItemData == nil then self:GetOwner().ItemData = {} return false end
 	if self:GetOwner().ItemData["SELECTED"] != nil then
 		if self:GetOwner().ItemData && self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Class != nil then
+			self.Throwing = 1
+		else
+			local trace = self.Owner:GetEyeTrace()
+			if trace.Hit && trace.HitNonWorld && trace.HitPos:Distance(self.Owner:GetPos()) < 200 then
+				if SERVER then
+					local strItem = trace.Entity.ItemClass or trace.Entity:GetClass() 
+					if CIVRP_Item_Data[strItem] != nil then
+						self:GetOwner():AddItem(strItem, 1, trace.Entity.ItemTable) 
+						trace.Entity:Remove()
+					end
+				end
+				self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+			end
+		end
+	end
+end
+
+local function DropItem(self,force)
 			if SERVER then
 				if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].SpawnFunction != nil then
 					local data = self:GetOwner().SpawnFunction(self)
@@ -224,28 +252,17 @@ function SWEP:SecondaryAttack()
 					if entity:GetPhysicsObject():IsValid() then
 						entity:GetPhysicsObject():Wake()
 						entity:GetPhysicsObject():SetVelocity(self:GetOwner():GetVelocity())
-						entity:GetPhysicsObject():ApplyForceCenter(self:GetOwner():GetAngles():Forward() * (entity:GetPhysicsObject():GetMass() * 100))
+						entity:GetPhysicsObject():ApplyForceCenter(self:GetOwner():EyeAngles():Forward() * (100 * force))
+					end
+					if self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Lit != nil then
+						self:GetOwner().ItemData[self:GetOwner().ItemData["SELECTED"]].Lit(entity)
 					end
 					self:GetOwner():RemoveItem(strItem, 1, self:GetOwner().ItemData["SELECTED"])
 				end
 			end
-			self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
-			self.Throwing = nil
-		else
-			if SERVER then
-				local trace = self.Owner:GetEyeTrace()
-				if trace.Hit && trace.HitNonWorld && trace.HitPos:Distance(self.Owner:GetPos()) < 200 then
-					local strItem = trace.Entity.ItemClass or trace.Entity:GetClass() 
-					if CIVRP_Item_Data[strItem] != nil then
-						self:GetOwner():AddItem(strItem, 1, trace.Entity.ItemTable) 
-						trace.Entity:Remove()
-					end
-				end
-			end
-			self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 		end
-	end
-end
+
+concommand.Add("CIVRP_DropItem",function(ply,cmd,args) DropItem(ply:GetActiveWeapon(),args[1]) end)
 
 function SWEP:GetViewModelPostion()
 	return self:GetOwner():GetShootPos() +
@@ -293,9 +310,6 @@ if CLIENT then
 		if LocalPlayer().ItemData != nil then
 			local tblWeaponData = LocalPlayer().ItemData[self:GetOwner().ItemData["SELECTED"]] || "empty"
 			if tblWeaponData != "empty"	then
-				if tblWeaponData.CalcView != nil then
-					local data = tblWeaponData.CalcView(ply, origin, angles, fov)
-				else
 					self.EntViewModel:SetNoDraw(false)
 					self.EntViewModel:SetModel(tblWeaponData.Model)
 					local tagertAngles = tblWeaponData.HoldAngle
@@ -328,6 +342,9 @@ if CLIENT then
 							tagertPosition = tblWeaponData.HoldPos
 						end
 					end					
+					if self.Throwing != nil then
+						tagertPosition = tagertPosition + Vector(-1 *self.Throwing/50,-1 *self.Throwing/50,self.Throwing/50)
+					end
 					--beforeVectors = self.EntViewModel:GetPos()
 					self.EntViewModel:SetPos(origin + angles:Forward() * tagertPosition.x + angles:Up() * tagertPosition.y + angles:Right() * tagertPosition.z)
 					--if LocalPlayer():GetVelocity():Length() != 0 && LocalPlayer():OnGround() then
@@ -346,6 +363,8 @@ if CLIENT then
 							self.EntViewModel.AnimationTable = nil
 						end
 					end
+				if tblWeaponData.CalcView != nil then
+					local data = tblWeaponData.CalcView(ply, self, origin, angles, fov, tblWeaponData,tagertPosition,tagertAngles)
 				end
 			else
 				self.EntViewModel:SetNoDraw(true)
